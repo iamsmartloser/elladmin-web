@@ -84,7 +84,7 @@
   font-family: Arial, sans-serif !important;
   position: fixed;
   bottom: 0;
-  z-index: 99;
+  z-index: 10000;//这里修改了一下,将99改为10000，百度地图上的控件滚动时跑到header和footer上面去了
   width: 100%;
 }
 .eladmin-upload {

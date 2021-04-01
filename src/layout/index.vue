@@ -100,7 +100,7 @@ export default {
     position: fixed;
     top: 0;
     right: 0;
-    z-index: 9;
+    z-index: 20;/* 这里修改了一下,将9改为20，百度地图上的控件滚动时跑到header和footer上面去了 */
     width: calc(100% - #{$sideBarWidth});
     transition: width 0.28s;
     padding: 0;

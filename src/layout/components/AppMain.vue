@@ -28,14 +28,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/*.app-main {*/
+/*  !* 50= navbar  50  *!*/
+/*  min-height: calc(100vh - 50px);*/
+/*  width: 100%;*/
+/*  position: relative;*/
+/*  overflow: hidden;*/
+/*}*/
 .app-main {
   /* 50= navbar  50  */
-  min-height: calc(100vh - 50px);
+  height: calc(100% - 50px );
+  /*min-height: calc(100% - 50px);!*这里修改了一下*!*/
   width: 100%;
   position: relative;
   overflow: hidden;
+  /*overflow: auto;!*这里修改了一下*!*/
+  padding-bottom: 33px; /* 这里修改了一下,添加了padding,防止页脚遮挡页面底部 */
 }
-
 .fixed-header+.app-main {
   padding-top: 50px;
 }
@@ -43,7 +52,7 @@ export default {
 .hasTagsView {
   .app-main {
     /* 84 = navbar + tags-view = 50 + 34 */
-    min-height: calc(100vh - 84px);
+    min-height: calc(100% - 84px);/* 这里修改了一下,100vh */
   }
 
   .fixed-header+.app-main {
