@@ -169,8 +169,13 @@ export default {
     .form_pane_slot{
       position: absolute;
       z-index: 20;
-      top:200px;
-      left:100px;
+      top: 100px;
+      left: 10px;
+      padding: 10px;
+      background: #fff;
+      border-radius: 5px;
+      width: 300px;
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
     }
   }
 
