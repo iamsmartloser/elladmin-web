@@ -2,6 +2,16 @@
 
 <template>
   <div class="page_wrap">
+    <button @click="open">开启画图工具</button>
+    <button @click="editPolyline">画折线</button>
+    <button @click="editPolygon">画多边形</button>
+    <button @click="editCircle">画圆</button>
+    <button @click="open">开启画图工具</button>
+    <button @click="clear('polyline')">清除折线</button>
+    <button @click="clear('polygon')">清多边形</button>
+    <button @click="clear('circle')">清除圆</button>
+    <button @click="reEdit">重新编辑</button>
+    <button @click="getInfo">获取信息</button>
     <Map @ready="ready">
       <!--      <template v-slot:formPane>-->
       <!--        <span class="form_pane_slot" draggable="true">-->
@@ -40,16 +50,15 @@ export default {
       polylinePoints: [],
       marker: null,
       polygonPoints: [],
-      polygon: null
+      polygon: null,
+      circle: null,
+      radiusLabel: null
     }
   },
   mounted() {
     // console.log('drawPolyline')
     // console.log('this.map:', this.map)
     this.map.setDefaultCursor('pointer') // 设置鼠标默认的指针样式为手
-    // this.editPolyline();
-    // this.editPolygon()
-    this.editCircle()
   },
   methods: {
     editPolyline() {
@@ -98,34 +107,57 @@ export default {
     },
     editCircle() {
       this.map.addEventListener('click', (e) => {
-        console.log('click:', e)
-          if (!this.circle) {
+        // console.log('click:', e)
+        if (!this.circle) {
           const p = { lng: e.latlng.lng, lat: e.latlng.lat }
-          this.circle = this.drawCircle(p, null, { strokeColor: 'fenceColor', enableEditing: true })
-          // this.circle.enableEditing()
-          //   // 编辑事件回调
-          // this.circle.addEventListener('lineupdate',(e)=>{
-          //   console.log('lineupdate:',e.overlay.vertexMarkers[0].latLng)
-          //   console.log('lineupdate latLng:',e.overlay.latLng)
-          //   console.log('lineupdate radius:',e.overlay.radius)
-          // })
-          // console.log('editCircle after:', this.circle)
+          const { circle, radiusLabel } = this.drawCircle(p, null, { strokeColor: 'fenceColor', enableEditing: true })
+          this.radiusLabel = radiusLabel
+          this.circle = circle
         }
       })
     },
-    // drawByManager() {
-    //   this.createDrawingManager()
-    //   this.drawingManager.setDrawingMode(window.BMAP_DRAWING_CIRCLE)
-    //   this.drawingManager.open()
-    //   this.drawingManager.addEventListener('circlecomplete', function(overlay) {
-    //     console.log('circlecomplete:', overlay)
-    //   })
-    // }
+    drawByManager() {
+      this.createDrawingManager()
+    },
+    open() {
+      this.drawingManager.setDrawingMode(window.BMAP_DRAWING_CIRCLE)
+      this.drawingManager.open()
+      this.drawingManager.addEventListener('circlecomplete', (e, overlay) => {
+        this.circle = overlay
+        console.log('circlecomplete:', overlay)
+      })
+    },
+    clear(type) {
+      switch (type) {
+        case 'polyline':
+          this.map.removeOverlay(this.polyline)
+          this.polylinePoints = []
+          break
+        case 'polygon':
+          this.map.removeOverlay(this.polygon)
+          this.polygonPoints = []
+          break
+        case 'circle':
+          this.map.removeOverlay(this.radiusLabel)
+          this.map.removeOverlay(this.circle)
+          break
+        default:
+          break
+      }
+
+    },
+    reEdit() {
+      this.circle.enableEditing()
+    },
+    getInfo() {
+      console.log(this.circle)
+    }
   }
 }
 </script>
 <style lang="scss">
   .page_wrap {
-    height: calc(100vh - 120px);
+    /*height: calc(100vh - 120px);*/
+    height: calc(100vh - 150px);
   }
 </style>
