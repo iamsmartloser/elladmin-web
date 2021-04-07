@@ -11,6 +11,7 @@
 <script>
   import AutoComplete from './Autocomplete'
   import { FullScreen } from './FullScreen'
+  import {DistanceTool} from './DistanceTool'
   import { uuid } from '@/utils/utils'
 
   const BMap = window.BMapGL
@@ -61,9 +62,12 @@
           return [true, window.BMAP_ANCHOR_BOTTOM_RIGHT, 12, 0]
         }
       },
-      polylines: {
-        type: Array
-      }
+      distanceTool: {// 自定义鼠标测距按钮
+        type: Array,
+        default: function() {
+          return [true, window.BMAP_ANCHOR_TOP_RIGHT, 80, 10]
+        }
+      },
     },
     data() {
       return {
@@ -141,6 +145,14 @@
             fullScreenId,
             anchor: this.fullScreen[1],
             offset: new BMap.Size(this.fullScreen[2], this.fullScreen[3])
+          }))
+        }
+
+        // 添加自定义鼠标测距按钮
+        if (this.distanceTool[0]) {
+          map.addControl(new DistanceTool({
+            anchor: this.distanceTool[1],
+            offset: new BMap.Size(this.distanceTool[2], this.distanceTool[3])
           }))
         }
 
