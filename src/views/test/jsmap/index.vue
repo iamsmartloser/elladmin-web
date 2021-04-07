@@ -4,13 +4,14 @@
   <div class="page_wrap">
     <button @click="open">开启画图工具</button>
     <button @click="editPolyline">画折线</button>
-    <button @click="editPolygon">画多边形</button>
-    <button @click="editCircle">画圆</button>
-    <button @click="open">开启画图工具</button>
     <button @click="clear('polyline')">清除折线</button>
+    <button @click="editPolygon">画多边形</button>
     <button @click="clear('polygon')">清多边形</button>
+    <button @click="editCircle">画圆</button>
     <button @click="clear('circle')">清除圆</button>
-    <button @click="reEdit">重新编辑</button>
+    <button @click="clear('circle')">开启鼠标测距</button>
+<!--    <button @click="open">开启画图工具</button>-->
+<!--    <button @click="reEdit">重新编辑</button>-->
     <button @click="getInfo">获取信息</button>
     <Map @ready="ready">
       <!--      <template v-slot:formPane>-->
@@ -116,17 +117,17 @@ export default {
         }
       })
     },
-    drawByManager() {
-      this.createDrawingManager()
-    },
-    open() {
-      this.drawingManager.setDrawingMode(window.BMAP_DRAWING_CIRCLE)
-      this.drawingManager.open()
-      this.drawingManager.addEventListener('circlecomplete', (e, overlay) => {
-        this.circle = overlay
-        console.log('circlecomplete:', overlay)
-      })
-    },
+    // drawByManager() {
+    //   this.createDrawingManager()
+    // },
+    // open() {
+    //   this.drawingManager.setDrawingMode(window.BMAP_DRAWING_CIRCLE)
+    //   this.drawingManager.open()
+    //   this.drawingManager.addEventListener('circlecomplete', (e, overlay) => {
+    //     this.circle = overlay
+    //     console.log('circlecomplete:', overlay)
+    //   })
+    // },
     clear(type) {
       switch (type) {
         case 'polyline':
@@ -146,11 +147,10 @@ export default {
       }
 
     },
-    reEdit() {
-      this.circle.enableEditing()
-    },
     getInfo() {
-      console.log(this.circle)
+      console.log('circle',this.circle)
+      console.log('polyline',this.polyline)
+      console.log('polygon',this.polygon)
     }
   }
 }
