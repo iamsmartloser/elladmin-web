@@ -1,4 +1,5 @@
 const BMap = window.BMap
+const BMapLib = window.BMapLib
 const COLOR_CONFIG = {
   'disabledColor': '#595959',
   'noParkingColor': '#ff0000', // 禁停区颜色
@@ -24,11 +25,22 @@ export default {
       this.map = map
       console.log('ready:', map)
     },
+    // 画点
     drawMarker(point, markerOptions) {
-      const marker = new BMap.Marker(new BMap.Point(point.lng, point.lat), markerOptions)
+      const { icon: img , ...rest} = markerOptions||{}
+      let icon = null
+      if(img){
+        const { url, size, imageSize, anchor } = img
+        icon = new BMap.Icon(require(url), new BMap.Size(size[0],size[1]), {
+          imageSize: new BMap.Size(imageSize[0],imageSize[1]),
+          anchor: new BMap.Size(anchor[0],anchor[1])
+        })
+      }
+      const marker = new BMap.Marker(new BMap.Point(point.lng, point.lat), { icon ,draggingCursor: 'pointer',title: null,...rest})
       this.map.addOverlay(marker)
       return marker
     },
+    // 画线
     drawPolyline(points, polylineOptions) {
       console.log('drawPolyline begin')
       const strokeColor = COLOR_CONFIG[polylineOptions.strokeColor]
@@ -43,11 +55,14 @@ export default {
         enableClicking: polylineOptions.enableClicking || false // 是否响应点击事件，默认为true
       }
 
-      const polyline = new BMap.Polyline(points.map(p => { return new BMap.Point(p.lng, p.lat) }), option)
+      const polyline = new BMap.Polyline(points.map(p => {
+        return new BMap.Point(p.lng, p.lat)
+      }), option)
       this.map.addOverlay(polyline)
       console.log('drawPolyline end')
       return polyline
     },
+    // 画多边形
     drawPolygon(points, polygonOptions) {
       const strokeColor = COLOR_CONFIG[polygonOptions.strokeColor]
       console.log('polygonOptions.fillColor', polygonOptions.fillColor)
@@ -64,7 +79,9 @@ export default {
         enableEditing: polygonOptions.enableEditing || false, // 是否启用编辑，默认不启用
         enableClicking: polygonOptions.enableClicking || true // 是否响应点击事件，默认为true
       }
-      const polygon = new BMap.Polygon(points.map(p => { return new BMap.Point(p.lng, p.lat) }), option)
+      const polygon = new BMap.Polygon(points.map(p => {
+        return new BMap.Point(p.lng, p.lat)
+      }), option)
       this.map.addOverlay(polygon)
       return polygon
     },
@@ -118,41 +135,48 @@ export default {
         })
       }
       return { circle, radiusLabel }
+    },
+
+    // 热力图
+    drawHeatMap(points, options) {
+      if (!this.isSupportCanvas()) {
+        alert('热力图目前只支持有canvas支持的浏览器,您所使用的浏览器不能使用热力图功能~')
+      }
+      const { max = 25, radius = 100, ...rest } = options || {}
+      const heatmapOverlay = new BMapLib.HeatmapOverlay({ radius })
+      this.map.addOverlay(heatmapOverlay)
+      heatmapOverlay.setDataSet({ data: points, max })
+      heatmapOverlay.setOptions(rest)
+      this.map.setViewport(points.map(point => {
+        return new BMap.Point(point.lng, point.lat)
+      }))
+      return heatmapOverlay
+    },
+    // 点聚合
+    drawMarkerClustererFromPointsArr(points,iconOptions) {
+      let icon = null
+      if(iconOptions){
+        const { url, size, imageSize, anchor } = iconOptions
+        icon = new BMap.Icon(url, new BMap.Size(size[0],size[1]), {
+          imageSize: new BMap.Size(imageSize[0],imageSize[1]),
+          anchor: new BMap.Size(anchor[0],anchor[1]),
+        })
+      }
+      const markers = points.map(item => {
+        return new BMap.Marker(new BMap.Point(item.lng, item.lat),{ icon })
+      })
+      const markerClusterer = new BMapLib.MarkerClusterer(this.map, { markers })
+      return markerClusterer
+    },
+    // 点聚合
+    drawMarkerClustererFromMarkers(markers) {
+      const markerClusterer = new BMapLib.MarkerClusterer(this.map, { markers })
+      return markerClusterer
+    },
+    // 判断浏览区是否支持canvas
+    isSupportCanvas() {
+      const elem = document.createElement('canvas')
+      return !!(elem.getContext && elem.getContext('2d'))
     }
-    // setDrawingMode:BMAP_DRAWING_MARKER\BMAP_DRAWING_POLYLINE\
-    // BMAP_DRAWING_RECTANGLE\BMAP_DRAWING_POLYGON\BMAP_DRAWING_CIRCLE
-    // createDrawingManager() {
-    //   const styleOptions = {
-    //     strokeColor: '#5E87DB', // 边线颜色
-    //     fillColor: '#5E87DB', // 填充颜色。当参数为空时，圆形没有填充颜色
-    //     strokeWeight: 2, // 边线宽度，以像素为单位
-    //     strokeOpacity: 1, // 边线透明度，取值范围0-1
-    //     fillOpacity: 0.2 // 填充透明度，取值范围0-1
-    //   }
-    //   const labelOptions = {
-    //     borderRadius: '2px',
-    //     background: '#FFFBCC',
-    //     border: '1px solid #E1E1E1',
-    //     color: '#703A04',
-    //     fontSize: '12px',
-    //     letterSpacing: '0',
-    //     padding: '5px'
-    //   }
-    //   // 实例化鼠标绘制工具
-    //   if (!this.drawingManager) {
-    //     this.drawingManager = new window.BMapGLLib.DrawingManager(this.map, {
-    //       // isOpen: true,        // 是否开启绘制模式
-    //       enableCalculate: false, // 绘制是否进行测距测面
-    //       enableSorption: false, // 是否开启边界吸附功能
-    //       // sorptiondistance: 20, // 边界吸附距离
-    //       circleOptions: styleOptions, // 圆的样式
-    //       polylineOptions: styleOptions, // 线的样式
-    //       polygonOptions: styleOptions, // 多边形的样式
-    //       rectangleOptions: styleOptions, // 矩形的样式
-    //       labelOptions: labelOptions // label样式
-    //     })
-    //   }
-    //   return this.drawingManager
-    // }
   }
 }
