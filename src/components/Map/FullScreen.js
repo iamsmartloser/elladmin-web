@@ -1,4 +1,4 @@
-const BMap = window.BMapGL
+const BMap = window.BMap
 // 定义一个全屏控件类
 export function FullScreen({ fullScreenId, anchor, offset }) {
   this.fullScreenId = fullScreenId

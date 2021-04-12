@@ -1,4 +1,4 @@
-const BMap = window.BMapGL
+const BMap = window.BMap
 
 // 定义一个地点搜索自动补全控件类
 function AutoComplete({ anchor, offset }) {

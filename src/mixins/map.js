@@ -1,4 +1,4 @@
-const BMap = window.BMapGL
+const BMap = window.BMap
 const COLOR_CONFIG = {
   'disabledColor': '#595959',
   'noParkingColor': '#ff0000', // 禁停区颜色
@@ -15,7 +15,7 @@ export default {
   data() {
     return {
       map: null,
-      drawingManager: null,
+      drawingManager: null
     }
   },
   methods: {
@@ -40,7 +40,7 @@ export default {
         strokeStyle: polylineOptions.strokeStyle || 'solid', // 边线的样式，solid或dashed。
         strokeColor, // 边线的颜色
         enableEditing: polylineOptions.enableEditing || false, // 是否启用编辑，默认不启用
-        enableClicking: polylineOptions.enableClicking || true // 是否响应点击事件，默认为true
+        enableClicking: polylineOptions.enableClicking || false // 是否响应点击事件，默认为true
       }
 
       const polyline = new BMap.Polyline(points.map(p => { return new BMap.Point(p.lng, p.lat) }), option)
@@ -50,7 +50,9 @@ export default {
     },
     drawPolygon(points, polygonOptions) {
       const strokeColor = COLOR_CONFIG[polygonOptions.strokeColor]
+      console.log('polygonOptions.fillColor', polygonOptions.fillColor)
       const fillColor = COLOR_CONFIG[polygonOptions.fillColor]
+      console.log('fillColor', fillColor)
       // 设置默认的参数
       const option = {
         strokeWeight: polygonOptions.strokeWeight || 2, // 边线的宽度，以像素为单位。
@@ -78,16 +80,18 @@ export default {
         strokeColor, // 边线的颜色
         fillColor, // 填充颜色 当参数为空时，圆形将没有填充效果。
         fillOpacity: 0.3, // 填充的透明度，取值范围0 - 1。
-        enableEditing: circleOptions.enableEditing || false, // 是否启用编辑，默认不启用
+        // enableEditing: circleOptions.enableEditing || false, // 是否启用编辑，默认不启用
         enableClicking: circleOptions.enableClicking || true // 是否响应点击事件，默认为true
       }
+      console.log('point:', point)
       let centerPoint = new BMap.Point(point.lng, point.lat)
       const circle = new BMap.Circle(centerPoint, r, option)
       this.map.addOverlay(circle)
-      // console.log('circle:', circle)
-      let radiusLabel=null
+      console.log('circle2:', circle)
+      let radiusLabel = null
       // 如果允许编辑
-      if (option.enableEditing) {
+      if (circleOptions.enableEditing) {
+        circle.enableEditing()
         radiusLabel = new BMap.Label(`R:<input id="circle_radius" type="number" value="50"/>`)
         radiusLabel.setPosition(centerPoint)
         radiusLabel.setOffset(new BMap.Size(0, 8))
@@ -96,26 +100,25 @@ export default {
         const radiusInputEl = document.getElementById('circle_radius')
         radiusInputEl.style = 'border: none; width: 50px;'
         radiusInputEl.addEventListener('input', (e) => {
-          // console.log('input:', e)
+          console.log('input:', e)
           if (e.target.value) {
             circle.setRadius(e.target.value)
           }
         })
         circle.addEventListener('lineupdate', (e) => {
-          console.log('lineupdate:', e.overlay)
-          const tempR = Math.floor(e.overlay.radius)
-          const center = e.overlay.vertexMarkers[0]?e.overlay.vertexMarkers[0].latLng:null
-          if(!center){
+          console.log('lineupdate:', e)
+          const tempR = Math.floor(e.target.Fa)
+          const center = e.target.point ? e.target.point : null
+          if (!center) {
             return
           }
-
           centerPoint = new BMap.Point(center.lng, center.lat)
           radiusLabel.setPosition(centerPoint)
           radiusInputEl.value = tempR
         })
       }
-      return {circle, radiusLabel}
-    },
+      return { circle, radiusLabel }
+    }
     // setDrawingMode:BMAP_DRAWING_MARKER\BMAP_DRAWING_POLYLINE\
     // BMAP_DRAWING_RECTANGLE\BMAP_DRAWING_POLYGON\BMAP_DRAWING_CIRCLE
     // createDrawingManager() {
