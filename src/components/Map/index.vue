@@ -87,7 +87,7 @@
       createMap() {
         console.log('initMap')
         const map = new BMap.Map(mapId)
-        map.centerAndZoom('成都市', 17) // 创建地图,设置中心点坐标和地图级别
+        map.centerAndZoom('成都市', 18) // 创建地图,设置中心点坐标和地图级别
         map.setCurrentCity('成都市') // 设置地图显示的城市 此项是2.0版必须设置的
         // 地图类型控件
         if (this.mapType[0]) {
@@ -125,12 +125,13 @@
 
         // 非Gl版定位控件
         if (this.location[0]) {
-          map.addControl(new BMap.GeolocationControl({
+          const geolocationControl = new BMap.GeolocationControl({
             anchor: this.location[1],
             offset: new BMap.Size(this.location[2], this.location[3]),
             showAddressBar: false,
-            enableAutoLocation:true
-          }))
+            enableAutoLocation: false
+          })
+          map.addControl(geolocationControl)
         }
         // GL版定位控件
         // if (this.location[0]) {
