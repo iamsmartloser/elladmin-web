@@ -2,7 +2,6 @@
 
 <template>
   <div class="page_wrap">
-    <button @click="open">开启画图工具</button>
     <button @click="editPolyline">画折线</button>
     <button @click="clear('polyline')">清除折线</button>
     <button @click="editPolygon">画多边形</button>
@@ -10,8 +9,8 @@
     <button @click="editCircle">画圆</button>
     <button @click="clear('circle')">清除圆</button>
     <button @click="clear('circle')">开启鼠标测距</button>
-<!--    <button @click="open">开启画图工具</button>-->
-<!--    <button @click="reEdit">重新编辑</button>-->
+    <!--    <button @click="open">开启画图工具</button>-->
+    <!--    <button @click="reEdit">重新编辑</button>-->
     <button @click="getInfo">获取信息</button>
     <Map @ready="ready">
       <!--      <template v-slot:formPane>-->
@@ -145,12 +144,11 @@ export default {
         default:
           break
       }
-
     },
     getInfo() {
-      console.log('circle',this.circle)
-      console.log('polyline',this.polyline)
-      console.log('polygon',this.polygon)
+      console.log('circle', this.circle)
+      console.log('polyline', this.polyline)
+      console.log('polygon', this.polygon)
     }
   }
 }
