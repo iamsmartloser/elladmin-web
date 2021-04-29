@@ -59,25 +59,42 @@ export const constantRouterMap = [
     ]
   },
   {
-    path: '/test',
-    component: Layout,
+    path: '/test/index',
+    component: (resolve) => require(['@/views/test/testIndex/index'], resolve),
     hidden: true,
+    name: '测试链接页',
+    meta: { title: '测试链接页' }
+  },
+  {
+    path: 'test/jsmap',
+    hidden: true,
+    component: (resolve) => require(['@/views/test/jsmap/index'], resolve),
+    name: 'js测试地图',
+    meta: { title: 'js测试地图' }
+  },
+  {
+    path: '/operators',
+    component: Layout,
+    name: '供应商入驻',
     redirect: 'noredirect',
     children: [
       {
-        path: '',
-        component: (resolve) => require(['@/views/test/testIndex/index'], resolve),
-        name: '测试链接页',
-        meta: { title: '测试链接页' }
+        path: '/enter',
+        // hidden: false,
+        component: (resolve) => require(['@/views/operators/enter/index'], resolve),
+        name: '入驻申请',
+        meta: { title: '入驻申请' }
       },
       {
-        path: 'jsmap',
-        component: (resolve) => require(['@/views/test/jsmap/index'], resolve),
-        name: 'js测试地图',
-        meta: { title: 'js测试地图' },
-      },
+        path: 'enter-setting',
+        // hidden: false,
+        component: (resolve) => require(['@/views/operators/enterSetting/index'], resolve),
+        name: '入驻申请设置',
+        meta: { title: '入驻申请设置' }
+      }
     ]
-  },
+  }
+
 ]
 
 export default new Router({

@@ -8,8 +8,8 @@ import { buildMenus } from '@/api/system/menu'
 import { filterAsyncRouter } from '@/store/modules/permission'
 
 NProgress.configure({ showSpinner: false })// NProgress Configuration
-
-const whiteList = ['/login']// no redirect whitelist
+// 免登陆白名单配置
+const whiteList = ['/login']// no redirect whitelist,'/test/index','/operators/enter-setting'
 
 router.beforeEach((to, from, next) => {
   if (to.meta.title) {

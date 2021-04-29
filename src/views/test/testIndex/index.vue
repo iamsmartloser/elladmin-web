@@ -11,6 +11,11 @@
     <li>
       <router-link to="/test/jsmap">js版地图测试</router-link>
     </li>
+    <p>运行商入驻相关:</p>
+    <li>
+      <router-link to="/operators/enter_setting">入驻申请设置</router-link>
+      <router-link to="/operators/enter">入驻申请</router-link>
+    </li>
   </ul>
 </template>
 
