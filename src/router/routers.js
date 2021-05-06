@@ -77,30 +77,44 @@ export const constantRouterMap = [
     component: (resolve) => require(['@/views/test/jsmap/index'], resolve),
     name: 'js测试地图',
     meta: { title: 'js测试地图' }
-  },
-  {
-    path: '/operators',
-    component: Layout,
-    name: '供应商入驻',
-    redirect: 'noredirect',
-    children: [
-      {
-        path: '/enter',
-        // hidden: false,
-        component: (resolve) => require(['@/views/operators/enter/index'], resolve),
-        name: '入驻申请',
-        meta: { title: '入驻申请' }
-      },
-      {
-        path: 'enter-setting',
-        // hidden: false,
-        component: (resolve) => require(['@/views/operators/enterSetting/index'], resolve),
-        name: '入驻申请设置',
-        meta: { title: '入驻申请设置' }
-      }
-    ]
   }
-
+  // {
+  //   path: '/operators',
+  //   component: Layout,
+  //   name: '供应商入驻',
+  //   redirect: 'noredirect',
+  //   children: [
+  //     {
+  //       path: '/enter',
+  //       // hidden: false,
+  //       component: (resolve) => require(['@/views/operators/enter/index'], resolve),
+  //       name: '入驻申请',
+  //       meta: { title: '入驻申请' }
+  //     },
+  //     {
+  //       path: 'enter-setting',
+  //       // hidden: false,
+  //       component: (resolve) => require(['@/views/operators/enterSetting/index'], resolve),
+  //       name: '入驻申请设置',
+  //       meta: { title: '入驻申请设置' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/lbs',
+  //   component: Layout,
+  //   name: '电子围栏',
+  //   redirect: 'noredirect',
+  //   children: [
+  //     {
+  //       path: '/lbs_storehouse',
+  //       // hidden: false,
+  //       component: (resolve) => require(['@/views/lbs/lbsStorehouse/index'], resolve),
+  //       name: '仓库',
+  //       meta: { title: '仓库' }
+  //     },
+  //   ]
+  // }
 ]
 
 export default new Router({

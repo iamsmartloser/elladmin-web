@@ -3,6 +3,7 @@
     <!--工具栏-->
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
+        <el-input v-model="query.dataBase" clearable size="small" placeholder="请输入数据库名" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <el-input v-model="query.name" clearable size="small" placeholder="请输入表名" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <rrOperation />
       </div>
@@ -23,6 +24,7 @@
     <!--表格渲染-->
     <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
       <el-table-column type="selection" width="55" />
+      <el-table-column :show-overflow-tooltip="true" prop="dataBase" label="数据库" />
       <el-table-column :show-overflow-tooltip="true" prop="tableName" label="表名" />
       <el-table-column :show-overflow-tooltip="true" prop="engine" label="数据库引擎" />
       <el-table-column :show-overflow-tooltip="true" prop="coding" label="字符编码集" />
@@ -31,17 +33,17 @@
       <el-table-column label="操作" width="160px" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" style="margin-right: 2px" type="text">
-            <router-link :to="'/sys-tools/generator/preview/' + scope.row.tableName">
+            <router-link :to="'/sys-tools/generator/preview/' + scope.row.dataBase + '|' + scope.row.tableName">
               预览
             </router-link>
           </el-button>
-          <el-button size="mini" style="margin-left: -1px;margin-right: 2px" type="text" @click="toDownload(scope.row.tableName)">下载</el-button>
+          <el-button size="mini" style="margin-left: -1px;margin-right: 2px" type="text" @click="toDownload(scope.row.dataBase + '|' + scope.row.tableName)">下载</el-button>
           <el-button size="mini" style="margin-left: -1px;margin-right: 2px" type="text">
-            <router-link :to="'/sys-tools/generator/config/' + scope.row.tableName">
+            <router-link :to="'/sys-tools/generator/config/' + scope.row.dataBase + '|' + scope.row.tableName">
               配置
             </router-link>
           </el-button>
-          <el-button type="text" style="margin-left: -1px" size="mini" @click="toGen(scope.row.tableName)">生成</el-button>
+          <el-button type="text" style="margin-left: -1px" size="mini" @click="toGen(scope.row.dataBase + '|' + scope.row.tableName)">生成</el-button>
         </template>
       </el-table-column>
     </el-table>
