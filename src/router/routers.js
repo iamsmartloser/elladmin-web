@@ -55,6 +55,12 @@ export const constantRouterMap = [
         component: (resolve) => require(['@/views/system/user/center'], resolve),
         name: '个人中心',
         meta: { title: '个人中心' }
+      },
+      {
+        path: 'forget',
+        component: (resolve) => require(['@/views/system/user/forget'], resolve),
+        name: '忘记密码',
+        meta: { title: '忘记密码' }
       }
     ]
   },

@@ -22,15 +22,24 @@
           <img :src="codeUrl" @click="getCode">
         </div>
       </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin:0 0 25px 0;">
-        记住我
-      </el-checkbox>
+      <div style="display: flex;flex-direction: row;justify-content: space-between; ">
+        <el-checkbox v-model="loginForm.rememberMe" style="margin:0 0 25px 0;">
+          记住我
+        </el-checkbox>
+        <el-button type="text" style="margin:0 0 25px 0;">忘记密码</el-button>
+      </div>
+<!--      <el-checkbox v-model="loginForm.rememberMe" style="margin:0 0 25px 0;">-->
+<!--        记住我-->
+<!--      </el-checkbox>-->
       <el-form-item style="width:100%;">
         <el-button :loading="loading" size="medium" type="primary" style="width:100%;" @click.native.prevent="handleLogin">
           <span v-if="!loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
       </el-form-item>
+      <div style="display: flex;flex-direction: row-reverse;justify-content: space-between; ">
+        <el-button type="text" style="margin:0 0 25px 0;">两轮车入驻城市申请</el-button>
+      </div>
     </el-form>
     <!--  底部  -->
     <div v-if="$store.state.settings.showFooter" id="el-login-footer">

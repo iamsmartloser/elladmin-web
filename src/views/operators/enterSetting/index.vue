@@ -55,7 +55,7 @@ export default {
     async getEnterInfo() {
       const res = await getEnterInfo({ areaCode: '510116' }) || {}
       if (res && res.code === 200 || res.content) {
-        this.enterSwitch = res.content.enterSwitch
+        this.enterSwitch = res.content.enterSwitch === 1
         this.enterRule = res.content.enterRule
         this.editor.txt.html(res.content.enterRule || '')
       } else {
