@@ -139,7 +139,7 @@ export default {
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['msg_type', 'allow_receive', 'compulsary_warning_type'],
   cruds() {
-    return CRUD({ title: 'msg', url: 'msg/page', idField: 'id', sort: 'id,desc', crudMethod: { ...crudMsgBodyInfo }})
+    return CRUD({ title: '消息通知', url: 'msg/page', idField: 'id', sort: 'id,desc', crudMethod: { ...crudMsgBodyInfo }})
   },
   data() {
     return {
