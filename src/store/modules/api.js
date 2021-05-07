@@ -21,7 +21,9 @@ const api = {
     // 文件上传
     fileUploadApi: baseUrl + '/api/localStorage',
     // baseUrl，
-    baseApi: baseUrl
+    baseApi: baseUrl,
+    // 文件上传接口
+    fileUploadUrl: baseUrl + '/file/upload',
   }
 }
 
