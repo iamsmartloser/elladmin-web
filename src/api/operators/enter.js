@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 
-
 // 获取运营商入驻条件
 export function getEnterInfo(params) {
   return request({
@@ -12,7 +11,7 @@ export function getEnterInfo(params) {
 
 // 修改运营商入驻条件
 export function editEnterInfo(data) {
-  return request.post( 'dict/enter_info/edit',data)
+  return request.post('dict/enter_info/edit', data)
 }
 // export function editEnterInfo(data) {
 //   return request({

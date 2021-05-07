@@ -27,7 +27,7 @@
 import E from 'wangeditor'
 import { mapGetters } from 'vuex'
 import { upload } from '@/utils/upload'
-import { getEnterInfo, editEnterInfo } from '@/api/operators/dict'
+import { getEnterInfo, editEnterInfo } from '@/api/operators/enter'
 
 export default {
   name: 'EnterSetting',
@@ -54,8 +54,8 @@ export default {
   methods: {
     async getEnterInfo() {
       const res = await getEnterInfo({ areaCode: '510116' }) || {}
-      if (res && res.code === 200 || res.content) {
-        this.enterSwitch = res.content.enterSwitch === 1
+      if (res && res.status === 200 || res.content) {
+        this.enterSwitch = res.content.enterSwitch
         this.enterRule = res.content.enterRule
         this.editor.txt.html(res.content.enterRule || '')
       } else {
@@ -65,7 +65,7 @@ export default {
 
     // async initSwitch() {
     //   const res = await getEnterSwitch({ areaCode: '510116' }) || {}
-    //   if (res && res.code === 200) {
+    //   if (res && res.status === 200) {
     //     this.enterSwitch = res.content
     //   } else {
     //     this.$message.error(res && res.msg || '请求出错')
@@ -97,12 +97,12 @@ export default {
     async onSave() {
       const data = { areaCode: '510116', enterSwitch: this.enterSwitch, enterRule: this.enterRule }
 
-      const form = new FormData();
-      form.append('areaCode', '510116');
-      form.append('enterSwitch', this.enterSwitch?1:0);
-      form.append('enterRule', this.enterRule);
+      const form = new FormData()
+      form.append('areaCode', '510116')
+      form.append('enterSwitch', this.enterSwitch ? 1 : 0)
+      form.append('enterRule', this.enterRule)
       const res = await editEnterInfo(form)
-      if (res && res.code === 200) {
+      if (res && res.status === 200) {
         this.$message.success(res && res.msg || '修改成功')
       } else {
         this.$message.error(res && res.msg || '请求出错')
