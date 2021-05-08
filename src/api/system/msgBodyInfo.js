@@ -2,7 +2,6 @@ import request from '@/utils/request'
 import { convertToFormData } from '@/utils/utils'
 
 export function add(data) {
-  console.log('data',data)
   return request({
     url: 'msg/save',
     method: 'post',
@@ -26,4 +25,11 @@ export function edit(data) {
   })
 }
 
-export default { add, edit, del }
+export function read(data) {
+  return request({
+    url: 'msg/read',
+    method: 'post',
+    data: convertToFormData(data)
+  })
+}
+export default { add, edit, del, read}

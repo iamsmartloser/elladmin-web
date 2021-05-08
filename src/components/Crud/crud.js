@@ -100,7 +100,8 @@ function CRUD(options) {
     // 导出的 Loading
     downloadLoading: false,
     // 删除的 Loading
-    delAllLoading: false
+    delAllLoading: false,
+    editRow: null
   }
   const methods = {
     /**
@@ -169,6 +170,7 @@ function CRUD(options) {
      * @param {*} data 数据项
      */
     toEdit(data) {
+      crud.editRow = JSON.parse(JSON.stringify(data))
       crud.resetForm(JSON.parse(JSON.stringify(data)))
       if (!(callVmHook(crud, CRUD.HOOK.beforeToEdit, crud.form) && callVmHook(crud, CRUD.HOOK.beforeToCU, crud.form))) {
         return

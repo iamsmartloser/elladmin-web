@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+<!--    <div ref="editor" style="height: 250px;" />-->
     <!--工具栏-->
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
@@ -7,7 +8,7 @@
         <label class="el-form-item-label">消息类型:</label>
         <el-select v-model="query.type" filterable placeholder="请选择消息类型" clearable>
           <el-option
-            v-for="item in dict.msg_type"
+            v-for="item in dict.msg_type.map(m=>{m.value=parseInt(m.value);return m})"
             :key="item.id"
             :label="item.label"
             :value="item.value"
@@ -16,7 +17,7 @@
         <label class="el-form-item-label">允许回复:</label>
         <el-select v-model="query.allowReceive" filterable placeholder="请选择允许回复" clearable>
           <el-option
-            v-for="item in dict.allow_receive"
+            v-for="item in dict.allow_receive.map(m=>{m.value=parseInt(m.value);return m})"
             :key="item.id"
             :label="item.label"
             :value="item.value"
@@ -25,10 +26,10 @@
         <label class="el-form-item-label">是否强提醒:</label>
         <el-select v-model="query.compulsaryWarningType" filterable placeholder="请选择是否强提醒" clearable>
           <el-option
-            v-for="item in dict.compulsary_warning_type"
+            v-for="item in dict.compulsary_warning_type.map(m=>{m.value=parseInt(m.value);return m})"
             :key="item.id"
             :label="item.label"
-            :value="item.value"
+            :value="parseInt(item.value)"
           />
         </el-select>
         <label class="el-form-item-label">消息标题:</label>
@@ -54,7 +55,7 @@
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
       <crudOperation :permission="permission" />
       <!--表单组件-->
-      <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="560px">
+      <el-dialog @opened="openDialog" @closed="closeDialog" :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="1080px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="120px">
           <el-form-item v-if="crud.status.edit" v-show="false" label="ID">
             <el-input v-model="form.id" style="width: 370px;" />
@@ -89,34 +90,33 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="消息标题">
+          <el-form-item label="消息标题" prop="title">
             <el-input v-model="form.title" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="消息体">
-            <el-input v-model="form.content" :rows="3" type="textarea" style="width: 370px;" />
+<!--     消息体是富文本     -->
+          <el-form-item label="消息体" prop="content">
+            <div ref="editor" />
           </el-form-item>
           <el-form-item v-if="crud.status.add" label="接收主体" prop="operatorIds">
             <SelectWithService style="width: 370px;" value-key="id" label-key="name" :init-value="form.operatorIds" :multiple="true" :service="getPage" @change="changeOperators" />
           </el-form-item>
-
-          <!--          <el-form-item label="创建时间" prop="createTime">-->
-          <!--            <el-input v-model="form.createTime" style="width: 370px;" />-->
-          <!--          </el-form-item>-->
           <el-form-item label="消息发送时间" prop="sendTime">
             <el-date-picker v-model="form.sendTime" value-format="timestamp" type="datetime" style="width: 370px;" />
           </el-form-item>
-          <!--          <el-form-item label="发送者ID" prop="createUserId">-->
-          <!--            <el-input v-model="form.createUserId" style="width: 370px;" />-->
-          <!--          </el-form-item>-->
-          <!--          <el-form-item label="发送者姓名">-->
-          <!--            <el-input v-model="form.createUserName" style="width: 370px;" />-->
-          <!--          </el-form-item>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="text" @click="crud.cancelCU">取消</el-button>
           <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
         </div>
       </el-dialog>
+      <el-dialog v-if="viewDialogVisible" :close-on-click-modal="false" title="详情" :visible.sync="viewDialogVisible" width="1080px">
+        <div class="detail-title">{{rowData.title}}</div>
+        <div class="detail-sub-title">{{`${formatDate(rowData.sendTime)}  ${rowData.createUserName}`}} </div>
+        <div class="detail-content">
+          <div style="width: 100%;height: 100%;" v-html="rowData.content" />
+        </div>
+      </el-dialog>
+
       <!--表格渲染-->
       <el-table v-if="user" ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
@@ -149,7 +149,13 @@
           </template>
         </el-table-column>
         <!--        <el-table-column prop="createUserId" label="发送者ID" />-->
-        <el-table-column prop="createUserName" label="发送者姓名" />
+        <el-table-column prop="createUserName" label="发布人" />
+        <el-table-column prop="read" label="阅读状态">
+          <template slot-scope="scope">
+            <el-button v-if="scope.row.read" type="text" disabled>已读</el-button>
+            <el-button v-if="!scope.row.read" type="text" @click.prevent="toView(scope.row)">未读</el-button>
+          </template>
+        </el-table-column>
         <el-table-column v-if="checkPer(['admin','msgBodyInfo:edit','msgBodyInfo:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
@@ -177,6 +183,8 @@ import SelectWithService from '@/components/SelectWithService/index'
 import DateRangePicker from '@/components/DateRangePicker'
 import { formatDate } from '@/utils/formatDay'
 import { mapGetters } from 'vuex'
+import E from 'wangeditor'
+import { upload } from '@/utils/upload'
 
 const defaultForm = { id: null, type: null, allowReceive: null, compulsaryWarningType: null, title: null, content: null, createTime: null, sendTime: null, createUserId: null, createUserName: null }
 export default {
@@ -208,6 +216,12 @@ export default {
         operatorIds: [
           { required: true, message: '接收主体不能为空', trigger: 'blur' }
         ],
+        title: [
+          { required: true, message: '标题不能为空', trigger: 'blur' }
+        ],
+        content: [
+          { required: true, message: '消息体不能为空', trigger: 'blur' }
+        ],
         sendTime: [
           { required: true, message: '消息发送时间不能为空', trigger: 'blur' }
         ],
@@ -220,18 +234,24 @@ export default {
         { key: 'allowReceive', display_name: '允许回复' },
         { key: 'compulsaryWarningType', display_name: '是否强提醒' },
         { key: 'title', display_name: '消息标题' },
-        { key: 'createUserName', display_name: '发送者姓名' }
+        { key: 'createUserName', display_name: '发布人' }
       ],
       // operatorIds: null,
-      sendTime: null
+      sendTime: null,
+      editor: null,
+      viewDialogVisible: false,
+      rowData: null
     }
   },
-  created() {
+  mounted(){
     this.crud.query.areaCode = this.user && this.user.areaCode
     this.crud.refresh()
+
   },
   computed: {
     ...mapGetters([
+      'imagesUploadApi',
+      'baseApi',
       'user'
     ])
   },
@@ -246,11 +266,79 @@ export default {
       this.crud.form.operatorIds = ids
     },
     formatDate,
-    getPage: getPage
+    getPage: getPage,
+    closeDialog(){
+
+    },
+    openDialog(){
+      this.initEditor()
+    },
+    // 初始化富文本框
+    async initEditor(content) {
+      const _this = this
+      if(!this.editor){
+        this.editor = new E(this.$refs.editor)
+        // 自定义菜单配置
+        this.editor.customConfig.zIndex = 10
+        // 文件上传
+        this.editor.customConfig.customUploadImg = function(files, insert) {
+          // files 是 input 中选中的文件列表
+          // insert 是获取图片 url 后，插入到编辑器的方法
+          files.forEach(image => {
+            upload(_this.imagesUploadApi, image).then(res => {
+              const data = res.data
+              const url = _this.baseApi + '/file/' + data.type + '/' + data.realName
+              insert(url)
+            })
+          })
+        }
+        this.editor.customConfig.onchange = (html) => {
+          this.crud.form.content = html
+        }
+        this.editor.create()
+      }
+      if(this.crud.status.edit){
+        console.log('this.crud.editRow',this.crud.editRow)
+        this.editor.txt.html(this.crud.editRow.content || '')
+      }else {
+        this.crud.form.content = ''
+        this.editor.txt.html('')
+      }
+    },
+    toView(row){
+      crudMsgBodyInfo.read({msgId: row.id}).then(res=>{
+        if(res.status===200){
+          this.rowData = row
+          this.viewDialogVisible = true
+          this.crud.refresh()
+        }else {
+          this.$message.error(res.$message||'出错了')
+        }
+      })
+
+    },
   }
 }
 </script>
 
 <style scoped>
+  .detail-title{
+    text-align: center;
+    font-size: 20px;
+    padding: 8px;
+    color: #444444;
+  }
 
+  .detail-sub-title{
+    text-align: center;
+    font-size: 14px;
+    padding: 8px;
+    color: #666666;
+  }
+  .detail-content{
+    padding: 16px;
+    overflow: auto;
+    min-height: 400px;
+    max-height: 500px;
+  }
 </style>
