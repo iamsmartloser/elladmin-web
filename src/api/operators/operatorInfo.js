@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function getPage(data) {
+  return request({
+    url: 'operators/page',
+    method: 'get',
+    data
+  })
+}
+
 export function add(data) {
   return request({
     url: 'api/operatorInfo',
@@ -24,4 +32,4 @@ export function edit(data) {
   })
 }
 
-export default { add, edit, del }
+export default { add, edit, del,getPage }
