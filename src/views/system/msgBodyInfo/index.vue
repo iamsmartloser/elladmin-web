@@ -145,10 +145,16 @@
         </el-table-column>
         <!--        <el-table-column prop="createUserId" label="发送者ID" />-->
         <el-table-column prop="createUserName" label="发布人" />
-        <el-table-column prop="read" label="阅读状态">
+        <el-table-column v-if="isOperators(user&&user.roles)" prop="read" label="是否阅读">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.read" type="text" >已读</el-button>
-            <el-button v-if="!scope.row.read" type="text" @click.prevent="toView(scope.row)">未读</el-button>
+            <el-button v-if="scope.row.read" type="text" style="color: #5a5e66" @click.prevent="toView(scope.row)">{{'已读'}}</el-button>
+            <el-button v-if="!scope.row.read" type="text" @click.prevent="toView(scope.row)">{{'未读'}}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column  v-if="!isOperators(user&&user.roles)" prop="read" label="是否所有人已读">
+          <template slot-scope="scope">
+            <el-button v-if="scope.row.read" type="text" style="color: #5a5e66" @click.prevent="toView(scope.row)">{{'是'}}</el-button>
+            <el-button v-if="!scope.row.read" type="text" @click.prevent="toView(scope.row)">{{'否'}}</el-button>
           </template>
         </el-table-column>
         <el-table-column v-if="checkPer(['admin','msgBodyInfo:edit','msgBodyInfo:del'])" label="操作" width="150px" align="center">
@@ -177,6 +183,7 @@ import pagination from '@crud/Pagination'
 import SelectWithService from '@/components/SelectWithService/index'
 import DateRangePicker from '@/components/DateRangePicker'
 import { formatDate } from '@/utils/formatDay'
+import {isOperators} from '@/utils/utils'
 import { mapGetters } from 'vuex'
 import E from 'wangeditor'
 import { upload } from '@/utils/upload'
@@ -184,7 +191,7 @@ import { upload } from '@/utils/upload'
 const defaultForm = { id: null, type: null, allowReceive: null, compulsaryWarningType: null, title: null, content: null, createTime: null, sendTime: null, createUserId: null, createUserName: null }
 export default {
   name: 'MsgBodyInfo',
-  components: { pagination, crudOperation, rrOperation, udOperation, SelectWithService, DateRangePicker },
+  components: { pagination, crudOperation, rrOperation, udOperation, SelectWithService },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['msg_type', 'allow_receive', 'compulsary_warning_type'],
   cruds() {
@@ -258,11 +265,10 @@ export default {
       return true
     },
     [CRUD.HOOK.beforeSubmit]() {
-      // console.log('beforeSubmit',this.crud.form.operatorIds)
-      if(this.crud.status.add&&(!this.crud.form.operatorIds||this.crud.form.operatorIds.length<1)){
-        this.$message.error('请选择接收主体')
-        return false
-      }
+      // if(this.crud.status.add&&(!this.crud.form.operatorIds||this.crud.form.operatorIds.length<1)){
+      //   this.$message.error('请选择接收主体')
+      //   return false
+      // }
       return true
     },
     changeOperators(ids) {
@@ -271,6 +277,7 @@ export default {
     },
     formatDate,
     getPage: getPage,
+    isOperators,
     closeDialog(){
 
     },

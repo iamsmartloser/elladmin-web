@@ -67,3 +67,10 @@ export function hideStr(str, frontLen, endLen) {
   }
   return newStr
 }
+
+// 判断是否是运营商
+export function isOperators(roles) {
+  if (!roles) return false
+  // 运营商id为40，是不变的
+  return roles.findIndex(r => r.id === 40) > -1
+}
