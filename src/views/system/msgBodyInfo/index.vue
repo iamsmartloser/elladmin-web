@@ -258,8 +258,8 @@ export default {
       return true
     },
     [CRUD.HOOK.beforeSubmit]() {
-      console.log('beforeSubmit',this.crud.form.operatorIds)
-      if(!this.crud.form.operatorIds||this.crud.form.operatorIds.length<1){
+      // console.log('beforeSubmit',this.crud.form.operatorIds)
+      if(this.crud.status.add&&(!this.crud.form.operatorIds||this.crud.form.operatorIds.length<1)){
         this.$message.error('请选择接收主体')
         return false
       }

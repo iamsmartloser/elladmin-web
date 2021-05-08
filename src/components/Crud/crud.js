@@ -258,12 +258,16 @@ function CRUD(options) {
         return
       }
       crud.status.add = CRUD.STATUS.PROCESSING
-      crud.crudMethod.add(crud.form).then(() => {
-        crud.status.add = CRUD.STATUS.NORMAL
-        crud.resetForm()
-        crud.addSuccessNotify()
-        callVmHook(crud, CRUD.HOOK.afterSubmit)
-        crud.toQuery()
+      crud.crudMethod.add(crud.form).then((res) => {
+        if(res&&res.status!==200){
+          crud.notify(res.message||'出错了', CRUD.NOTIFICATION_TYPE.ERROR)
+        }else {
+          crud.status.add = CRUD.STATUS.NORMAL
+          crud.resetForm()
+          crud.addSuccessNotify()
+          callVmHook(crud, CRUD.HOOK.afterSubmit)
+          crud.toQuery()
+        }
       }).catch(() => {
         crud.status.add = CRUD.STATUS.PREPARED
         callVmHook(crud, CRUD.HOOK.afterAddError)
@@ -277,13 +281,19 @@ function CRUD(options) {
         return
       }
       crud.status.edit = CRUD.STATUS.PROCESSING
-      crud.crudMethod.edit(crud.form).then(() => {
-        crud.status.edit = CRUD.STATUS.NORMAL
-        crud.getDataStatus(crud.getDataId(crud.form)).edit = CRUD.STATUS.NORMAL
-        crud.editSuccessNotify()
-        crud.resetForm()
-        callVmHook(crud, CRUD.HOOK.afterSubmit)
-        crud.refresh()
+      crud.crudMethod.edit(crud.form).then((res) => {
+        console.log('edit res',res)
+        if(res&&res.status!==200){
+          crud.notify(res.message||'出错了', CRUD.NOTIFICATION_TYPE.ERROR)
+        }else {
+          crud.status.edit = CRUD.STATUS.NORMAL
+          crud.getDataStatus(crud.getDataId(crud.form)).edit = CRUD.STATUS.NORMAL
+          crud.editSuccessNotify()
+          crud.resetForm()
+          callVmHook(crud, CRUD.HOOK.afterSubmit)
+          crud.refresh()
+        }
+
       }).catch(() => {
         crud.status.edit = CRUD.STATUS.PREPARED
         callVmHook(crud, CRUD.HOOK.afterEditError)
@@ -312,14 +322,19 @@ function CRUD(options) {
       if (!delAll) {
         dataStatus.delete = CRUD.STATUS.PROCESSING
       }
-      return crud.crudMethod.del(ids).then(() => {
+      return crud.crudMethod.del(ids).then((res) => {
         if (delAll) {
           crud.delAllLoading = false
         } else dataStatus.delete = CRUD.STATUS.PREPARED
-        crud.dleChangePage(1)
-        crud.delSuccessNotify()
-        callVmHook(crud, CRUD.HOOK.afterDelete, data)
-        crud.refresh()
+        if(res&&res.status!==200){
+          crud.notify(res.message||'出错了', CRUD.NOTIFICATION_TYPE.ERROR)
+        }else {
+          crud.dleChangePage(1)
+          crud.delSuccessNotify()
+          callVmHook(crud, CRUD.HOOK.afterDelete, data)
+          crud.refresh()
+        }
+
       }).catch(() => {
         if (delAll) {
           crud.delAllLoading = false
