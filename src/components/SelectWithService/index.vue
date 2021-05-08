@@ -10,7 +10,7 @@
 <!--            <span style="float: right; color: #8492a6; font-size: 13px">{{ item[valueKey] }}</span>-->
         </el-option>
         <el-option
-                v-if="!multiple&&(initValue[valueKey]===value)&&(dataSource.findIndex(d=>d[valueKey]===initValue[valueKey])<0)"
+                v-if="!multiple&&initValue&&(initValue[valueKey]===value)&&(dataSource.findIndex(d=>d[valueKey]===initValue[valueKey])<0)"
                 :key="initValue[valueKey]"
                 :label="initValue[labelKey]"
                 :value="initValue[valueKey]">

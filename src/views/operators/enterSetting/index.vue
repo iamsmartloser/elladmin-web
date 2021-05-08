@@ -43,7 +43,8 @@ export default {
   computed: {
     ...mapGetters([
       'imagesUploadApi',
-      'baseApi'
+      'baseApi',
+      'user'
     ])
   },
   mounted() {
@@ -53,7 +54,7 @@ export default {
   },
   methods: {
     async getEnterInfo() {
-      const res = await getEnterInfo({ areaCode: '510116' }) || {}
+      const res = await getEnterInfo({ areaCode: this.user && this.user.areaCode }) || {}
       if (res && res.status === 200 || res.content) {
         this.enterSwitch = res.content.enterSwitch
         this.enterRule = res.content.enterRule

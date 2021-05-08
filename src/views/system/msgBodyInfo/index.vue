@@ -4,7 +4,7 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
         <!-- 搜索 -->
-        <label>消息类型:</label>
+        <label class="el-form-item-label">消息类型:</label>
         <el-select v-model="query.type" filterable placeholder="请选择消息类型" clearable>
           <el-option
             v-for="item in dict.msg_type"
@@ -13,7 +13,7 @@
             :value="item.value"
           />
         </el-select>
-        <label>允许回复:</label>
+        <label class="el-form-item-label">允许回复:</label>
         <el-select v-model="query.allowReceive" filterable placeholder="请选择允许回复" clearable>
           <el-option
             v-for="item in dict.allow_receive"
@@ -22,7 +22,7 @@
             :value="item.value"
           />
         </el-select>
-        <label>是否强提醒:</label>
+        <label class="el-form-item-label">是否强提醒:</label>
         <el-select v-model="query.compulsaryWarningType" filterable placeholder="请选择是否强提醒" clearable>
           <el-option
             v-for="item in dict.compulsary_warning_type"
@@ -31,31 +31,31 @@
             :value="item.value"
           />
         </el-select>
-        <label>消息标题:</label>
+        <label class="el-form-item-label">消息标题:</label>
         <el-input v-model="query.title" clearable placeholder="请输入消息标题" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-                <label>发送者姓名:</label>
-                <el-input v-model="query.createUserName" clearable placeholder="发送者姓名" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label>发送时间:</label>
-<!--        <date-range-picker-->
-<!--          v-model="sendTime"-->
-<!--          class="date-item"-->
-<!--          value-format="timestamp"-->
-<!--        />-->
+        <label class="el-form-item-label">发送者姓名:</label>
+        <el-input v-model="query.createUserName" clearable placeholder="发送者姓名" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+        <label class="el-form-item-label">发送时间:</label>
+        <!--        <date-range-picker-->
+        <!--          v-model="sendTime"-->
+        <!--          class="date-item"-->
+        <!--          value-format="timestamp"-->
+        <!--        />-->
         <el-date-picker
           v-model="sendTime"
           type="datetimerange"
           value-format="timestamp"
           range-separator="至"
           start-placeholder="开始日期"
-          end-placeholder="结束日期">
-        </el-date-picker>
+          end-placeholder="结束日期"
+        />
         <rrOperation :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
       <crudOperation :permission="permission" />
       <!--表单组件-->
-      <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
-        <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
+      <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="560px">
+        <el-form ref="form" :model="form" :rules="rules" size="small" label-width="120px">
           <el-form-item v-if="crud.status.edit" v-show="false" label="ID">
             <el-input v-model="form.id" style="width: 370px;" />
           </el-form-item>
@@ -118,9 +118,9 @@
         </div>
       </el-dialog>
       <!--表格渲染-->
-      <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
+      <el-table v-if="user" ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
-<!--        <el-table-column prop="id" label="ID" />-->
+        <!--        <el-table-column prop="id" label="ID" />-->
         <el-table-column prop="type" label="消息类型">
           <template slot-scope="scope">
             {{ dict.label.msg_type[scope.row.type] }}
@@ -148,7 +148,7 @@
             {{ formatDate(scope.row.sendTime) }}
           </template>
         </el-table-column>
-<!--        <el-table-column prop="createUserId" label="发送者ID" />-->
+        <!--        <el-table-column prop="createUserId" label="发送者ID" />-->
         <el-table-column prop="createUserName" label="发送者姓名" />
         <el-table-column v-if="checkPer(['admin','msgBodyInfo:edit','msgBodyInfo:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
@@ -175,7 +175,8 @@ import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 import SelectWithService from '@/components/SelectWithService/index'
 import DateRangePicker from '@/components/DateRangePicker'
-import {formatDate} from '@/utils/formatDay'
+import { formatDate } from '@/utils/formatDay'
+import { mapGetters } from 'vuex'
 
 const defaultForm = { id: null, type: null, allowReceive: null, compulsaryWarningType: null, title: null, content: null, createTime: null, sendTime: null, createUserId: null, createUserName: null }
 export default {
@@ -184,7 +185,8 @@ export default {
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['msg_type', 'allow_receive', 'compulsary_warning_type'],
   cruds() {
-    return CRUD({ title: '消息通知', url: 'msg/page', idField: 'id', sort: 'id,desc', crudMethod: { ...crudMsgBodyInfo }})
+    // console.log('user3',this.user)
+    return CRUD({ title: '消息通知', url: 'msg/page', idField: 'id', queryOnPresenterCreated: false, sort: 'id,desc', crudMethod: { ...crudMsgBodyInfo }})
   },
   data() {
     return {
@@ -223,6 +225,15 @@ export default {
       // operatorIds: null,
       sendTime: null
     }
+  },
+  created() {
+    this.crud.query.areaCode = this.user && this.user.areaCode
+    this.crud.refresh()
+  },
+  computed: {
+    ...mapGetters([
+      'user'
+    ])
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
