@@ -2,19 +2,33 @@
   <div class="app-container">
     <!--工具栏-->
     <div class="head-container">
-      <div v-if="crud.props.searchToggle">
+      <div v-if="crud.props.searchToggle" class="search-wrap-has-label">
         <!-- 搜索 -->
-        <label class="el-form-item-label">运营商ID</label>
-        <el-input v-model="query.operatorId" clearable placeholder="运营商ID" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">运维员姓名</label>
+        <label v-if="!isOperators(user&&user.roles)" class="el-form-item-label">运营商ID</label>
+        <el-input v-if="!isOperators(user&&user.roles)" v-model="query.operatorId" clearable placeholder="运营商ID" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <label class="el-form-item-label">运维员姓名:</label>
         <el-input v-model="query.name" clearable placeholder="运维员姓名" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">运维员电话</label>
+        <label class="el-form-item-label">运维员电话:</label>
         <el-input v-model="query.phoneNumber" clearable placeholder="运维员电话" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">运维员状态（0离岗 1在岗）</label>
-        <el-input v-model="query.status" clearable placeholder="运维员状态" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">是否接收短信（0不接收 1接收）</label>
-        <el-input v-model="query.receiveSms" clearable placeholder="是否接收短信" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <rrOperation :crud="crud" />
+        <label class="el-form-item-label">运维员状态:</label>
+        <el-select v-model="query.status" filterable placeholder="运维员状态" clearable>
+          <el-option
+            v-for="item in dict.ops_user_status"
+            :key="item.id"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+        <label class="el-form-item-label">是否接收短信:</label>
+        <el-select v-model="query.receiveSms" filterable placeholder="是否接收短信" clearable>
+          <el-option
+            v-for="item in dict.ops_user_receive_sms"
+            :key="item.id"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+        <rrOperation class="rr-op-has-label" :filter-item-class="false" :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
       <crudOperation :permission="permission" />
@@ -34,10 +48,26 @@
             <el-input v-model="form.duties" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="运维员状态" prop="status">
-            <el-radio v-model="form.status" v-for="item in dict.ops_user_status" :key="item.id" :label="item.value">{{ item.label }}</el-radio>
+            <el-select v-model="form.status" filterable placeholder="运维员状态" clearable style="width: 370px;">
+              <el-option
+                v-for="item in dict.ops_user_status.map(d=>{d.value=parseInt(d.value);return d})"
+                :key="item.id"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+<!--            <el-radio v-model="form.status" v-for="item in dict.ops_user_status" :key="item.id" :label="item.value">{{ item.label }}</el-radio>-->
           </el-form-item>
           <el-form-item label="是否接收短信" prop="receiveSms">
-            <el-radio v-model="form.receiveSms" v-for="item in dict.ops_user_receive_sms" :key="item.id" :label="item.value">{{ item.label }}</el-radio>
+            <el-select v-model="form.receiveSms" filterable placeholder="是否接收短信" clearable style="width: 370px;">
+              <el-option
+                v-for="item in dict.ops_user_receive_sms.map(d=>{d.value=parseInt(d.value);return d})"
+                :key="item.id"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+<!--            <el-radio v-model="form.receiveSms" v-for="item in dict.ops_user_receive_sms" :key="item.id" :label="item.value">{{ item.label }}</el-radio>-->
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -86,6 +116,8 @@ import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
+import {isOperators} from '@/utils/utils'
+import { mapGetters } from 'vuex'
 
 const defaultForm = { id: null, operatorId: null, name: null, phoneNumber: null, contactsEmail: null, duties: null, status: null, receiveSms: null }
 export default {
@@ -126,11 +158,17 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapGetters([
+      'user'
+    ])
+  },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
-    }
+    },
+    isOperators,
   }
 }
 </script>

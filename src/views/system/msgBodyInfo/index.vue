@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
-<!--    <div ref="editor" style="height: 250px;" />-->
+    <!--    <div ref="editor" style="height: 250px;" />-->
     <!--工具栏-->
     <div class="head-container">
-      <div v-if="crud.props.searchToggle">
+      <div v-if="crud.props.searchToggle" class="search-wrap-has-label">
         <!-- 搜索 -->
         <label class="el-form-item-label">消息类型:</label>
         <el-select v-model="query.type" filterable placeholder="请选择消息类型" clearable>
@@ -17,7 +17,7 @@
         <label class="el-form-item-label">允许回复:</label>
         <el-select v-model="query.allowReceive" filterable placeholder="请选择允许回复" clearable>
           <el-option
-            v-for="item in dict.allow_receive"
+            v-for="item in dict.allow_receive.map(d=>{d.value=parseInt(d.value);return d})"
             :key="item.id"
             :label="item.label"
             :value="item.value"
@@ -26,7 +26,7 @@
         <label class="el-form-item-label">是否强提醒:</label>
         <el-select v-model="query.compulsaryWarningType" filterable placeholder="请选择是否强提醒" clearable>
           <el-option
-            v-for="item in dict.compulsary_warning_type"
+            v-for="item in dict.compulsary_warning_type.map(d=>{d.value=parseInt(d.value);return d})"
             :key="item.id"
             :label="item.label"
             :value="item.value"
@@ -45,12 +45,12 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
         />
-        <rrOperation :crud="crud" />
+        <rrOperation :crud="crud" class="rr-op-has-label" :filter-item-class="false" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
       <crudOperation :permission="permission" />
       <!--表单组件-->
-      <el-dialog @opened="openDialog" @closed="closeDialog" :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="1080px">
+      <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="1080px" @opened="openDialog" @closed="closeDialog">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="120px">
           <el-form-item v-if="crud.status.edit" v-show="false" label="ID">
             <el-input v-model="form.id" style="width: 370px;" />
@@ -88,7 +88,7 @@
           <el-form-item label="消息标题" prop="title">
             <el-input v-model="form.title" style="width: 370px;" />
           </el-form-item>
-<!--     消息体是富文本     -->
+          <!--     消息体是富文本     -->
           <el-form-item label="消息体" prop="content">
             <div ref="editor" />
           </el-form-item>
@@ -105,8 +105,8 @@
         </div>
       </el-dialog>
       <el-dialog v-if="viewDialogVisible" :close-on-click-modal="false" title="详情" :visible.sync="viewDialogVisible" width="1080px">
-        <div class="detail-title">{{rowData.title}}</div>
-        <div class="detail-sub-title">{{`${formatDate(rowData.sendTime)}  ${rowData.createUserName}`}} </div>
+        <div class="detail-title">{{ rowData.title }}</div>
+        <div class="detail-sub-title">{{ `${formatDate(rowData.sendTime)}  ${rowData.createUserName}` }} </div>
         <div class="detail-content">
           <div style="width: 100%;height: 100%;" v-html="rowData.content" />
         </div>
@@ -147,14 +147,14 @@
         <el-table-column prop="createUserName" label="发布人" />
         <el-table-column v-if="isOperators(user&&user.roles)" prop="read" label="是否阅读">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.read" type="text" style="color: #5a5e66" @click.prevent="toView(scope.row)">{{'已读'}}</el-button>
-            <el-button v-if="!scope.row.read" type="text" @click.prevent="toView(scope.row)">{{'未读'}}</el-button>
+            <el-button v-if="scope.row.read" type="text" style="color: #5a5e66" @click.prevent="toView(scope.row)">{{ '已读' }}(点击查看)</el-button>
+            <el-button v-if="!scope.row.read" type="text" @click.prevent="toView(scope.row)">{{ '未读' }}(点击查看)</el-button>
           </template>
         </el-table-column>
-        <el-table-column  v-if="!isOperators(user&&user.roles)" prop="read" label="是否所有人已读">
+        <el-table-column v-if="!isOperators(user&&user.roles)" prop="read" label="是否所有人已读">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.read" type="text" style="color: #5a5e66" @click.prevent="toView(scope.row)">{{'是'}}</el-button>
-            <el-button v-if="!scope.row.read" type="text" @click.prevent="toView(scope.row)">{{'否'}}</el-button>
+            <el-button v-if="scope.row.read" type="text" style="color: #5a5e66" @click.prevent="toView(scope.row)">{{ '是' }}(点击查看)</el-button>
+            <el-button v-if="!scope.row.read" type="text" @click.prevent="toView(scope.row)">{{ '否' }}(点击查看)</el-button>
           </template>
         </el-table-column>
         <el-table-column v-if="checkPer(['admin','msgBodyInfo:edit','msgBodyInfo:del'])" label="操作" width="150px" align="center">
@@ -181,9 +181,8 @@ import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 import SelectWithService from '@/components/SelectWithService/index'
-import DateRangePicker from '@/components/DateRangePicker'
 import { formatDate } from '@/utils/formatDay'
-import {isOperators} from '@/utils/utils'
+import { isOperators } from '@/utils/utils'
 import { mapGetters } from 'vuex'
 import E from 'wangeditor'
 import { upload } from '@/utils/upload'
@@ -196,7 +195,7 @@ export default {
   dicts: ['msg_type', 'allow_receive', 'compulsary_warning_type'],
   cruds() {
     // console.log('user3',this.user)
-    return CRUD({ title: '消息通知', url: 'msg/page', idField: 'id', queryOnPresenterCreated: false, sort: 'id,desc', crudMethod: { ...crudMsgBodyInfo }})
+    return CRUD({ title: '消息通知', url: 'msg/page', idField: 'id', queryOnPresenterCreated: false, sort: 'createTime,desc', crudMethod: { ...crudMsgBodyInfo }})
   },
   data() {
     return {
@@ -245,10 +244,9 @@ export default {
       rowData: null
     }
   },
-  mounted(){
+  mounted() {
     this.crud.query.areaCode = this.user && this.user.areaCode
     this.crud.refresh()
-
   },
   computed: {
     ...mapGetters([
@@ -262,6 +260,8 @@ export default {
     [CRUD.HOOK.beforeRefresh]() {
       this.crud.query.beginSendTime = this.sendTime ? this.sendTime[0] : null
       this.crud.query.endSendTime = this.sendTime ? this.sendTime[1] : null
+      // 框架本身page是从0开始传，由于新写的接口需要从1开始传，所以这里需要修改
+      this.crud.query.page = this.crud.page.page
       return true
     },
     [CRUD.HOOK.beforeSubmit]() {
@@ -272,22 +272,23 @@ export default {
       return true
     },
     changeOperators(ids) {
-      console.log('ids',ids)
+      console.log('ids', ids)
       this.crud.form.operatorIds = ids
     },
     formatDate,
     getPage: getPage,
     isOperators,
-    closeDialog(){
-
+    closeDialog() {
+      this.crud.form.content = ''
+      this.editor&&this.editor.txt.html('')
     },
-    openDialog(){
+    openDialog() {
       this.initEditor()
     },
     // 初始化富文本框
     async initEditor(content) {
       const _this = this
-      if(!this.editor){
+      if (!this.editor) {
         this.editor = new E(this.$refs.editor)
         // 自定义菜单配置
         this.editor.customConfig.zIndex = 10
@@ -308,27 +309,27 @@ export default {
         }
         this.editor.create()
       }
-      if(this.crud.status.edit){
-        console.log('this.crud.editRow',this.crud.editRow)
+      if (this.crud.status.edit) {
+        console.log('this.crud.editRow', this.crud.editRow)
         this.editor.txt.html(this.crud.editRow.content || '')
-      }else {
+      } else {
         this.crud.form.content = ''
         this.editor.txt.html('')
       }
     },
-    toView(row){
-      crudMsgBodyInfo.read({msgId: row.id}).then(res=>{
-        if(res.status===200){
+    toView(row) {
+      crudMsgBodyInfo.read({ msgId: row.id }).then(res => {
+        if (res.status === 200) {
           this.rowData = row
           this.viewDialogVisible = true
           this.crud.refresh()
-        }else {
-          this.$message.error(res.message||'出错了')
+        } else {
+          this.$message.error(res.message || '出错了')
         }
       })
       // this.rowData = row
       // this.viewDialogVisible = true
-    },
+    }
   }
 }
 </script>
@@ -352,5 +353,8 @@ export default {
     overflow: auto;
     min-height: 400px;
     max-height: 500px;
+  }
+  .rr-op{
+    margin-left: 8px;
   }
 </style>
