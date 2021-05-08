@@ -35,9 +35,10 @@ export function convertToFormData(data) {
   }
   Object.keys(data).forEach((item) => {
     if (data[item] instanceof Array) {
-      for (const value of data[item].values()) {
-        formData.append(item, value)
-      }
+      formData.append(item, data[item])
+      // for (const value of data[item].values()) {
+      //   formData.append(item, value)
+      // }
     } else if (data[item] instanceof Object) {
       for (const key of Object.keys(data[item])) {
         formData.append(item + '.' + key, data[item][key])

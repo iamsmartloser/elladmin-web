@@ -2,6 +2,7 @@ import request from '@/utils/request'
 import { convertToFormData } from '@/utils/utils'
 
 export function add(data) {
+  console.log('data',data)
   return request({
     url: 'msg/save',
     method: 'post',

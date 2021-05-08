@@ -8,7 +8,7 @@
         <label class="el-form-item-label">消息类型:</label>
         <el-select v-model="query.type" filterable placeholder="请选择消息类型" clearable>
           <el-option
-            v-for="item in dict.msg_type.map(m=>{m.value=parseInt(m.value);return m})"
+            v-for="item in dict.msg_type"
             :key="item.id"
             :label="item.label"
             :value="item.value"
@@ -17,7 +17,7 @@
         <label class="el-form-item-label">允许回复:</label>
         <el-select v-model="query.allowReceive" filterable placeholder="请选择允许回复" clearable>
           <el-option
-            v-for="item in dict.allow_receive.map(m=>{m.value=parseInt(m.value);return m})"
+            v-for="item in dict.allow_receive"
             :key="item.id"
             :label="item.label"
             :value="item.value"
@@ -26,10 +26,10 @@
         <label class="el-form-item-label">是否强提醒:</label>
         <el-select v-model="query.compulsaryWarningType" filterable placeholder="请选择是否强提醒" clearable>
           <el-option
-            v-for="item in dict.compulsary_warning_type.map(m=>{m.value=parseInt(m.value);return m})"
+            v-for="item in dict.compulsary_warning_type"
             :key="item.id"
             :label="item.label"
-            :value="parseInt(item.value)"
+            :value="item.value"
           />
         </el-select>
         <label class="el-form-item-label">消息标题:</label>
@@ -37,11 +37,6 @@
         <label class="el-form-item-label">发送者姓名:</label>
         <el-input v-model="query.createUserName" clearable placeholder="发送者姓名" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">发送时间:</label>
-        <!--        <date-range-picker-->
-        <!--          v-model="sendTime"-->
-        <!--          class="date-item"-->
-        <!--          value-format="timestamp"-->
-        <!--        />-->
         <el-date-picker
           v-model="sendTime"
           type="datetimerange"
@@ -97,7 +92,7 @@
           <el-form-item label="消息体" prop="content">
             <div ref="editor" />
           </el-form-item>
-          <el-form-item v-if="crud.status.add" label="接收主体" prop="operatorIds">
+          <el-form-item v-if="crud.status.add" label="接收主体">
             <SelectWithService style="width: 370px;" value-key="id" label-key="name" :init-value="form.operatorIds" :multiple="true" :service="getPage" @change="changeOperators" />
           </el-form-item>
           <el-form-item label="消息发送时间" prop="sendTime">
@@ -152,7 +147,7 @@
         <el-table-column prop="createUserName" label="发布人" />
         <el-table-column prop="read" label="阅读状态">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.read" type="text" disabled>已读</el-button>
+            <el-button v-if="scope.row.read" type="text" >已读</el-button>
             <el-button v-if="!scope.row.read" type="text" @click.prevent="toView(scope.row)">未读</el-button>
           </template>
         </el-table-column>
@@ -262,7 +257,16 @@ export default {
       this.crud.query.endSendTime = this.sendTime ? this.sendTime[1] : null
       return true
     },
+    [CRUD.HOOK.beforeSubmit]() {
+      console.log('beforeSubmit',this.crud.form.operatorIds)
+      if(!this.crud.form.operatorIds||this.crud.form.operatorIds.length<1){
+        this.$message.error('请选择接收主体')
+        return false
+      }
+      return true
+    },
     changeOperators(ids) {
+      console.log('ids',ids)
       this.crud.form.operatorIds = ids
     },
     formatDate,
@@ -312,10 +316,11 @@ export default {
           this.viewDialogVisible = true
           this.crud.refresh()
         }else {
-          this.$message.error(res.$message||'出错了')
+          this.$message.error(res.message||'出错了')
         }
       })
-
+      // this.rowData = row
+      // this.viewDialogVisible = true
     },
   }
 }
