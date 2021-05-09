@@ -1,16 +1,17 @@
 import request from '@/utils/request'
+import { convertToFormData } from '@/utils/utils'
 
 export function add(data) {
   return request({
-    url: 'lbsCity/',
+    url: 'city/save',
     method: 'post',
-    data
+    data: convertToFormData(data)
   })
 }
 
 export function del(ids) {
   return request({
-    url: 'lbsCity/',
+    url: 'city/remove',
     method: 'delete',
     data: ids
   })
@@ -18,7 +19,7 @@ export function del(ids) {
 
 export function edit(data) {
   return request({
-    url: 'lbsCity/',
+    url: '/city/update',
     method: 'put',
     data
   })

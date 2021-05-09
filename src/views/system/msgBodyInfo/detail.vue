@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="detail">
     <div class="detail-title">{{ detail.title }}</div>
     <div class="detail-sub-title">{{ `${formatDate(detail.sendTime)} ${detail.createUserName}` }}</div>
     <div class="detail-content">

@@ -126,7 +126,7 @@ export default {
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['ops_user_status', 'ops_user_receive_sms'],
   cruds() {
-    return CRUD({ title: 'ops', url: '/opsUser/', idField: 'id', sort: 'id,desc', crudMethod: { ...crudOpsUser }})
+    return CRUD({ title: '运维人员', url: '/opsUser/', idField: 'id', sort: 'id,desc', crudMethod: { ...crudOpsUser }})
   },
   data() {
     return {

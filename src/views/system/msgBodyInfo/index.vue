@@ -354,7 +354,4 @@ export default {
     min-height: 400px;
     max-height: 500px;
   }
-  .rr-op{
-    margin-left: 8px;
-  }
 </style>
