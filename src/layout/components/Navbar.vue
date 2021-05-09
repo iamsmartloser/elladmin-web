@@ -20,7 +20,7 @@
 
         <span class="right-menu-item">
           <label style="font-size: 16px;">城市:</label>
-          <SelectWithService style="width: 120px;" value-key="id" label-key="name" :init-value="selectedCity?selectedCity.id:null" :service="getCityList" @change="changeCity" />
+          <SelectWithService v-if="city" style="width: 120px;" value-key="areaCode" label-key="name" :init-value="city?city.areaCode:null" :service="getCityList" @change="changeCity" />
         </span>
 
         <el-tooltip content="全屏缩放" effect="dark" placement="bottom">
@@ -101,7 +101,7 @@ export default {
       'device',
       'user',
       'baseApi',
-      'selectedCity'
+      'city'
     ]),
     show: {
       get() {
@@ -118,6 +118,8 @@ export default {
   mounted(){
     this.getNum()
     this.getMsgNumber()
+    console.log('user',this.user)
+    console.log('city',this.city)
   },
   beforeDestroy(){
     if(this.interval){
@@ -157,7 +159,7 @@ export default {
     },
     getCityList: getList,
     changeCity(id, city) {
-      this.$store.dispatch('setSelectedCity', city)
+      this.$store.dispatch('setCity', city)
     },
   }
 }

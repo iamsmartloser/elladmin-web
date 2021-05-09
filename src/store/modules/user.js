@@ -7,7 +7,8 @@ const user = {
     user: {},
     roles: [],
     // 第一次加载菜单时用到
-    loadMenus: false
+    loadMenus: false,
+    city: null
   },
 
   mutations: {
@@ -22,6 +23,9 @@ const user = {
     },
     SET_LOAD_MENUS: (state, loadMenus) => {
       state.loadMenus = loadMenus
+    },
+    SET_CITY: (state, payload) => {
+      state.city = payload
     }
   },
 
@@ -34,6 +38,7 @@ const user = {
           setToken(res.token, rememberMe)
           commit('SET_TOKEN', res.token)
           setUserInfo(res.user, commit)
+          commit('SET_CITY', { areaCode: (res && res.user && res.user.user.areaCode) || null })
           // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
           commit('SET_LOAD_MENUS', true)
           resolve()
@@ -48,6 +53,7 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo().then(res => {
           setUserInfo(res, commit)
+          commit('SET_CITY', { areaCode: res.user && res.user.areaCode || null })
           resolve(res)
         }).catch(error => {
           reject(error)
@@ -71,6 +77,10 @@ const user = {
       return new Promise((resolve, reject) => {
         commit('SET_LOAD_MENUS', false)
       })
+    },
+    setCity({ commit }, payload) {
+      console.log('payload', payload)
+      commit('SET_CITY', payload)
     }
   }
 }

@@ -5,11 +5,11 @@
       <div v-if="crud.props.searchToggle" class="search-wrap-has-label">
         <!-- 搜索 -->
         <label v-if="!isOperators(user&&user.roles)" class="el-form-item-label">运营商ID</label>
-        <el-input v-if="!isOperators(user&&user.roles)" v-model="query.operatorId" clearable placeholder="运营商ID" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <el-input v-if="!isOperators(user&&user.roles)" v-model="query.operatorId" clearable placeholder="运营商ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">姓名:</label>
-        <el-input v-model="query.name" clearable placeholder="姓名" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <el-input v-model="query.name" clearable placeholder="姓名" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">电话:</label>
-        <el-input v-model="query.phoneNumber" clearable placeholder="电话" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <el-input v-model="query.phoneNumber" clearable placeholder="电话" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">状态:</label>
         <el-select v-model="query.status" filterable placeholder="状态" clearable>
           <el-option
