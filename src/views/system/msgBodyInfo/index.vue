@@ -17,7 +17,7 @@
         <label class="el-form-item-label">允许回复:</label>
         <el-select v-model="query.allowReceive" filterable placeholder="请选择允许回复" clearable>
           <el-option
-            v-for="item in dict.allow_receive.map(d=>{d.value=parseInt(d.value);return d})"
+            v-for="item in dict.allow_receive"
             :key="item.id"
             :label="item.label"
             :value="item.value"
@@ -26,7 +26,7 @@
         <label class="el-form-item-label">是否强提醒:</label>
         <el-select v-model="query.compulsaryWarningType" filterable placeholder="请选择是否强提醒" clearable>
           <el-option
-            v-for="item in dict.compulsary_warning_type.map(d=>{d.value=parseInt(d.value);return d})"
+            v-for="item in dict.compulsary_warning_type"
             :key="item.id"
             :label="item.label"
             :value="item.value"
@@ -318,17 +318,17 @@ export default {
       }
     },
     toView(row) {
-      crudMsgBodyInfo.read({ msgId: row.id }).then(res => {
-        if (res.status === 200) {
-          this.rowData = row
-          this.viewDialogVisible = true
-          this.crud.refresh()
-        } else {
-          this.$message.error(res.message || '出错了')
-        }
-      })
-      // this.rowData = row
-      // this.viewDialogVisible = true
+      // crudMsgBodyInfo.read({ msgId: row.id }).then(res => {
+      //   if (res.status === 200) {
+      //     // this.rowData = row
+      //     // this.viewDialogVisible = true
+      //     // this.crud.refresh()
+      //     this.$router.push({name:'MsgBodyDetail',params:{...row}})
+      //   } else {
+      //     this.$message.error(res.message || '出错了')
+      //   }
+      // })
+      this.$router.push({name:'MsgBodyDetail',params:{...row}})
     }
   }
 }

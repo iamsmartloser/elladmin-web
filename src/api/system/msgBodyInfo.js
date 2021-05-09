@@ -26,6 +26,7 @@ export function edit(data) {
   })
 }
 
+// 阅读消息
 export function read(data) {
   return request({
     url: 'msg/read',
@@ -33,4 +34,22 @@ export function read(data) {
     data: convertToFormData(data)
   })
 }
-export default { add, edit, del, read}
+// 查询消息回复 分页
+export function receiveList(data) {
+  // return request({
+  //   url: 'msg/receive/list',
+  //   method: 'get',
+  //   params: convertToFormData(data)
+  // })
+  return request.get('msg/receive/list',{params: data})
+}
+
+// 回复消息
+export function receive(data) {
+  return request({
+    url: 'msg/receive',
+    method: 'post',
+    data: convertToFormData(data)
+  })
+}
+export default { add, edit, del, read, receiveList, receive}

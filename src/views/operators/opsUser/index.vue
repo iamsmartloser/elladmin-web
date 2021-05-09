@@ -6,12 +6,12 @@
         <!-- 搜索 -->
         <label v-if="!isOperators(user&&user.roles)" class="el-form-item-label">运营商ID</label>
         <el-input v-if="!isOperators(user&&user.roles)" v-model="query.operatorId" clearable placeholder="运营商ID" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">运维员姓名:</label>
-        <el-input v-model="query.name" clearable placeholder="运维员姓名" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">运维员电话:</label>
-        <el-input v-model="query.phoneNumber" clearable placeholder="运维员电话" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">运维员状态:</label>
-        <el-select v-model="query.status" filterable placeholder="运维员状态" clearable>
+        <label class="el-form-item-label">姓名:</label>
+        <el-input v-model="query.name" clearable placeholder="姓名" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <label class="el-form-item-label">电话:</label>
+        <el-input v-model="query.phoneNumber" clearable placeholder="电话" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <label class="el-form-item-label">状态:</label>
+        <el-select v-model="query.status" filterable placeholder="状态" clearable>
           <el-option
             v-for="item in dict.ops_user_status"
             :key="item.id"
@@ -35,20 +35,20 @@
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-          <el-form-item label="运维员姓名" prop="name">
+          <el-form-item label="姓名" prop="name">
             <el-input v-model="form.name" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="运维员电话" prop="phoneNumber">
+          <el-form-item label="电话" prop="phoneNumber">
             <el-input v-model="form.phoneNumber" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="运维员邮箱">
+          <el-form-item label="邮箱">
             <el-input v-model="form.contactsEmail" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="运维员职务">
+          <el-form-item label="职务">
             <el-input v-model="form.duties" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="运维员状态" prop="status">
-            <el-select v-model="form.status" filterable placeholder="运维员状态" clearable style="width: 370px;">
+          <el-form-item label="状态" prop="status">
+            <el-select v-model="form.status" filterable placeholder="状态" clearable style="width: 370px;">
               <el-option
                 v-for="item in dict.ops_user_status.map(d=>{d.value=parseInt(d.value);return d})"
                 :key="item.id"
@@ -80,11 +80,11 @@
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="ID" />
         <el-table-column prop="operatorId" label="运营商ID" />
-        <el-table-column prop="name" label="运维员姓名" />
-        <el-table-column prop="phoneNumber" label="运维员电话" />
-        <el-table-column prop="contactsEmail" label="运维员邮箱" />
-        <el-table-column prop="duties" label="运维员职务" />
-        <el-table-column prop="status" label="运维员状态">
+        <el-table-column prop="name" label="姓名" />
+        <el-table-column prop="phoneNumber" label="电话" />
+        <el-table-column prop="contactsEmail" label="邮箱" />
+        <el-table-column prop="duties" label="职务" />
+        <el-table-column prop="status" label="状态">
           <template slot-scope="scope">
             {{ dict.label.ops_user_status[scope.row.status] }}
           </template>
@@ -137,13 +137,13 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '运维员姓名不能为空', trigger: 'blur' }
+          { required: true, message: '姓名不能为空', trigger: 'blur' }
         ],
         phoneNumber: [
-          { required: true, message: '运维员电话不能为空', trigger: 'blur' }
+          { required: true, message: '电话不能为空', trigger: 'blur' }
         ],
         status: [
-          { required: true, message: '运维员状态不能为空', trigger: 'blur' }
+          { required: true, message: '状态不能为空', trigger: 'blur' }
         ],
         receiveSms: [
           { required: true, message: '是否接收短信不能为空', trigger: 'blur' }
@@ -151,9 +151,9 @@ export default {
       },
       queryTypeOptions: [
         { key: 'operatorId', display_name: '运营商ID' },
-        { key: 'name', display_name: '运维员姓名' },
-        { key: 'phoneNumber', display_name: '运维员电话' },
-        { key: 'status', display_name: '运维员状态' },
+        { key: 'name', display_name: '姓名' },
+        { key: 'phoneNumber', display_name: '电话' },
+        { key: 'status', display_name: '状态' },
         { key: 'receiveSms', display_name: '是否接收短信' }
       ]
     }
