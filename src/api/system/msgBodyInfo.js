@@ -36,11 +36,6 @@ export function read(data) {
 }
 // 查询消息回复 分页
 export function receiveList(data) {
-  // return request({
-  //   url: 'msg/receive/list',
-  //   method: 'get',
-  //   params: convertToFormData(data)
-  // })
   return request.get('msg/receive/list',{params: data})
 }
 
@@ -52,4 +47,9 @@ export function receive(data) {
     data: convertToFormData(data)
   })
 }
-export default { add, edit, del, read, receiveList, receive}
+
+// 查询未读消息总数
+export function msgNumber(data) {
+  return request.get('msg/number',{params: data})
+}
+export default { add, edit, del, read, receiveList, receive,msgNumber}

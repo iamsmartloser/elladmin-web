@@ -5,7 +5,29 @@
     <div class="detail-content">
       <div style="width: 100%;height: 100%;" v-html="detail.content" />
     </div>
-    <div class="comments-wrap">
+    <div class="detail-content">
+      <el-button type="text" style="margin-right: 16px;" @click.prevent="viewPerson('read')">查看已读人员</el-button>
+      <el-button type="text" style="margin-right: 16px;" @click.prevent="viewPerson('no_read')">查看未读人员</el-button>
+    </div>
+    <el-dialog
+      v-if="viewFlag"
+      :close-on-click-modal="false"
+      :title="getDialogTitle()"
+      :visible.sync="viewFlag"
+      width="500px"
+    >
+      <div style="max-height: 400px;min-height: 250px;overflow: auto">
+        <el-col v-for="person in readList" :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+          <div style="margin: 8px">
+            {{person.operatorName}}
+          </div>
+        </el-col>
+      </div>
+
+    </el-dialog>
+
+    <!--  评论区  -->
+    <div v-if="detail&&parseInt(detail.allowReceive)" class="comments-wrap" >
       <div>评论区</div>
       <el-input
         v-model="myComment"
@@ -22,7 +44,7 @@
             {{ `${comment.receiveUserName} ${comment.operatorName?'对'+comment.operatorName:''} 说:` }}</span>
           <span style="">
             {{ `${formatDate(comment.createTime)}  ${index+1}楼` }}
-            <el-button type="text" @click.prevent="replyClick(comment)">回复</el-button>
+            <el-button v-if="detail&&detail.createUserId!==comment.receiveUserId" type="text" @click.prevent="replyClick(comment)">回复</el-button>
           </span>
         </div>
         <div style="margin: 8px 32px;padding: 8px;">{{ comment.content }}</div>
@@ -51,6 +73,7 @@
 <script>
 import { formatDate } from '@/utils/formatDay'
 import { receiveList, receive } from '@/api/system/msgBodyInfo'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'MsgBodyDetail',
@@ -60,7 +83,7 @@ export default {
       myComment: '',
       comments: [],
       page: 0,
-      size: 8,
+      size: 20,
       total: 0,
       releaseParams: {
         content: '', // 回复内容
@@ -68,21 +91,19 @@ export default {
         operatorId: null, // 平台回复时需指定运营商ID
         quoteReceiveId: null// 引用回复ID
       },
-      replyInputId: null
+      replyInputId: null,
+      viewFlag: null,
+      readList:[],// 已读人员列表 未读人员列表
     }
   },
-  created() {
-    // this.height = document.documentElement.clientHeight - 180 + 'px'
-    // const tableName = this.$route.params.tableName
-    // console.log('route', this.$route)
-    // console.log('params', this.$route.params)
-
-    this.detail = this.$route.params || {}
-    this.releaseParams.msgBodyId = this.$route.params && this.$route.params.id
-    console.log('created', this.$route.params)
-    // this.getComments()
+  computed: {
+    ...mapGetters([
+      'user'
+    ])
   },
   mounted() {
+    this.detail = this.$route.params || {}
+    this.releaseParams.msgBodyId = this.$route.params && this.$route.params.id
     console.log('mounted', this.$route.params)
     this.getComments(true)
   },
@@ -157,6 +178,39 @@ export default {
       this.releaseParams.content = null
       this.replyInputId = null
       this.myComment = null
+    },
+    getDialogTitle() {
+      let title = '查看'
+      if (this.viewFlag === 'read') {
+        title = '查看已读人员'
+      }
+      if (this.viewFlag === 'no_read') {
+        title = '查看未读人员'
+      }
+      return title
+    },
+    viewPerson(flag) {
+      this.viewFlag = flag
+      const msgId = this.$route.params && this.$route.params.id
+      const params = {msgId,page: 0}
+      switch (flag) {
+        case 'read':
+          params.type = 1
+          break
+        case 'no_read':
+          params.type = 0
+          break
+        default:
+          break
+      }
+      receiveList(params).then(res => {
+        if (res && res.status === 200 && res.content) {
+          this.readList = res.content
+        } else {
+          this.$message.error(res && res.message || '获取人员失败')
+        }
+      })
+
     }
   }
 }

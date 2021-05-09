@@ -132,7 +132,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="title" label="消息标题" />
-        <el-table-column prop="content" label="消息体" />
+<!--        <el-table-column prop="content" label="消息体" />-->
         <el-table-column prop="createTime" label="创建时间">
           <template slot-scope="scope">
             {{ formatDate(scope.row.createTime) }}

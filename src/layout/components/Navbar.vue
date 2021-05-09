@@ -11,13 +11,18 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-<!--        <search id="header-search" class="right-menu-item" />-->
+        <!--        <search id="header-search" class="right-menu-item" />-->
 
-<!--        <el-tooltip content="项目文档" effect="dark" placement="bottom">-->
-<!--          <Doc class="right-menu-item hover-effect" />-->
-<!--        </el-tooltip>-->
-<!--    城市    -->
-<!--        <SelectWithService style="width: 120px;" value-key="id" label-key="name" :init-value="selectedCity?selectedCity.id:null" @change="changeCity" />-->
+        <!--        <el-tooltip content="项目文档" effect="dark" placement="bottom">-->
+        <!--          <Doc class="right-menu-item hover-effect" />-->
+        <!--        </el-tooltip>-->
+        <!--    城市    -->
+
+        <span class="right-menu-item">
+          <label style="font-size: 16px;">城市:</label>
+          <SelectWithService style="width: 120px;" value-key="id" label-key="name" :init-value="selectedCity?selectedCity.id:null" :service="getCityList" @change="changeCity" />
+        </span>
+
         <el-tooltip content="全屏缩放" effect="dark" placement="bottom">
           <screenfull id="screenfull" class="right-menu-item hover-effect" />
         </el-tooltip>
@@ -25,7 +30,11 @@
         <el-tooltip content="布局设置" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
-
+        <span class="right-menu-item">
+          <el-badge :value="messageNumber" style="margin-top: 10px;">
+            <i class="el-icon-bell bell" @click.prevent="toMsgPage"/>
+          </el-badge>
+        </span>
       </template>
       <!--   头像下拉   -->
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
@@ -64,6 +73,8 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 import Avatar from '@/assets/images/avatar.png'
+import { getList } from '@/api/lbs/lbsCity'
+import { msgNumber } from '@/api/system/msgBodyInfo'
 import SelectWithService from '@/components/SelectWithService/index'
 
 export default {
@@ -79,7 +90,9 @@ export default {
   data() {
     return {
       Avatar: Avatar,
-      dialogVisible: false
+      dialogVisible: false,
+      messageNumber: 0,
+      interval: null,
     }
   },
   computed: {
@@ -102,6 +115,15 @@ export default {
       }
     }
   },
+  mounted(){
+    this.getNum()
+    this.getMsgNumber()
+  },
+  beforeDestroy(){
+    if(this.interval){
+      clearInterval(this.interval)
+    }
+  },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
@@ -120,9 +142,23 @@ export default {
         location.reload()
       })
     },
-    changeCity(id,city){
-      this.$store.dispatch('setSelectedCity',city)
-    }
+    getMsgNumber() {
+      this.interval = setInterval(this.getNum,1000*60)
+    },
+    getNum(){
+      msgNumber().then(res => {
+        if (res && res.status === 200) {
+          this.messageNumber = res.content || 0
+        }
+      })
+    },
+    toMsgPage(){
+      this.$router.push({name:'MsgBodyInfo',params:{}})
+    },
+    getCityList: getList,
+    changeCity(id, city) {
+      this.$store.dispatch('setSelectedCity', city)
+    },
   }
 }
 </script>
@@ -173,7 +209,9 @@ export default {
         font-size: 18px;
         color: #5a5e66;
         vertical-align: text-bottom;
-
+        .bell:hover{
+          cursor: pointer;
+        }
         &.hover-effect {
           cursor: pointer;
           transition: background .3s;
