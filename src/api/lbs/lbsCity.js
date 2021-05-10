@@ -5,7 +5,7 @@ export function add(data) {
   return request({
     url: 'city/save',
     method: 'post',
-    data: convertToFormData(data)
+    data: data
   })
 }
 
@@ -21,7 +21,7 @@ export function edit(data) {
   return request({
     url: '/city/update',
     method: 'put',
-    data
+    data: data
   })
 }
 // 城市列表 所有

@@ -32,6 +32,7 @@ export function convertToFormData(data) {
   // 如果传进对象为数组  返回数组
   if (data instanceof Array) {
     return data
+    // return formData.append(item, data[item])
   }
   Object.keys(data).forEach((item) => {
     if (data[item] instanceof Array) {

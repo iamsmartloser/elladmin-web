@@ -72,7 +72,7 @@
 
 <script>
 import { formatDate } from '@/utils/formatDay'
-import { receiveList, receive } from '@/api/system/msgBodyInfo'
+import { receiveList, receive, getMsgDetail } from '@/api/system/msgBodyInfo'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -102,13 +102,28 @@ export default {
     ])
   },
   mounted() {
-    this.detail = this.$route.params || {}
     this.releaseParams.msgBodyId = this.$route.params && this.$route.params.id
     console.log('mounted', this.$route.params)
-    this.getComments(true)
+    this.getMsgDetail()
+    // this.getComments(true)
   },
   methods: {
     formatDate,
+    // 获取消息详情
+    getMsgDetail(){
+      const msgId = this.$route.params && this.$route.params.id
+      getMsgDetail({msgId}).then(res=>{
+        if(res&&res.status===200){
+          this.detail = res.content
+          if(parseInt(res.content.allowReceive)){
+            this.getComments(true)
+          }
+        }else {
+          this.$message.error(res&&res.message||'获取详情出错')
+        }
+      })
+    },
+    // 获取评论
     getComments(refresh = false) {
       const msgId = this.$route.params && this.$route.params.id
       // console.log('msgId', msgId)

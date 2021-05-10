@@ -328,7 +328,7 @@ export default {
       //     this.$message.error(res.message || '出错了')
       //   }
       // })
-      this.$router.push({name:'MsgBodyDetail',params:{...row}})
+      this.$router.push('/msg/msg_body_info/detail/'+row.id)
     }
   }
 }

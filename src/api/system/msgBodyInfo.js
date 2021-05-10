@@ -47,9 +47,16 @@ export function receive(data) {
     data: convertToFormData(data)
   })
 }
-
+// 获取消息详情
+export function getMsgDetail(data) {
+  return request({
+    url: 'msg/get',
+    method: 'post',
+    data: convertToFormData(data)
+  })
+}
 // 查询未读消息总数
 export function msgNumber(data) {
   return request.get('msg/number',{params: data})
 }
-export default { add, edit, del, read, receiveList, receive,msgNumber}
+export default { add, edit, del, read, receiveList, receive,msgNumber,getMsgDetail}
