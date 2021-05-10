@@ -51,7 +51,7 @@
       <crudOperation :permission="permission" />
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="1080px" @opened="openDialog" @closed="closeDialog">
-        <el-form ref="form" :model="form" :rules="rules" size="small" label-width="120px">
+        <el-form ref="form" :model="form" :rules="rules" size="small" label-width="220px">
           <el-form-item v-if="crud.status.edit" v-show="false" label="ID">
             <el-input v-model="form.id" style="width: 370px;" />
           </el-form-item>
@@ -95,7 +95,7 @@
           <el-form-item v-if="crud.status.add" label="接收主体">
             <SelectWithService style="width: 370px;" value-key="id" label-key="name" :init-value="form.operatorIds" :multiple="true" :service="getPage" @change="changeOperators" />
           </el-form-item>
-          <el-form-item label="消息发送时间" prop="sendTime">
+          <el-form-item label="发送时间(不填为立即发送)" prop="sendTime">
             <el-date-picker v-model="form.sendTime" value-format="timestamp" type="datetime" style="width: 370px;" />
           </el-form-item>
         </el-form>
@@ -224,7 +224,7 @@ export default {
           { required: true, message: '消息体不能为空', trigger: 'blur' }
         ],
         sendTime: [
-          { required: true, message: '消息发送时间不能为空', trigger: 'blur' }
+          { required: false, message: '消息发送时间不能为空', trigger: 'blur' }
         ],
         createUserId: [
           { required: true, message: '发送者ID不能为空', trigger: 'blur' }

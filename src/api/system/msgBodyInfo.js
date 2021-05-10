@@ -14,7 +14,7 @@ export function del(ids) {
   return request({
     url: 'msg/remove',
     method: 'post',
-    data: convertToFormData({ ids: ids })
+    data: 0
   })
 }
 

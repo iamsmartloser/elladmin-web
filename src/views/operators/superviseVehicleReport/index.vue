@@ -2,29 +2,29 @@
   <div class="app-container">
     <!--工具栏-->
     <div class="head-container">
-      <div v-if="crud.props.searchToggle">
+      <div v-if="crud.props.searchToggle" class="search-wrap-has-label">
         <!-- 搜索 -->
         <label class="el-form-item-label">车辆品牌ID</label>
-        <el-input v-model="query.brandId" clearable placeholder="车辆品牌ID" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <el-input v-model="query.brandId" clearable placeholder="车辆品牌ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">所属运营商ID</label>
-        <el-input v-model="query.operatorId" clearable placeholder="所属运营商ID" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <el-input v-model="query.operatorId" clearable placeholder="所属运营商ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">车牌号码</label>
-        <el-input v-model="query.carNumber" clearable placeholder="车牌号码" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <el-input v-model="query.carNumber" clearable placeholder="车牌号码" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">举报类型</label>
-        <el-input v-model="query.type" clearable placeholder="举报类型" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <el-input v-model="query.type" clearable placeholder="举报类型" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">举报人姓名</label>
-        <el-input v-model="query.userName" clearable placeholder="举报人姓名" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <el-input v-model="query.userName" clearable placeholder="举报人姓名" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">审批状态</label>
-        <el-input v-model="query.status" clearable placeholder="审批状态（0待审核 1已通过 2审批中 3未通过）" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <el-input v-model="query.status" clearable placeholder="审批状态（0待审核 1已通过 2审批中 3未通过）" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">运营商处置状态</label>
-        <el-input v-model="query.handleStatus" clearable placeholder="运营商处置状态" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <date-range-picker
-          v-model="query.createTime"
-          start-placeholder="createTimeStart"
-          end-placeholder="createTimeStart"
-          class="date-item"
-        />
-        <rrOperation :crud="crud" />
+        <el-input v-model="query.handleStatus" clearable placeholder="运营商处置状态" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+<!--        <date-range-picker-->
+<!--          v-model="query.createTime"-->
+<!--          start-placeholder="createTimeStart"-->
+<!--          end-placeholder="createTimeStart"-->
+<!--          class="date-item"-->
+<!--        />-->
+        <rrOperation :crud="crud" class="rr-op-has-label" :filter-item-class="false" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
       <crudOperation :permission="permission" />
@@ -130,7 +130,7 @@ export default {
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['supervise_type', 'approval_status', 'approval_status'],
   cruds() {
-    return CRUD({ title: 'supervise', url: '/supervise/', idField: 'id', sort: 'id,desc', crudMethod: { ...superviseVehicleReport }})
+    return CRUD({ title: '举报管理', url: '/supervise/', idField: 'id', sort: 'id,desc', crudMethod: { ...superviseVehicleReport }})
   },
   data() {
     return {

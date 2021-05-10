@@ -261,6 +261,7 @@ function CRUD(options) {
       crud.crudMethod.add(crud.form).then((res) => {
         if(res&&res.status!==200){
           crud.notify(res.message||'出错了', CRUD.NOTIFICATION_TYPE.ERROR)
+          crud.status.edit = CRUD.STATUS.PREPARED
         }else {
           crud.status.add = CRUD.STATUS.NORMAL
           crud.resetForm()
@@ -285,6 +286,7 @@ function CRUD(options) {
         console.log('edit res',res)
         if(res&&res.status!==200){
           crud.notify(res.message||'出错了', CRUD.NOTIFICATION_TYPE.ERROR)
+          crud.status.edit = CRUD.STATUS.PREPARED
         }else {
           crud.status.edit = CRUD.STATUS.NORMAL
           crud.getDataStatus(crud.getDataId(crud.form)).edit = CRUD.STATUS.NORMAL
@@ -336,6 +338,7 @@ function CRUD(options) {
         }
 
       }).catch(() => {
+        crud.notify('删除出错了', CRUD.NOTIFICATION_TYPE.ERROR)
         if (delAll) {
           crud.delAllLoading = false
         } else dataStatus.delete = CRUD.STATUS.PREPARED
