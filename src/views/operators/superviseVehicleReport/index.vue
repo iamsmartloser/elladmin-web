@@ -4,26 +4,35 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle" class="search-wrap-has-label">
         <!-- 搜索 -->
-        <label class="el-form-item-label">车辆品牌ID</label>
-        <el-input v-model="query.brandId" clearable placeholder="车辆品牌ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">所属运营商ID</label>
-        <el-input v-model="query.operatorId" clearable placeholder="所属运营商ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">车牌号码</label>
+        <label class="el-form-item-label">车辆品牌:</label>
+        <SelectWithService v-if="city" style="width: 185px;" clearable value-key="id" label-key="name" :params="brandParams" :service="getBrandList" @change="changeBrand" />
+        <label class="el-form-item-label">所属运营商:</label>
+        <SelectWithService v-if="city" style="width: 185px;" clearable value-key="id" label-key="name" :params="operatorParams" :service="getPage" @change="changeOperators" />
+        <label class="el-form-item-label">车牌号码:</label>
         <el-input v-model="query.carNumber" clearable placeholder="车牌号码" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">举报类型</label>
+        <label class="el-form-item-label">举报类型:</label>
         <el-input v-model="query.type" clearable placeholder="举报类型" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">举报人姓名</label>
+        <label class="el-form-item-label">举报人姓名:</label>
         <el-input v-model="query.userName" clearable placeholder="举报人姓名" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">审批状态</label>
-        <el-input v-model="query.status" clearable placeholder="审批状态（0待审核 1已通过 2审批中 3未通过）" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">运营商处置状态</label>
-        <el-input v-model="query.handleStatus" clearable placeholder="运营商处置状态" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-<!--        <date-range-picker-->
-<!--          v-model="query.createTime"-->
-<!--          start-placeholder="createTimeStart"-->
-<!--          end-placeholder="createTimeStart"-->
-<!--          class="date-item"-->
-<!--        />-->
+        <label class="el-form-item-label">审批状态:</label>
+        <el-select v-model="query.status" filterable placeholder="请选择">
+          <el-option
+            v-for="item in dict.approval_status"
+            :key="item.id"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+        <label class="el-form-item-label">运营商处置状态:</label>
+        <el-select v-model="query.handleStatus" filterable placeholder="请选择">
+          <el-option
+            v-for="item in dict.supervise_handle_type"
+            :key="item.id"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+<!--        <el-input v-model="query.handleStatus" clearable placeholder="运营商处置状态" style="width: 185px;" @keyup.enter.native="crud.toQuery" />-->
         <rrOperation :crud="crud" class="rr-op-has-label" :filter-item-class="false" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -46,7 +55,8 @@
                 v-for="item in dict.supervise_type"
                 :key="item.id"
                 :label="item.label"
-                :value="item.value" />
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
           <el-form-item label="照片">
@@ -61,10 +71,11 @@
           <el-form-item label="运营商处置状态" prop="handleStatus">
             <el-select v-model="form.handleStatus" filterable placeholder="请选择">
               <el-option
-                v-for="item in dict.approval_status"
+                v-for="item in dict.supervise_handle_type"
                 :key="item.id"
                 :label="item.label"
-                :value="item.value" />
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
         </el-form>
@@ -76,16 +87,16 @@
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="id" label="ID" />
-        <el-table-column prop="brandId" label="车辆品牌ID" />
-        <el-table-column prop="operatorId" label="所属运营商ID" />
+<!--        <el-table-column prop="id" label="ID" />-->
+        <el-table-column prop="picture" label="照片" />
+        <el-table-column prop="brandName" label="车辆品牌" />
+        <el-table-column prop="operatorName" label="所属运营商" />
         <el-table-column prop="carNumber" label="车牌号码" />
         <el-table-column prop="type" label="举报类型">
           <template slot-scope="scope">
             {{ dict.label.supervise_type[scope.row.type] }}
           </template>
         </el-table-column>
-        <el-table-column prop="picture" label="照片" />
         <el-table-column prop="explain" label="举报说明" />
         <el-table-column prop="userName" label="举报人姓名" />
         <el-table-column prop="createTime" label="举报时间" />
@@ -96,7 +107,7 @@
         </el-table-column>
         <el-table-column prop="handleStatus" label="运营商处置状态">
           <template slot-scope="scope">
-            {{ dict.label.approval_status[scope.row.handleStatus] }}
+            {{ dict.label.supervise_handle_type[scope.row.handleStatus] }}
           </template>
         </el-table-column>
         <el-table-column prop="approvalEndTime" label="审批流程结束时间" />
@@ -116,21 +127,27 @@
 </template>
 
 <script>
-  import superviseVehicleReport from '@/api/operators/superviseVehicleReport'
-    import CRUD, {crud, form, header, presenter} from '@crud/crud'
-    import rrOperation from '@crud/RR.operation'
-    import crudOperation from '@crud/CRUD.operation'
-    import udOperation from '@crud/UD.operation'
-    import pagination from '@crud/Pagination'
+import superviseVehicleReport from '@/api/operators/superviseVehicleReport'
+import {getList} from '@/api/operators/vehicleBrandInfo'
+import CRUD, { crud, form, header, presenter } from '@crud/crud'
+import rrOperation from '@crud/RR.operation'
+import crudOperation from '@crud/CRUD.operation'
+import udOperation from '@crud/UD.operation'
+import pagination from '@crud/Pagination'
+import SelectWithService from '@/components/SelectWithService/index'
+import { getPage } from '@/api/operators/operatorInfo'
+import { formatDate } from '@/utils/formatDay'
+import { mapGetters } from 'vuex'
 
-    const defaultForm = { id: null, brandId: null, operatorId: null, vehicleId: null, carNumber: null, type: null, picture: null, explain: null, userId: null, userName: null, createTime: null, status: null, handleStatus: null, approvalInfoId: null, approvalEndTime: null }
+const defaultForm = { id: null, brandId: null, operatorId: null, vehicleId: null, carNumber: null, type: null, picture: null, explain: null, userId: null, userName: null, createTime: null, status: null, handleStatus: null, approvalInfoId: null, approvalEndTime: null }
 export default {
   name: 'SuperviseVehicleReport',
-  components: { pagination, crudOperation, rrOperation, udOperation },
+  components: { pagination, crudOperation, rrOperation, udOperation, SelectWithService },
   mixins: [presenter(), header(), form(defaultForm), crud()],
-  dicts: ['supervise_type', 'approval_status', 'approval_status'],
+  dicts: ['supervise_type', 'approval_status', 'supervise_handle_type'],
   cruds() {
-    return CRUD({ title: '举报管理', url: '/supervise/', idField: 'id', sort: 'id,desc', crudMethod: { ...superviseVehicleReport }})
+    return CRUD({ title: '举报管理', url: '/supervise/',queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc',
+      crudMethod: { ...superviseVehicleReport }})
   },
   data() {
     return {
@@ -167,11 +184,47 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapGetters([
+      'city'
+    ]),
+    brandParams(){
+      return {areaCode: this.city&&this.city.areaCode}
+    },
+    operatorParams(){
+      return {page:0, areaCode: this.city&&this.city.areaCode}
+    }
+  },
+
+  watch: {
+    city(val){
+      this.crud.query.areaCode = val && val.areaCode
+      this.crud.refresh()
+    }
+  },
+  beforeCreate(){
+    this.crud.optShow.edit = false
+    this.crud.optShow.add = false
+  },
+  mounted() {
+    this.crud.query.areaCode = this.city && this.city.areaCode
+    this.crud.refresh()
+  },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
-    }
+    },
+    changeOperators(id) {
+      this.crud.query.operatorId = id
+    },
+    formatDate,
+    getPage,// 获取运营商列表
+    getBrandList: getList, // 获取品牌列表
+    changeBrand(id) {
+      // console.log('ids', ids)
+      this.crud.query.brandId = id
+    },
   }
 }
 </script>

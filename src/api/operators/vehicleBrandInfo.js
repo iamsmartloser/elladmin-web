@@ -1,14 +1,8 @@
 import request from '@/utils/request'
 
-export function getPage(data) {
-  return request.get('operators/page',{
-    params: data
-  })
-}
-
 export function add(data) {
   return request({
-    url: 'api/operatorInfo',
+    url: 'vehicleBrandInfo/',
     method: 'post',
     data
   })
@@ -16,7 +10,7 @@ export function add(data) {
 
 export function del(ids) {
   return request({
-    url: 'api/operatorInfo/',
+    url: 'vehicleBrandInfo/',
     method: 'delete',
     data: ids
   })
@@ -24,10 +18,16 @@ export function del(ids) {
 
 export function edit(data) {
   return request({
-    url: 'api/operatorInfo',
+    url: 'vehicleBrandInfo/',
     method: 'put',
     data
   })
 }
 
-export default { add, edit, del,getPage }
+export function getList(data) {
+  return request.get('brand/list', {
+    params: data
+  })
+}
+
+export default { add, edit, del, getList }

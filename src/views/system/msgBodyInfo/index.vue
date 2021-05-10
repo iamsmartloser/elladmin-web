@@ -52,6 +52,10 @@
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="1080px" @opened="openDialog" @closed="closeDialog">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="220px">
+
+<!--          <el-form-item v-show="false" label="areaCode">-->
+<!--            <el-input v-model="city.areaCode" style="width: 370px;" />-->
+<!--          </el-form-item>-->
           <el-form-item v-if="crud.status.edit" v-show="false" label="ID">
             <el-input v-model="form.id" style="width: 370px;" />
           </el-form-item>
@@ -93,7 +97,7 @@
             <div ref="editor" />
           </el-form-item>
           <el-form-item v-if="crud.status.add" label="接收主体">
-            <SelectWithService style="width: 370px;" value-key="id" label-key="name" :init-value="form.operatorIds" :multiple="true" :service="getPage" @change="changeOperators" />
+            <SelectWithService v-if="city" style="width: 370px;" clearable value-key="id" label-key="name" :params="operatorParams" :init-value="form.operatorIds" :multiple="true" :service="getPage" @change="changeOperators" />
           </el-form-item>
           <el-form-item label="发送时间(不填为立即发送)" prop="sendTime">
             <el-date-picker v-model="form.sendTime" value-format="timestamp" type="datetime" style="width: 370px;" />
@@ -132,7 +136,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="title" label="消息标题" />
-<!--        <el-table-column prop="content" label="消息体" />-->
+        <!--        <el-table-column prop="content" label="消息体" />-->
         <el-table-column prop="createTime" label="创建时间">
           <template slot-scope="scope">
             {{ formatDate(scope.row.createTime) }}
@@ -195,7 +199,8 @@ export default {
   dicts: ['msg_type', 'allow_receive', 'compulsary_warning_type'],
   cruds() {
     // console.log('user3',this.user)
-    return CRUD({ title: '消息通知', url: 'msg/page', idField: 'id', queryOnPresenterCreated: false, sort: 'createTime,desc', crudMethod: { ...crudMsgBodyInfo }})
+    return CRUD({ title: '消息通知', url: 'msg/page', idField: 'id', queryOnPresenterCreated: false, sort: 'createTime,desc',
+      crudMethod: { ...crudMsgBodyInfo }})
   },
   data() {
     return {
@@ -244,16 +249,32 @@ export default {
       rowData: null
     }
   },
-  mounted() {
-    this.crud.query.areaCode = this.user && this.user.areaCode
-    this.crud.refresh()
-  },
   computed: {
     ...mapGetters([
       'imagesUploadApi',
       'baseApi',
-      'user'
-    ])
+      'user',
+      'city'
+    ]),
+    operatorParams(){
+      return {page:0, areaCode: this.city&&this.city.areaCode}
+    }
+  },
+  watch: {
+    city(val){
+      // console.log('watch areaCode msg', this.$store.state.user.city&&this.$store.state.user.city.areaCode)
+      this.crud.query.areaCode = val && val.areaCode
+      this.crud.page.page=1
+      this.crud.refresh()
+      // const { fullPath } = this.$route
+      // this.$router.replace({
+      //   path: '/redirect' + fullPath
+      // })
+    }
+  },
+  mounted() {
+    this.crud.query.areaCode = this.city && this.city.areaCode
+    this.crud.refresh()
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
@@ -265,22 +286,19 @@ export default {
       return true
     },
     [CRUD.HOOK.beforeSubmit]() {
-      // if(this.crud.status.add&&(!this.crud.form.operatorIds||this.crud.form.operatorIds.length<1)){
-      //   this.$message.error('请选择接收主体')
-      //   return false
-      // }
+      this.crud.form.areaCode = this.city&&this.city.areaCode
       return true
     },
     changeOperators(ids) {
-      console.log('ids', ids)
+      // console.log('ids', ids)
       this.crud.form.operatorIds = ids
     },
     formatDate,
-    getPage: getPage,
-    isOperators,
+    getPage, // 获取运营商列表
+    isOperators, // 判断是否是运营商
     closeDialog() {
       this.crud.form.content = ''
-      this.editor&&this.editor.txt.html('')
+      this.editor && this.editor.txt.html('')
     },
     openDialog() {
       this.initEditor()
@@ -318,17 +336,7 @@ export default {
       }
     },
     toView(row) {
-      // crudMsgBodyInfo.read({ msgId: row.id }).then(res => {
-      //   if (res.status === 200) {
-      //     // this.rowData = row
-      //     // this.viewDialogVisible = true
-      //     // this.crud.refresh()
-      //     this.$router.push({name:'MsgBodyDetail',params:{...row}})
-      //   } else {
-      //     this.$message.error(res.message || '出错了')
-      //   }
-      // })
-      this.$router.push('/msg/msg_body_info/detail/'+row.id)
+      this.$router.push('/msg/msg_body_info/detail/' + row.id)
     }
   }
 }

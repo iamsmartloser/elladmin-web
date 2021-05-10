@@ -79,7 +79,7 @@ const user = {
       })
     },
     setCity({ commit }, payload) {
-      console.log('payload', payload)
+      // console.log('payload', payload)
       commit('SET_CITY', payload)
     }
   }

@@ -4,6 +4,7 @@
     placeholder="请选择"
     :multiple="multiple"
     filterable
+    :clearable="clearable"
     @change="change"
     @filter-method="filterMethod"
   >
@@ -53,11 +54,11 @@ export default {
   name: 'SelectWithService',
   components: {},
   props: {
-    valueKey: {
+    valueKey: { // 实际key取值字段
       type: String,
       default: 'value'
     },
-    labelKey: {
+    labelKey: {// 显示字段
       type: String,
       default: 'label'
     },
@@ -70,14 +71,28 @@ export default {
       default: false
     },
     initValue: null,
-    service: {
-      type: Function
+    params: { // 接口传参
+      type: Object,
+      default: null
+    },
+    service: { // 接口
+      type: Function,
+      default: null
+    },
+    clearable: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
       dataSource: [],
       value: null
+    }
+  },
+  watch: {
+    params(val) { // 监听请求参数变化，若有变化，数据重新获取
+      this.getDataFromService(val)
     }
   },
   mounted() {
@@ -101,18 +116,11 @@ export default {
         this.value = this.initValue
       }
     }
-
-    if (this.service) {
-      this.service().then(res => {
-        if (res.status === 200) {
-          this.dataSource = res.content || []
-        }
-      })
-    }
+    this.getDataFromService(this.params)
   },
   methods: {
     change(e) {
-      console.log(e)
+      // console.log(e)
       if (this.multiple) {
         const selectData = this.dataSource.filter(d => e.includes(d[this.valueKey]))
         this.$emit('change', e, selectData)
@@ -124,6 +132,15 @@ export default {
     },
     filterMethod() {
 
+    },
+    getDataFromService(params) {
+      if (this.service) {
+        this.service(params).then(res => {
+          if (res.status === 200) {
+            this.dataSource = res.content || []
+          }
+        })
+      }
     }
   }
 }
