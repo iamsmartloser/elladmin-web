@@ -266,11 +266,10 @@ export default {
       this.crud.query.areaCode = val && val.areaCode
       this.crud.page.page=1
       this.crud.refresh()
-      // const { fullPath } = this.$route
-      // this.$router.replace({
-      //   path: '/redirect' + fullPath
-      // })
     }
+  },
+  beforeCreate() {
+    this.crud.optShow.download = false
   },
   mounted() {
     this.crud.query.areaCode = this.city && this.city.areaCode
@@ -336,7 +335,7 @@ export default {
       }
     },
     toView(row) {
-      this.$router.push('/msg/msg_body_info/detail/' + row.id)
+      this.$router.push('/detail/msg_detail/' + row.id)
     }
   }
 }

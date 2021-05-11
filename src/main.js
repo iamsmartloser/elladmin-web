@@ -1,5 +1,5 @@
 import Vue from 'vue'
-
+import VueQr from 'vue-qr'// 二维码组件
 import Cookies from 'js-cookie'
 
 import 'normalize.css/normalize.css'
@@ -36,6 +36,7 @@ Vue.use(VueHighlightJS)
 Vue.use(mavonEditor)
 Vue.use(permission)
 Vue.use(dict)
+Vue.use(VueQr)
 Vue.use(Element, {
   size: Cookies.get('size') || 'small' // set element-ui default size
 })

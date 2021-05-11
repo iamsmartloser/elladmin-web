@@ -33,7 +33,7 @@
         <label class="el-form-item-label">车辆类型</label>
         <el-select v-model="query.type" filterable placeholder="请选择">
           <el-option
-            v-for="item in dict.vehicel_type"
+            v-for="item in dict.vehicle_type"
             :key="item.id"
             :label="item.label"
             :value="item.value"
@@ -72,7 +72,7 @@
               v-if="city"
               v-model="crud.form.brandId"
               style="width: 370px;"
-              :initValue="crud.form.brandId"
+              :init-value="crud.form.brandId"
               clearable
               value-key="id"
               label-key="name"
@@ -87,7 +87,7 @@
               v-model="crud.form.operatorId"
               style="width: 370px;"
               clearable
-              :initValue="crud.form.operatorId"
+              :init-value="crud.form.operatorId"
               value-key="id"
               label-key="name"
               :params="operatorParams"
@@ -105,17 +105,17 @@
             <el-input v-model="form.rqCode" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="车辆类型" prop="type">
-            <el-select v-model="form.type" filterable placeholder="请选择" style="width: 370px;" >
+            <el-select v-model="form.type" filterable placeholder="请选择" style="width: 370px;">
               <el-option
-                v-for="item in dict.vehicel_type"
+                v-for="item in dict.vehicle_type"
                 :key="item.id"
                 :label="item.label"
                 :value="item.value"
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="车辆举报状态" prop="reportStatus" >
-            <el-select v-model="form.reportStatus" filterable placeholder="请选择" style="width: 370px;" >
+          <el-form-item label="车辆举报状态" prop="reportStatus">
+            <el-select v-model="form.reportStatus" filterable placeholder="请选择" style="width: 370px;">
               <el-option
                 v-for="item in dict.vehicle_supervise_status"
                 :key="item.id"
@@ -125,7 +125,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="车辆状态" prop="status">
-            <el-select v-model="form.status" filterable placeholder="请选择" style="width: 370px;" >
+            <el-select v-model="form.status" filterable placeholder="请选择" style="width: 370px;">
               <el-option
                 v-for="item in dict.vehicle_status"
                 :key="item.id"
@@ -152,29 +152,32 @@
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="picture" label="照片">
-          <template slot-scope="scope">
-            <!--            <el-button @click="imageVisible=true;rowData=scope.row">test</el-button>-->
-            <div style="text-align: center">
-              <img
-                v-if="scope.row.picture"
-                style="max-width: 50px;max-height: 100px;cursor:pointer;"
-                :src="scope.row.picture"
-                @click="imageVisible=true;rowData=scope.row;pictures = scope.row.picture?[scope.row.picture]:[]"
-              >
-              <span v-else>暂无图片</span>
-            </div>
-          </template>
-        </el-table-column>
+<!--        <el-table-column prop="picture" label="照片">-->
+<!--          <template slot-scope="scope">-->
+<!--            <div style="text-align: center">-->
+<!--              <img-->
+<!--                v-if="scope.row.picture"-->
+<!--                style="max-width: 50px;max-height: 100px;cursor:pointer;"-->
+<!--                :src="scope.row.picture"-->
+<!--                @click="imageVisible=true;rowData=scope.row;pictures = scope.row.picture?[scope.row.picture]:[]"-->
+<!--              >-->
+<!--              <span v-else>暂无图片</span>-->
+<!--            </div>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <!--        <el-table-column prop="id" label="车辆ID" />-->
         <el-table-column prop="carNumber" label="车辆编码" />
         <el-table-column prop="brandName" label="车辆品牌" />
         <el-table-column prop="operatorName" label="所属运营商" />
         <el-table-column prop="vehicleLaunchesId" label="投车计划ID" />
-        <el-table-column prop="rqCode" label="车辆二维码信息" />
+        <el-table-column prop="rqCode" label="车辆二维码信息">
+          <template slot-scope="scope">
+            <div :id="'rqCode'+scope.row.id">{{scope.row.rqCode}}</div>
+          </template>
+        </el-table-column>
         <el-table-column prop="type" label="车辆类型">
           <template slot-scope="scope">
-            {{ dict.label.vehicel_type[scope.row.type] }}
+            {{ dict.label.vehicle_type[scope.row.type] }}
           </template>
         </el-table-column>
         <el-table-column prop="reportStatus" label="车辆举报状态">
@@ -190,14 +193,23 @@
         <el-table-column prop="statusExplain" label="其他状态说明" />
         <el-table-column prop="lng" label="经度" />
         <el-table-column prop="lat" label="纬度" />
-        <el-table-column prop="lastReportTime" label="最后上报时间" />
-        <el-table-column prop="createTime" label="车辆创建时间" />
+        <el-table-column prop="lastReportTime" label="最后上报时间">
+          <template slot-scope="scope">
+            {{ formatDate(scope.row.lastReportTime) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="createTime" label="车辆创建时间">
+          <template slot-scope="scope">
+            {{ formatDate(scope.row.createTime) }}
+          </template>
+        </el-table-column>
         <el-table-column v-if="checkPer(['admin','vehicleInfo:edit','vehicleInfo:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
               :permission="permission"
             />
+            <el-button icon="el-icon-view" size="mini" @click="toView(scope.row)" />
           </template>
         </el-table-column>
       </el-table>
@@ -226,9 +238,9 @@ export default {
   name: 'VehicleInfo',
   components: { pagination, crudOperation, rrOperation, udOperation, SelectWithService, ImageDetail },
   mixins: [presenter(), header(), form(defaultForm), crud()],
-  dicts: ['vehicel_type', 'vehicle_supervise_status', 'vehicle_status'],
+  dicts: ['vehicle_type', 'vehicle_supervise_status', 'vehicle_status'],
   cruds() {
-    return CRUD({ title: 'vehicle', url: 'vehicle/page', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...vehicleInfo }})
+    return CRUD({ title: '车辆信息', url: 'vehicle/page', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...vehicleInfo }})
   },
   data() {
     return {
@@ -289,6 +301,12 @@ export default {
       this.crud.refresh()
     }
   },
+  beforeCreate() {
+    this.crud.optShow.edit = false
+    this.crud.optShow.add = false
+    this.crud.optShow.del = false
+    this.crud.optShow.download = false
+  },
   mounted() {
     this.crud.query.areaCode = this.city && this.city.areaCode
     this.crud.refresh()
@@ -315,6 +333,10 @@ export default {
     changeFormOperators(id) {
       this.crud.form.operatorId = id
     },
+    toView(row){
+      this.row = row
+      this.$router.push('/detail/vehicle_detail/' + row.id)
+    }
   }
 }
 </script>

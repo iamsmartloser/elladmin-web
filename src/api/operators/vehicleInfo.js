@@ -23,5 +23,7 @@ export function edit(data) {
     data
   })
 }
-
-export default { add, edit, del }
+export function getVehicleDetail(data) {
+  return request.get('vehicle/get',{params:data})
+}
+export default { add, edit, del, getVehicleDetail}

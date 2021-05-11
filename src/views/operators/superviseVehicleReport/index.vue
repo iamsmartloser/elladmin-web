@@ -26,11 +26,11 @@
           :service="getPage"
           @change="changeOperators"
         />
-        <label class="el-form-item-label">车牌号码:</label>
+        <label class="el-form-item-label">车辆编码:</label>
         <el-input
           v-model="query.carNumber"
           clearable
-          placeholder="车牌号码"
+          placeholder="车辆编码"
           style="width: 185px;"
           @keyup.enter.native="crud.toQuery"
         />
@@ -87,7 +87,7 @@
           <el-form-item label="所属运营商ID" prop="operatorId">
             未设置字典，请手动设置 Select
           </el-form-item>
-          <el-form-item label="车牌号码">
+          <el-form-item label="车辆编码">
             <el-input v-model="form.carNumber" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="举报类型" prop="type">
@@ -164,7 +164,7 @@
                 </el-form-item>
               </el-col>
               <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-                <el-form-item label="车牌号码">
+                <el-form-item label="车辆编码">
                   {{ rowData.carNumber }}
                 </el-form-item>
               </el-col>
@@ -185,7 +185,7 @@
               </el-col>
               <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
                 <el-form-item label="举报时间">
-                  {{ rowData.createTime }}
+                  {{ formatDate(rowData.createTime) }}
                 </el-form-item>
               </el-col>
               <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
@@ -203,7 +203,7 @@
               <div style="padding: 8px; text-align: center">处理流程{{ index+1 }}：</div>
               <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
                 <el-form-item label="处理时间">
-                  {{ handle.createTime }}
+                  {{ formatDate(handle.createTime) }}
                 </el-form-item>
               </el-col>
               <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
@@ -261,7 +261,7 @@
         </el-table-column>
         <el-table-column prop="brandName" label="车辆品牌" />
         <el-table-column prop="operatorName" label="所属运营商" />
-        <el-table-column prop="carNumber" label="车牌号码" />
+        <el-table-column prop="carNumber" label="车辆编码" />
         <el-table-column prop="type" label="举报类型">
           <template slot-scope="scope">
             {{ dict.label.supervise_type[scope.row.type] }}
@@ -385,7 +385,7 @@ export default {
       queryTypeOptions: [
         { key: 'brandId', display_name: '车辆品牌ID' },
         { key: 'operatorId', display_name: '所属运营商ID' },
-        { key: 'carNumber', display_name: '车牌号码' },
+        { key: 'carNumber', display_name: '车辆编码' },
         { key: 'type', display_name: '举报类型' },
         { key: 'userName', display_name: '举报人姓名' },
         { key: 'status', display_name: '审批状态' },
@@ -419,6 +419,7 @@ export default {
   beforeCreate() {
     this.crud.optShow.edit = false
     this.crud.optShow.add = false
+    this.crud.optShow.download = false
   },
   mounted() {
     this.crud.query.areaCode = this.city && this.city.areaCode
