@@ -93,32 +93,40 @@ export default {
   watch: {
     params(val) { // 监听请求参数变化，若有变化，数据重新获取
       this.getDataFromService(val)
+    },
+    initValue(val) {
+      this.initValueData(val)
     }
   },
   mounted() {
     // 如果初始化有值（回填）{key,value}形式，正常为value形式但是data为空
     // console.log(this.valueKey, this.labelKey, this.data, this.data[0].code, this.initValue)
-    this.dataSource = this.data || []
-    if (this.initValue && this.multiple) {
-      this.value = []
-      for (const val of this.initValue) {
-        if ((typeof val === 'object')) {
-          this.value.push(val[this.valueKey])
-        } else {
-          this.value.push(val)
-        }
-      }
-    } else if (this.initValue && !this.multiple) {
-      if ((typeof this.initValue === 'object')) {
-        this.value = this.initValue[this.valueKey]
-        console.log('object', this.initValue[this.valueKey])
-      } else {
-        this.value = this.initValue
-      }
-    }
+    this.initValueData(this.initValue)
     this.getDataFromService(this.params)
   },
   methods: {
+    initValueData(initValue) {
+      if(!this.service){
+        this.dataSource = this.data || []
+      }
+      if (initValue && this.multiple) {
+        this.value = []
+        for (const val of initValue) {
+          if ((typeof val === 'object')) {
+            this.value.push(val[this.valueKey])
+          } else {
+            this.value.push(val)
+          }
+        }
+      } else if (initValue && !this.multiple) {
+        if ((typeof initValue === 'object')) {
+          this.value = initValue[this.valueKey]
+          console.log('object', initValue[this.valueKey])
+        } else {
+          this.value = initValue
+        }
+      }
+    },
     change(e) {
       // console.log(e)
       if (this.multiple) {

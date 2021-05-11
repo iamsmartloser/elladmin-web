@@ -68,7 +68,6 @@
             :value="item.value"
           />
         </el-select>
-        <!--        <el-input v-model="query.handleStatus" clearable placeholder="运营商处置状态" style="width: 185px;" @keyup.enter.native="crud.toQuery" />-->
         <rrOperation :crud="crud" class="rr-op-has-label" :filter-item-class="false" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -195,7 +194,7 @@
                 </el-form-item>
               </el-col>
               <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-                <el-form-item label="运营商处理状态">
+                <el-form-item label="运营商处置状态">
                   {{ dict.label.supervise_handle_type[rowData.handleStatus] }}
                 </el-form-item>
               </el-col>
@@ -259,7 +258,6 @@
               <span v-else>暂无图片</span>
             </div>
           </template>
-
         </el-table-column>
         <el-table-column prop="brandName" label="车辆品牌" />
         <el-table-column prop="operatorName" label="所属运营商" />
