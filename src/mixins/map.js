@@ -21,23 +21,30 @@ export default {
   },
   methods: {
     // 可以从这里获取百度地图实例
-    ready(map) {
-      this.map = map
-      console.log('ready:', map)
-    },
+    // ready(map) {
+    //   this.map = map
+    //   console.log('ready:', map)
+    // },
     // 画点
     drawMarker(point, markerOptions) {
-      const { icon: img , ...rest} = markerOptions||{}
+      const { icon: img, setViewPort = false, ...rest } = markerOptions || {}
       let icon = null
-      if(img){
+      if (img) {
         const { url, size, imageSize, anchor } = img
-        icon = new BMap.Icon(require(url), new BMap.Size(size[0],size[1]), {
-          imageSize: new BMap.Size(imageSize[0],imageSize[1]),
-          anchor: new BMap.Size(anchor[0],anchor[1])
+        icon = new BMap.Icon(url, new BMap.Size(size[0], size[1]), {
+          imageSize: new BMap.Size(imageSize[0], imageSize[1]),
+          anchor: new BMap.Size(anchor[0], anchor[1])
         })
       }
-      const marker = new BMap.Marker(new BMap.Point(point.lng, point.lat), { icon ,draggingCursor: 'pointer',title: null,...rest})
+      const p = new BMap.Point(point.lng, point.lat)
+      if (setViewPort) {
+        setTimeout(()=>{
+          this.map.setViewport([p])
+        },500)
+      }
+      const marker = new BMap.Marker(p, { icon, draggingCursor: 'pointer', title: null, ...rest })
       this.map.addOverlay(marker)
+
       return marker
     },
     // 画线
@@ -85,6 +92,7 @@ export default {
       this.map.addOverlay(polygon)
       return polygon
     },
+    // 画圆
     drawCircle(point, radius, circleOptions) {
       const r = radius || 50
       const strokeColor = COLOR_CONFIG[circleOptions.strokeColor]
@@ -153,17 +161,17 @@ export default {
       return heatmapOverlay
     },
     // 点聚合
-    drawMarkerClustererFromPointsArr(points,iconOptions) {
+    drawMarkerClustererFromPointsArr(points, iconOptions) {
       let icon = null
-      if(iconOptions){
+      if (iconOptions) {
         const { url, size, imageSize, anchor } = iconOptions
-        icon = new BMap.Icon(url, new BMap.Size(size[0],size[1]), {
-          imageSize: new BMap.Size(imageSize[0],imageSize[1]),
-          anchor: new BMap.Size(anchor[0],anchor[1]),
+        icon = new BMap.Icon(url, new BMap.Size(size[0], size[1]), {
+          imageSize: new BMap.Size(imageSize[0], imageSize[1]),
+          anchor: new BMap.Size(anchor[0], anchor[1])
         })
       }
       const markers = points.map(item => {
-        return new BMap.Marker(new BMap.Point(item.lng, item.lat),{ icon })
+        return new BMap.Marker(new BMap.Point(item.lng, item.lat), { icon })
       })
       const markerClusterer = new BMapLib.MarkerClusterer(this.map, { markers })
       return markerClusterer
@@ -177,6 +185,17 @@ export default {
     isSupportCanvas() {
       const elem = document.createElement('canvas')
       return !!(elem.getContext && elem.getContext('2d'))
+    },
+    // 腾讯地图坐标转百度地图
+    txMap_to_bdMap(lat, lng) {
+      const pi = 3.14159265358979324 * 3000.0 / 180.0
+      const x = lng
+      const y = lat
+      const z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * pi)
+      const theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * pi)
+      lng = z * Math.cos(theta) + 0.0065
+      lat = z * Math.sin(theta) + 0.006
+      return { 'lat': lat, 'lng': lng }
     }
   }
 }

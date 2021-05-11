@@ -39,6 +39,15 @@
             :value="item.value"
           />
         </el-select>
+        <label class="el-form-item-label">车辆状态:</label>
+        <el-select v-model="query.status" filterable placeholder="请选择">
+          <el-option
+            v-for="item in dict.vehicle_status"
+            :key="item.id"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
         <label class="el-form-item-label">车辆举报状态:</label>
         <el-select v-model="query.reportStatus" filterable placeholder="请选择">
           <el-option
@@ -48,10 +57,10 @@
             :value="item.value"
           />
         </el-select>
-        <label class="el-form-item-label">车辆状态:</label>
-        <el-select v-model="query.status" filterable placeholder="请选择">
+        <label class="el-form-item-label">城管收车状态:</label>
+        <el-select v-model="query.cmReclaimStatus" filterable placeholder="请选择">
           <el-option
-            v-for="item in dict.vehicle_status"
+            v-for="item in dict.cm_reclaim_status"
             :key="item.id"
             :label="item.label"
             :value="item.value"
@@ -149,9 +158,27 @@
         :visible="imageVisible"
         @close="imageVisible=false;pictures=null"
       />
+<!--   二维码大图   -->
+      <el-dialog
+        v-if="rqCodeVisible"
+        title="车辆二维码"
+        :visible.sync="rqCodeVisible"
+        class="dialog"
+        width="300px"
+        @close="rqCodeVisible = false;tempRQCode = null"
+      >
+        <vue-qr :text="tempRQCode" :qid="tempRQCode" :size="250"/>
+      </el-dialog>
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
+        <el-table-column prop="rqCode" label="车辆二维码" width="100px">
+          <template slot-scope="scope">
+            <div @click="rqCodeVisible = true;tempRQCode = scope.row.rqCode;">
+              <vue-qr :text="scope.row.rqCode" :qid="'rqCode'+scope.row.id" :size="80" style="cursor: pointer"/>
+            </div>
+          </template>
+        </el-table-column>
 <!--        <el-table-column prop="picture" label="照片">-->
 <!--          <template slot-scope="scope">-->
 <!--            <div style="text-align: center">-->
@@ -170,14 +197,16 @@
         <el-table-column prop="brandName" label="车辆品牌" />
         <el-table-column prop="operatorName" label="所属运营商" />
         <el-table-column prop="vehicleLaunchesId" label="投车计划ID" />
-        <el-table-column prop="rqCode" label="车辆二维码信息">
-          <template slot-scope="scope">
-            <div :id="'rqCode'+scope.row.id">{{scope.row.rqCode}}</div>
-          </template>
-        </el-table-column>
         <el-table-column prop="type" label="车辆类型">
           <template slot-scope="scope">
             {{ dict.label.vehicle_type[scope.row.type] }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="status" label="车辆状态">
+          <template slot-scope="scope">
+            <div style="cursor: pointer">
+              {{ `${dict.label.vehicle_status[scope.row.status]} ${scope.row.statusExplain?'-'+scope.row.statusExplain:''}` }}
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="reportStatus" label="车辆举报状态">
@@ -185,14 +214,14 @@
             {{ dict.label.vehicle_supervise_status[scope.row.reportStatus] }}
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="车辆状态">
+        <el-table-column prop="cmReclaimStatus" label="城管收车状态">
           <template slot-scope="scope">
-            {{ dict.label.vehicle_status[scope.row.status] }}
+            {{ dict.label.cm_reclaim_status[scope.row.cmReclaimStatus] }}
           </template>
         </el-table-column>
-        <el-table-column prop="statusExplain" label="其他状态说明" />
-        <el-table-column prop="lng" label="经度" />
-        <el-table-column prop="lat" label="纬度" />
+<!--        <el-table-column prop="statusExplain" label="其他状态说明" />-->
+        <el-table-column prop="pintGCJ02" label="车辆经纬度" />
+<!--        <el-table-column prop="lat" label="纬度" />-->
         <el-table-column prop="lastReportTime" label="最后上报时间">
           <template slot-scope="scope">
             {{ formatDate(scope.row.lastReportTime) }}
@@ -238,7 +267,7 @@ export default {
   name: 'VehicleInfo',
   components: { pagination, crudOperation, rrOperation, udOperation, SelectWithService, ImageDetail },
   mixins: [presenter(), header(), form(defaultForm), crud()],
-  dicts: ['vehicle_type', 'vehicle_supervise_status', 'vehicle_status'],
+  dicts: ['vehicle_type', 'vehicle_supervise_status', 'vehicle_status','cm_reclaim_status'],
   cruds() {
     return CRUD({ title: '车辆信息', url: 'vehicle/page', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...vehicleInfo }})
   },
@@ -281,7 +310,9 @@ export default {
         { key: 'status', display_name: '车辆状态（0空闲中 1骑行中 2临时停车 3状态丢失 4运维中 5其他）' }
       ],
       pictures: null,
-      imageVisible: false
+      imageVisible: false,
+      rqCodeVisible: false,
+      tempRQCode: null
     }
   },
   computed: {

@@ -71,13 +71,13 @@ export const constantRouterMap = [
   //   name: '测试链接页',
   //   meta: { title: '测试链接页' }
   // },
-  // {
-  //   path: 'test/jsmap',
-  //   hidden: true,
-  //   component: (resolve) => require(['@/views/test/jsmap/index'], resolve),
-  //   name: 'js测试地图',
-  //   meta: { title: 'js测试地图' }
-  // }
+  {
+    path: '/test/jsmap',
+    hidden: true,
+    component: (resolve) => require(['@/views/test/jsmap/index'], resolve),
+    name: 'js测试地图',
+    meta: { title: 'js测试地图' }
+  }
 ]
 
 export default new Router({

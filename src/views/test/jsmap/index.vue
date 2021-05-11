@@ -156,6 +156,10 @@ export default {
     this.map.setDefaultCursor('pointer') // 设置鼠标默认的指针样式为手
   },
   methods: {
+    ready(map) {
+      this.map = map
+      console.log('ready:', map)
+    },
     editPolyline() {
       this.map.addEventListener('click', (e) => {
         // console.log('click:', e)
