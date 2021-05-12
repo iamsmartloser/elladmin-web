@@ -4,8 +4,19 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle" class="search-wrap-has-label">
         <!-- 搜索 -->
-        <label v-if="!isOperators(user&&user.roles)" class="el-form-item-label">运营商ID</label>
-        <el-input v-if="!isOperators(user&&user.roles)" v-model="query.operatorId" clearable placeholder="运营商ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+        <label v-if="(!isOperators(user&&user.roles))&&city" class="el-form-item-label">所属运营商:</label>
+        <SelectWithService
+          v-if="(!isOperators(user&&user.roles))&&city"
+          style="width: 185px;"
+          clearable
+          value-key="id"
+          label-key="name"
+          :params="operatorParams"
+          :service="getPage"
+          @change="changeOperators"
+        />
+<!--        <label v-if="!isOperators(user&&user.roles)" class="el-form-item-label">运营商</label>-->
+<!--        <el-input v-if="!isOperators(user&&user.roles)" v-model="query.operatorId" clearable placeholder="运营商" style="width: 185px;" @keyup.enter.native="crud.toQuery" />-->
         <label class="el-form-item-label">姓名:</label>
         <el-input v-model="query.name" clearable placeholder="姓名" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">电话:</label>
@@ -33,8 +44,20 @@
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
       <crudOperation :permission="permission" />
       <!--表单组件-->
-      <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
-        <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
+      <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="540px">
+        <el-form ref="form" :model="form" :rules="rules" size="small" label-width="120px">
+          <el-form-item v-if="(!isOperators(user&&user.roles))&&city" label="所属运营商" prop="operatorId">
+            <SelectWithService
+              style="width: 370px;"
+              v-model="crud.form.operatorId"
+              clearable
+              value-key="id"
+              label-key="name"
+              :params="operatorParams"
+              :service="getPage"
+              @change="changeFormOperators"
+            />
+          </el-form-item>
           <el-form-item label="姓名" prop="name">
             <el-input v-model="form.name" style="width: 370px;" />
           </el-form-item>
@@ -118,15 +141,18 @@ import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 import {isOperators} from '@/utils/utils'
 import { mapGetters } from 'vuex'
+import { getPage } from '@/api/operators/operatorInfo'
+import { formatDate } from '@/utils/formatDay'
+import SelectWithService from '@/components/SelectWithService/index'
 
 const defaultForm = { id: null, operatorId: null, name: null, phoneNumber: null, contactsEmail: null, duties: null, status: null, receiveSms: null }
 export default {
   name: 'OpsUser',
-  components: { pagination, crudOperation, rrOperation, udOperation },
+  components: { pagination, crudOperation, rrOperation, udOperation, SelectWithService },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['ops_user_status', 'ops_user_receive_sms'],
   cruds() {
-    return CRUD({ title: '运维人员', url: '/opsUser/', idField: 'id', sort: 'id,desc', crudMethod: { ...crudOpsUser }})
+    return CRUD({ title: '运维人员', url: '/opsUser/',queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...crudOpsUser }})
   },
   data() {
     return {
@@ -160,15 +186,40 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'user'
-    ])
+      'user',
+      'city'
+    ]),
+    operatorParams() {
+      return { page: 0, areaCode: this.city && this.city.areaCode }
+    }
+  },
+  watch: {
+    city(val) {
+      this.crud.query.areaCode = val && val.areaCode
+      this.crud.refresh()
+    }
+  },
+  mounted() {
+    this.crud.query.areaCode = this.city && this.city.areaCode
+    this.crud.refresh()
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
     },
+    [CRUD.HOOK.beforeSubmit]() {
+      this.crud.form.areaCode = this.city&&this.city.areaCode
+      return true
+    },
     isOperators,
+    getPage,
+    changeOperators(id) {
+      this.crud.query.operatorId = id
+    },
+    changeFormOperators(id) {
+      this.crud.form.operatorId = id
+    },
   }
 }
 </script>
