@@ -269,7 +269,7 @@ export default {
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['vehicle_type', 'vehicle_supervise_status', 'vehicle_status','cm_reclaim_status'],
   cruds() {
-    return CRUD({ title: '车辆信息', url: 'vehicle/page', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...vehicleInfo }})
+    return CRUD({ title: '运营商', url: 'vehicle/page', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...vehicleInfo }})
   },
   data() {
     return {
