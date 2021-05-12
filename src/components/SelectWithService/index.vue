@@ -95,6 +95,7 @@ export default {
       this.getDataFromService(val)
     },
     initValue(val) {
+      console.log('initValue',val)
       this.initValueData(val)
     }
   },
@@ -106,7 +107,7 @@ export default {
   },
   methods: {
     initValueData(initValue) {
-      if(!this.service){
+      if (!this.service) {
         this.dataSource = this.data || []
       }
       if (initValue && this.multiple) {
@@ -125,6 +126,9 @@ export default {
         } else {
           this.value = initValue
         }
+      } else if (!initValue) {// 如果清空了值(解决列表重置按钮不能清空问题)
+        this.value = null
+        this.$emit('change', null, null)
       }
     },
     change(e) {

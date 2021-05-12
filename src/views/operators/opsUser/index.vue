@@ -11,6 +11,8 @@
           clearable
           value-key="id"
           label-key="name"
+          v-model="query.operatorId"
+          :init-value="query.operatorId"
           :params="operatorParams"
           :service="getPage"
           @change="changeOperators"
@@ -49,10 +51,10 @@
           <el-form-item v-if="(!isOperators(user&&user.roles))&&city" label="所属运营商" prop="operatorId">
             <SelectWithService
               style="width: 370px;"
-              v-model="crud.form.operatorId"
               clearable
               value-key="id"
               label-key="name"
+              :init-value="crud.form.operatorId"
               :params="operatorParams"
               :service="getPage"
               @change="changeFormOperators"

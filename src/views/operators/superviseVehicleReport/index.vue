@@ -51,7 +51,7 @@
           @keyup.enter.native="crud.toQuery"
         />
         <label class="el-form-item-label">审批状态:</label>
-        <el-select v-model="query.status" filterable placeholder="请选择">
+        <el-select v-model="query.status" filterable clearable placeholder="请选择">
           <el-option
             v-for="item in dict.approval_status"
             :key="item.id"
@@ -60,9 +60,18 @@
           />
         </el-select>
         <label class="el-form-item-label">运营商处置状态:</label>
-        <el-select v-model="query.handleStatus" filterable placeholder="请选择">
+        <el-select v-model="query.handleStatus" filterable clearable placeholder="请选择">
           <el-option
             v-for="item in dict.supervise_handle_type"
+            :key="item.id"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+        <label class="el-form-item-label">是否超时:</label>
+        <el-select v-model="query.overtime" filterable clearable placeholder="请选择">
+          <el-option
+            v-for="item in dict.overtime"
             :key="item.id"
             :label="item.label"
             :value="item.value"
@@ -198,6 +207,11 @@
                   {{ dict.label.supervise_handle_type[rowData.handleStatus] }}
                 </el-form-item>
               </el-col>
+              <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+                <el-form-item label="是否超时">
+                  {{ dict.label.overtime[rowData.overtime] }}
+                </el-form-item>
+              </el-col>
             </el-row>
             <el-row v-for="(handle,index) in (rowData.handles||[])" style="border-top: #aaaaaa 1px dashed; ">
               <div style="padding: 8px; text-align: center">处理流程{{ index+1 }}：</div>
@@ -290,6 +304,11 @@
 
           </template>
         </el-table-column>
+        <el-table-column prop="overtime" label="是否超时" width="120px">
+          <template slot-scope="scope">
+            {{ dict.label.overtime[scope.row.overtime] }}
+          </template>
+        </el-table-column>
         <el-table-column prop="approvalEndTime" label="审批流程结束时间">
           <template slot-scope="scope">
             {{ formatDate(scope.row.approvalEndTime) }}
@@ -351,7 +370,7 @@ export default {
   name: 'SuperviseVehicleReport',
   components: { pagination, crudOperation, rrOperation, udOperation, SelectWithService, ImageDetail },
   mixins: [presenter(), header(), form(defaultForm), crud()],
-  dicts: ['supervise_type', 'approval_status', 'supervise_handle_type'],
+  dicts: ['supervise_type', 'approval_status', 'supervise_handle_type','overtime'],
   cruds() {
     return CRUD({
       title: '举报管理', url: '/supervise/', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc',
