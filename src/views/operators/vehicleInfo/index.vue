@@ -4,70 +4,108 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle" class="search-wrap-has-label">
         <!-- 搜索 -->
-        <label class="el-form-item-label">车辆编码:</label>
-        <el-input v-model="query.carNumber" clearable placeholder="车辆编码" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">车辆品牌:</label>
-        <SelectWithService
-          v-if="city"
-          style="width: 185px;"
-          clearable
-          value-key="id"
-          label-key="name"
-          :init-value="query.brandId"
-          :params="brandParams"
-          :service="getBrandList"
-          @change="changeBrand"
-        />
-        <label class="el-form-item-label">所属运营商:</label>
-        <SelectWithService
-          v-if="city"
-          style="width: 185px;"
-          clearable
-          value-key="id"
-          label-key="name"
-          :init-value="query.operatorId"
-          :params="operatorParams"
-          :service="getPage"
-          @change="changeOperators"
-        />
-        <label class="el-form-item-label">投车计划ID:</label>
-        <el-input v-model="query.vehicleLaunchesId" clearable placeholder="投车计划ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">车辆类型</label>
-        <el-select v-model="query.type" filterable placeholder="请选择">
-          <el-option
-            v-for="item in dict.vehicle_type"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
+        <span>
+          <label class="el-form-item-label">车辆编码:</label>
+          <el-input v-model="query.carNumber" clearable placeholder="车辆编码" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+        </span>
+        <span>
+          <label class="el-form-item-label">车辆品牌:</label>
+          <SelectWithService
+            v-if="city"
+            style="width: 185px;"
+            clearable
+            value-key="id"
+            label-key="name"
+            :init-value="query.brandId"
+            :params="brandParams"
+            :service="getBrandList"
+            @change="changeBrand"
           />
-        </el-select>
-        <label class="el-form-item-label">车辆状态:</label>
-        <el-select v-model="query.status" filterable placeholder="请选择">
-          <el-option
-            v-for="item in dict.vehicle_status"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
+        </span>
+        <span>
+          <label class="el-form-item-label">所属运营商:</label>
+          <SelectWithService
+            v-if="city"
+            style="width: 185px;"
+            clearable
+            value-key="id"
+            label-key="name"
+            :init-value="query.operatorId"
+            :params="operatorParams"
+            :service="getPage"
+            @change="changeOperators"
           />
-        </el-select>
-        <label class="el-form-item-label">车辆举报状态:</label>
-        <el-select v-model="query.reportStatus" filterable placeholder="请选择">
-          <el-option
-            v-for="item in dict.vehicle_supervise_status"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <label class="el-form-item-label">城管收车状态:</label>
-        <el-select v-model="query.cmReclaimStatus" filterable placeholder="请选择">
-          <el-option
-            v-for="item in dict.cm_reclaim_status"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">投车计划ID:</label>
+          <el-input v-model="query.vehicleLaunchesId" clearable placeholder="投车计划ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+        </span>
+        <span>
+          <label class="el-form-item-label">车辆类型</label>
+          <el-select v-model="query.type" filterable placeholder="请选择">
+            <el-option
+              v-for="item in dict.vehicle_type"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">车辆状态:</label>
+          <el-select v-model="query.status" filterable placeholder="请选择">
+            <el-option
+              v-for="item in dict.vehicle_status"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">车辆举报状态:</label>
+          <el-select v-model="query.reportStatus" filterable placeholder="请选择">
+            <el-option
+              v-for="item in dict.vehicle_supervise_status"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">车辆举报状态:</label>
+          <el-select v-model="query.reportStatus" filterable placeholder="请选择">
+            <el-option
+              v-for="item in dict.vehicle_supervise_status"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">车辆举报状态:</label>
+          <el-select v-model="query.reportStatus" filterable placeholder="请选择">
+            <el-option
+              v-for="item in dict.vehicle_supervise_status"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">城管收车状态:</label>
+          <el-select v-model="query.cmReclaimStatus" filterable placeholder="请选择">
+            <el-option
+              v-for="item in dict.cm_reclaim_status"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
         <rrOperation :crud="crud" class="rr-op-has-label" :filter-item-class="false" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -160,7 +198,7 @@
         :visible="imageVisible"
         @close="imageVisible=false;pictures=null"
       />
-<!--   二维码大图   -->
+      <!--   二维码大图   -->
       <el-dialog
         v-if="rqCodeVisible"
         title="车辆二维码"
@@ -169,7 +207,7 @@
         width="300px"
         @close="rqCodeVisible = false;tempRQCode = null"
       >
-        <vue-qr :text="tempRQCode" :qid="tempRQCode" :size="250"/>
+        <vue-qr :text="tempRQCode" :qid="tempRQCode" :size="250" />
       </el-dialog>
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
@@ -177,23 +215,23 @@
         <el-table-column prop="rqCode" label="车辆二维码" width="100px">
           <template slot-scope="scope">
             <div @click="rqCodeVisible = true;tempRQCode = scope.row.rqCode;">
-              <vue-qr :text="scope.row.rqCode" :qid="'rqCode'+scope.row.id" :size="80" style="cursor: pointer"/>
+              <vue-qr :text="scope.row.rqCode" :qid="'rqCode'+scope.row.id" :size="80" style="cursor: pointer" />
             </div>
           </template>
         </el-table-column>
-<!--        <el-table-column prop="picture" label="照片">-->
-<!--          <template slot-scope="scope">-->
-<!--            <div style="text-align: center">-->
-<!--              <img-->
-<!--                v-if="scope.row.picture"-->
-<!--                style="max-width: 50px;max-height: 100px;cursor:pointer;"-->
-<!--                :src="scope.row.picture"-->
-<!--                @click="imageVisible=true;rowData=scope.row;pictures = scope.row.picture?[scope.row.picture]:[]"-->
-<!--              >-->
-<!--              <span v-else>暂无图片</span>-->
-<!--            </div>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <!--        <el-table-column prop="picture" label="照片">-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <div style="text-align: center">-->
+        <!--              <img-->
+        <!--                v-if="scope.row.picture"-->
+        <!--                style="max-width: 50px;max-height: 100px;cursor:pointer;"-->
+        <!--                :src="scope.row.picture"-->
+        <!--                @click="imageVisible=true;rowData=scope.row;pictures = scope.row.picture?[scope.row.picture]:[]"-->
+        <!--              >-->
+        <!--              <span v-else>暂无图片</span>-->
+        <!--            </div>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
         <!--        <el-table-column prop="id" label="车辆ID" />-->
         <el-table-column prop="carNumber" label="车辆编码" />
         <el-table-column prop="brandName" label="车辆品牌" />
@@ -221,9 +259,9 @@
             {{ dict.label.cm_reclaim_status[scope.row.cmReclaimStatus] }}
           </template>
         </el-table-column>
-<!--        <el-table-column prop="statusExplain" label="其他状态说明" />-->
+        <!--        <el-table-column prop="statusExplain" label="其他状态说明" />-->
         <el-table-column prop="pintGCJ02" label="车辆经纬度" />
-<!--        <el-table-column prop="lat" label="纬度" />-->
+        <!--        <el-table-column prop="lat" label="纬度" />-->
         <el-table-column prop="lastReportTime" label="最后上报时间">
           <template slot-scope="scope">
             {{ formatDate(scope.row.lastReportTime) }}
@@ -269,7 +307,7 @@ export default {
   name: 'VehicleInfo',
   components: { pagination, crudOperation, rrOperation, udOperation, SelectWithService, ImageDetail },
   mixins: [presenter(), header(), form(defaultForm), crud()],
-  dicts: ['vehicle_type', 'vehicle_supervise_status', 'vehicle_status','cm_reclaim_status'],
+  dicts: ['vehicle_type', 'vehicle_supervise_status', 'vehicle_status', 'cm_reclaim_status'],
   cruds() {
     return CRUD({ title: '运营商', url: 'vehicle/page', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...vehicleInfo }})
   },
@@ -366,7 +404,7 @@ export default {
     changeFormOperators(id) {
       this.crud.form.operatorId = id
     },
-    toView(row){
+    toView(row) {
       this.row = row
       this.$router.push('/detail/vehicle_detail/' + row.id)
     }

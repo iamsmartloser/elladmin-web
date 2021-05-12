@@ -4,75 +4,93 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle" class="search-wrap-has-label">
         <!-- 搜索 -->
-        <label class="el-form-item-label">车辆品牌:</label>
-        <SelectWithService
-          v-if="city"
-          style="width: 185px;"
-          clearable
-          value-key="id"
-          label-key="name"
-          :params="brandParams"
-          :service="getBrandList"
-          @change="changeBrand"
-        />
-        <label class="el-form-item-label">统一社会信用代码</label>
-        <el-input v-model="query.codeNumber" clearable placeholder="统一社会信用代码" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">公司名称</label>
-        <el-input v-model="query.name" clearable placeholder="公司名称" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">服务区类型</label>
-        <el-select v-model="query.lbsServiceType" filterable clearable placeholder="请选择">
-          <el-option
-            v-for="item in dict.lbs_created_type"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
+        <span>
+          <label class="el-form-item-label">车辆品牌:</label>
+          <SelectWithService
+            v-if="city"
+            style="width: 185px;"
+            clearable
+            value-key="id"
+            label-key="name"
+            :params="brandParams"
+            :service="getBrandList"
+            @change="changeBrand"
           />
-        </el-select>
-        <label class="el-form-item-label">车站类型</label>
-        <el-select v-model="query.lbsStationType" filterable clearable placeholder="请选择">
-          <el-option
-            v-for="item in dict.lbs_created_type"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <label class="el-form-item-label">禁停区类型</label>
-        <el-select v-model="query.lbsNoParkingType" filterable clearable placeholder="请选择">
-          <el-option
-            v-for="item in dict.lbs_created_type"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <label class="el-form-item-label">审批状态</label>
-        <el-select v-model="query.status" filterable clearable placeholder="请选择">
-          <el-option
-            v-for="item in dict.approval_status"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <label class="el-form-item-label">接入状态</label>
-        <el-select v-model="query.access" filterable clearable placeholder="请选择">
-          <el-option
-            v-for="item in dict.access_status"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <label class="el-form-item-label">清退状态</label>
-        <el-select v-model="query.retreat" filterable clearable placeholder="请选择">
-          <el-option
-            v-for="item in dict.retreat_status"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">统一社会信用代码</label>
+          <el-input v-model="query.codeNumber" clearable placeholder="统一社会信用代码" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+        </span>
+        <span>
+          <label class="el-form-item-label">公司名称</label>
+          <el-input v-model="query.name" clearable placeholder="公司名称" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+        </span>
+        <span>
+          <label class="el-form-item-label">服务区类型</label>
+          <el-select v-model="query.lbsServiceType" filterable clearable placeholder="请选择">
+            <el-option
+              v-for="item in dict.lbs_created_type"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">车站类型</label>
+          <el-select v-model="query.lbsStationType" filterable clearable placeholder="请选择">
+            <el-option
+              v-for="item in dict.lbs_created_type"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">禁停区类型</label>
+          <el-select v-model="query.lbsNoParkingType" filterable clearable placeholder="请选择">
+            <el-option
+              v-for="item in dict.lbs_created_type"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">审批状态</label>
+          <el-select v-model="query.status" filterable clearable placeholder="请选择">
+            <el-option
+              v-for="item in dict.approval_status"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">接入状态</label>
+          <el-select v-model="query.access" filterable clearable placeholder="请选择">
+            <el-option
+              v-for="item in dict.access_status"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">清退状态</label>
+          <el-select v-model="query.retreat" filterable clearable placeholder="请选择">
+            <el-option
+              v-for="item in dict.retreat_status"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
         <rrOperation :crud="crud" class="rr-op-has-label" :filter-item-class="false" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -83,26 +101,26 @@
           <el-form-item v-if="crud.status.edit" v-show="false" label="ID" prop="operatorId">
             <el-input v-model="form.id" style="width: 370px;" />
           </el-form-item>
-<!--          <el-form-item label="车辆品牌" prop="brandId">-->
-<!--            <SelectWithService-->
-<!--              v-if="city"-->
-<!--              v-model="crud.form.brandId"-->
-<!--              style="width: 370px;"-->
-<!--              :init-value="crud.form.brandId"-->
-<!--              clearable-->
-<!--              value-key="id"-->
-<!--              label-key="name"-->
-<!--              :params="brandParams"-->
-<!--              :service="getBrandList"-->
-<!--              @change="changeFormBrand"-->
-<!--            />-->
-<!--          </el-form-item>-->
-<!--          <el-form-item label="统一社会信用代码" prop="codeNumber">-->
-<!--            <el-input v-model="form.codeNumber" style="width: 370px;" />-->
-<!--          </el-form-item>-->
-<!--          <el-form-item label="公司名称" prop="name">-->
-<!--            <el-input v-model="form.name" style="width: 370px;" />-->
-<!--          </el-form-item>-->
+          <!--          <el-form-item label="车辆品牌" prop="brandId">-->
+          <!--            <SelectWithService-->
+          <!--              v-if="city"-->
+          <!--              v-model="crud.form.brandId"-->
+          <!--              style="width: 370px;"-->
+          <!--              :init-value="crud.form.brandId"-->
+          <!--              clearable-->
+          <!--              value-key="id"-->
+          <!--              label-key="name"-->
+          <!--              :params="brandParams"-->
+          <!--              :service="getBrandList"-->
+          <!--              @change="changeFormBrand"-->
+          <!--            />-->
+          <!--          </el-form-item>-->
+          <!--          <el-form-item label="统一社会信用代码" prop="codeNumber">-->
+          <!--            <el-input v-model="form.codeNumber" style="width: 370px;" />-->
+          <!--          </el-form-item>-->
+          <!--          <el-form-item label="公司名称" prop="name">-->
+          <!--            <el-input v-model="form.name" style="width: 370px;" />-->
+          <!--          </el-form-item>-->
           <el-form-item label="联系人邮箱" prop="contactsEmail">
             <el-input v-model.number="form.contactsEmail" style="width: 370px;" />
           </el-form-item>
@@ -113,49 +131,49 @@
             <el-input v-model.number="form.contactsPhoneNumber" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="授权车辆数" prop="vehicleScale">
-            <el-input-number v-model="form.vehicleScale" :min="0"></el-input-number>
+            <el-input-number v-model="form.vehicleScale" :min="0" />
           </el-form-item>
 
-<!--          <el-form-item label="服务区类型" prop="lbsServiceType">-->
-<!--            <el-select v-model="form.lbsServiceType" filterable clearable placeholder="请选择" style="width: 370px;">-->
-<!--              <el-option-->
-<!--                v-for="item in dict.lbs_created_type"-->
-<!--                :key="item.id"-->
-<!--                :label="item.label"-->
-<!--                :value="item.value"-->
-<!--              />-->
-<!--            </el-select>-->
-<!--          </el-form-item>-->
-<!--          <el-form-item label="车站类型" prop="lbsStationType">-->
-<!--            <el-select v-model="form.lbsStationType" filterable clearable placeholder="请选择" style="width: 370px;">-->
-<!--              <el-option-->
-<!--                v-for="item in dict.lbs_created_type"-->
-<!--                :key="item.id"-->
-<!--                :label="item.label"-->
-<!--                :value="item.value"-->
-<!--              />-->
-<!--            </el-select>-->
-<!--          </el-form-item>-->
-<!--          <el-form-item label="禁停区类型" prop="lbsNoParkingType">-->
-<!--            <el-select v-model="form.lbsNoParkingType" filterable clearable placeholder="请选择" style="width: 370px;">-->
-<!--              <el-option-->
-<!--                v-for="item in dict.lbs_created_type"-->
-<!--                :key="item.id"-->
-<!--                :label="item.label"-->
-<!--                :value="item.value"-->
-<!--              />-->
-<!--            </el-select>-->
-<!--          </el-form-item>-->
-<!--          <el-form-item label="审批状态" prop="status">-->
-<!--            <el-select v-model="form.status" filterable clearable placeholder="请选择" style="width: 370px;">-->
-<!--              <el-option-->
-<!--                v-for="item in dict.approval_status"-->
-<!--                :key="item.id"-->
-<!--                :label="item.label"-->
-<!--                :value="item.value"-->
-<!--              />-->
-<!--            </el-select>-->
-<!--          </el-form-item>-->
+          <!--          <el-form-item label="服务区类型" prop="lbsServiceType">-->
+          <!--            <el-select v-model="form.lbsServiceType" filterable clearable placeholder="请选择" style="width: 370px;">-->
+          <!--              <el-option-->
+          <!--                v-for="item in dict.lbs_created_type"-->
+          <!--                :key="item.id"-->
+          <!--                :label="item.label"-->
+          <!--                :value="item.value"-->
+          <!--              />-->
+          <!--            </el-select>-->
+          <!--          </el-form-item>-->
+          <!--          <el-form-item label="车站类型" prop="lbsStationType">-->
+          <!--            <el-select v-model="form.lbsStationType" filterable clearable placeholder="请选择" style="width: 370px;">-->
+          <!--              <el-option-->
+          <!--                v-for="item in dict.lbs_created_type"-->
+          <!--                :key="item.id"-->
+          <!--                :label="item.label"-->
+          <!--                :value="item.value"-->
+          <!--              />-->
+          <!--            </el-select>-->
+          <!--          </el-form-item>-->
+          <!--          <el-form-item label="禁停区类型" prop="lbsNoParkingType">-->
+          <!--            <el-select v-model="form.lbsNoParkingType" filterable clearable placeholder="请选择" style="width: 370px;">-->
+          <!--              <el-option-->
+          <!--                v-for="item in dict.lbs_created_type"-->
+          <!--                :key="item.id"-->
+          <!--                :label="item.label"-->
+          <!--                :value="item.value"-->
+          <!--              />-->
+          <!--            </el-select>-->
+          <!--          </el-form-item>-->
+          <!--          <el-form-item label="审批状态" prop="status">-->
+          <!--            <el-select v-model="form.status" filterable clearable placeholder="请选择" style="width: 370px;">-->
+          <!--              <el-option-->
+          <!--                v-for="item in dict.approval_status"-->
+          <!--                :key="item.id"-->
+          <!--                :label="item.label"-->
+          <!--                :value="item.value"-->
+          <!--              />-->
+          <!--            </el-select>-->
+          <!--          </el-form-item>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="text" @click="crud.cancelCU">取消</el-button>
@@ -369,7 +387,7 @@ export default {
     },
     [CRUD.HOOK.beforeSubmit]() {
       this.crud.form.areaCode = this.city && this.city.areaCode
-      this.crud.form.operatorId = this.crud.form.id//parseFloat(this.crud.form.id+"")
+      this.crud.form.operatorId = this.crud.form.id// parseFloat(this.crud.form.id+"")
       return true
     },
     formatDate,

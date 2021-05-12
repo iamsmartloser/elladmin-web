@@ -4,79 +4,79 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle" class="search-wrap-has-label">
         <!-- 搜索 -->
-        <label class="el-form-item-label">车辆品牌:</label>
-        <SelectWithService
-          v-if="city"
-          style="width: 185px;"
-          clearable
-          value-key="id"
-          label-key="name"
-          :params="brandParams"
-          :service="getBrandList"
-          @change="changeBrand"
-        />
-        <label class="el-form-item-label">所属运营商:</label>
-        <SelectWithService
-          v-if="city"
-          style="width: 185px;"
-          clearable
-          value-key="id"
-          label-key="name"
-          :params="operatorParams"
-          :service="getPage"
-          @change="changeOperators"
-        />
-        <label class="el-form-item-label">车辆编码:</label>
-        <el-input
-          v-model="query.carNumber"
-          clearable
-          placeholder="车辆编码"
-          style="width: 185px;"
-          @keyup.enter.native="crud.toQuery"
-        />
-        <label class="el-form-item-label">举报类型:</label>
-        <el-input
-          v-model="query.type"
-          clearable
-          placeholder="举报类型"
-          style="width: 185px;"
-          @keyup.enter.native="crud.toQuery"
-        />
-        <label class="el-form-item-label">举报人姓名:</label>
-        <el-input
-          v-model="query.userName"
-          clearable
-          placeholder="举报人姓名"
-          style="width: 185px;"
-          @keyup.enter.native="crud.toQuery"
-        />
-        <label class="el-form-item-label">审批状态:</label>
-        <el-select v-model="query.status" filterable clearable placeholder="请选择">
-          <el-option
-            v-for="item in dict.approval_status"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <label class="el-form-item-label">运营商处置状态:</label>
-        <el-select v-model="query.handleStatus" filterable clearable placeholder="请选择">
-          <el-option
-            v-for="item in dict.supervise_handle_type"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <label class="el-form-item-label">是否超时:</label>
-        <el-select v-model="query.overtime" filterable clearable placeholder="请选择">
-          <el-option
-            v-for="item in dict.overtime"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <span>        <label class="el-form-item-label">车辆品牌:</label>
+          <SelectWithService
+            v-if="city"
+            style="width: 185px;"
+            clearable
+            value-key="id"
+            label-key="name"
+            :params="brandParams"
+            :service="getBrandList"
+            @change="changeBrand"
+          /></span>
+        <span>        <label class="el-form-item-label">所属运营商:</label>
+          <SelectWithService
+            v-if="city"
+            style="width: 185px;"
+            clearable
+            value-key="id"
+            label-key="name"
+            :params="operatorParams"
+            :service="getPage"
+            @change="changeOperators"
+          /></span>
+        <span>        <label class="el-form-item-label">车辆编码:</label>
+          <el-input
+            v-model="query.carNumber"
+            clearable
+            placeholder="车辆编码"
+            style="width: 185px;"
+            @keyup.enter.native="crud.toQuery"
+          /></span>
+        <span>        <label class="el-form-item-label">举报类型:</label>
+          <el-input
+            v-model="query.type"
+            clearable
+            placeholder="举报类型"
+            style="width: 185px;"
+            @keyup.enter.native="crud.toQuery"
+          /></span>
+        <span>        <label class="el-form-item-label">举报人姓名:</label>
+          <el-input
+            v-model="query.userName"
+            clearable
+            placeholder="举报人姓名"
+            style="width: 185px;"
+            @keyup.enter.native="crud.toQuery"
+          /></span>
+        <span>        <label class="el-form-item-label">审批状态:</label>
+          <el-select v-model="query.status" filterable clearable placeholder="请选择">
+            <el-option
+              v-for="item in dict.approval_status"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select></span>
+        <span>        <label class="el-form-item-label">运营商处置状态:</label>
+          <el-select v-model="query.handleStatus" filterable clearable placeholder="请选择">
+            <el-option
+              v-for="item in dict.supervise_handle_type"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select></span>
+        <span>        <label class="el-form-item-label">是否超时:</label>
+          <el-select v-model="query.overtime" filterable clearable placeholder="请选择">
+            <el-option
+              v-for="item in dict.overtime"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select></span>
         <rrOperation :crud="crud" class="rr-op-has-label" :filter-item-class="false" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -370,7 +370,7 @@ export default {
   name: 'SuperviseVehicleReport',
   components: { pagination, crudOperation, rrOperation, udOperation, SelectWithService, ImageDetail },
   mixins: [presenter(), header(), form(defaultForm), crud()],
-  dicts: ['supervise_type', 'approval_status', 'supervise_handle_type','overtime'],
+  dicts: ['supervise_type', 'approval_status', 'supervise_handle_type', 'overtime'],
   cruds() {
     return CRUD({
       title: '举报管理', url: '/supervise/', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc',

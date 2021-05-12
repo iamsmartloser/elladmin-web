@@ -5,46 +5,58 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle" class="search-wrap-has-label">
         <!-- 搜索 -->
-        <label class="el-form-item-label">消息类型:</label>
-        <el-select v-model="query.type" filterable placeholder="请选择消息类型" clearable>
-          <el-option
-            v-for="item in dict.msg_type"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
+        <span>
+          <label class="el-form-item-label">消息类型:</label>
+          <el-select v-model="query.type" filterable placeholder="请选择消息类型" clearable>
+            <el-option
+              v-for="item in dict.msg_type"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">允许回复:</label>
+          <el-select v-model="query.allowReceive" filterable placeholder="请选择允许回复" clearable>
+            <el-option
+              v-for="item in dict.allow_receive"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">是否强提醒:</label>
+          <el-select v-model="query.compulsaryWarningType" filterable placeholder="请选择是否强提醒" clearable>
+            <el-option
+              v-for="item in dict.compulsary_warning_type"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">消息标题:</label>
+          <el-input v-model="query.title" clearable placeholder="请输入消息标题" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+        </span>
+        <span>
+          <label class="el-form-item-label">发送者姓名:</label>
+          <el-input v-model="query.createUserName" clearable placeholder="发送者姓名" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+        </span>
+        <span>
+          <label class="el-form-item-label">发送时间:</label>
+          <el-date-picker
+            v-model="sendTime"
+            type="datetimerange"
+            value-format="timestamp"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
           />
-        </el-select>
-        <label class="el-form-item-label">允许回复:</label>
-        <el-select v-model="query.allowReceive" filterable placeholder="请选择允许回复" clearable>
-          <el-option
-            v-for="item in dict.allow_receive"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <label class="el-form-item-label">是否强提醒:</label>
-        <el-select v-model="query.compulsaryWarningType" filterable placeholder="请选择是否强提醒" clearable>
-          <el-option
-            v-for="item in dict.compulsary_warning_type"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <label class="el-form-item-label">消息标题:</label>
-        <el-input v-model="query.title" clearable placeholder="请输入消息标题" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">发送者姓名:</label>
-        <el-input v-model="query.createUserName" clearable placeholder="发送者姓名" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">发送时间:</label>
-        <el-date-picker
-          v-model="sendTime"
-          type="datetimerange"
-          value-format="timestamp"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        />
+        </span>
         <rrOperation :crud="crud" class="rr-op-has-label" :filter-item-class="false" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -53,9 +65,9 @@
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="1080px" @opened="openDialog" @closed="closeDialog">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="220px">
 
-<!--          <el-form-item v-show="false" label="areaCode">-->
-<!--            <el-input v-model="city.areaCode" style="width: 370px;" />-->
-<!--          </el-form-item>-->
+          <!--          <el-form-item v-show="false" label="areaCode">-->
+          <!--            <el-input v-model="city.areaCode" style="width: 370px;" />-->
+          <!--          </el-form-item>-->
           <el-form-item v-if="crud.status.edit" v-show="false" label="ID">
             <el-input v-model="form.id" style="width: 370px;" />
           </el-form-item>
@@ -256,15 +268,15 @@ export default {
       'user',
       'city'
     ]),
-    operatorParams(){
-      return {page:0, areaCode: this.city&&this.city.areaCode}
+    operatorParams() {
+      return { page: 0, areaCode: this.city && this.city.areaCode }
     }
   },
   watch: {
-    city(val){
+    city(val) {
       // console.log('watch areaCode msg', this.$store.state.user.city&&this.$store.state.user.city.areaCode)
       this.crud.query.areaCode = val && val.areaCode
-      this.crud.page.page=1
+      this.crud.page.page = 1
       this.crud.refresh()
     }
   },
@@ -285,7 +297,7 @@ export default {
       return true
     },
     [CRUD.HOOK.beforeSubmit]() {
-      this.crud.form.areaCode = this.city&&this.city.areaCode
+      this.crud.form.areaCode = this.city && this.city.areaCode
       return true
     },
     changeOperators(ids) {
