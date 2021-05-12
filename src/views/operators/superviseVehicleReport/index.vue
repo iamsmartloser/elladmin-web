@@ -11,6 +11,7 @@
             clearable
             value-key="id"
             label-key="name"
+            :init-value="query.brandId"
             :params="brandParams"
             :service="getBrandList"
             @change="changeBrand"
@@ -22,6 +23,7 @@
             clearable
             value-key="id"
             label-key="name"
+            :init-value="query.operatorId"
             :params="operatorParams"
             :service="getPage"
             @change="changeOperators"
