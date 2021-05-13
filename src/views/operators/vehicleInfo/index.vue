@@ -74,28 +74,6 @@
           </el-select>
         </span>
         <span>
-          <label class="el-form-item-label">车辆举报状态:</label>
-          <el-select v-model="query.reportStatus" filterable placeholder="请选择">
-            <el-option
-              v-for="item in dict.vehicle_supervise_status"
-              :key="item.id"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </span>
-        <span>
-          <label class="el-form-item-label">车辆举报状态:</label>
-          <el-select v-model="query.reportStatus" filterable placeholder="请选择">
-            <el-option
-              v-for="item in dict.vehicle_supervise_status"
-              :key="item.id"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </span>
-        <span>
           <label class="el-form-item-label">城管收车状态:</label>
           <el-select v-model="query.cmReclaimStatus" filterable placeholder="请选择">
             <el-option

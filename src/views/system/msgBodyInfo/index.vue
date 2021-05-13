@@ -292,6 +292,7 @@ export default {
     [CRUD.HOOK.beforeRefresh]() {
       this.crud.query.beginSendTime = this.sendTime ? this.sendTime[0] : null
       this.crud.query.endSendTime = this.sendTime ? this.sendTime[1] : null
+      this.crud.query.areaCode = this.city && this.city.areaCode
       // 框架本身page是从0开始传，由于新写的接口需要从1开始传，所以这里需要修改
       this.crud.query.page = this.crud.page.page
       return true

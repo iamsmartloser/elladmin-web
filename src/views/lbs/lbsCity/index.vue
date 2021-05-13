@@ -88,6 +88,9 @@ export default {
       ]
     }
   },
+  beforeCreate() {
+    this.crud.optShow.download = false
+  },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {

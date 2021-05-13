@@ -5,6 +5,17 @@
       <div v-if="crud.props.searchToggle" class="search-wrap-has-label">
         <!-- 搜索 -->
         <span>
+          <label class="el-form-item-label">数据来源</label>
+          <el-select v-model="query.dataOrigin" filterable clearable placeholder="请选择">
+            <el-option
+              v-for="item in dict.data_origin"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
           <label class="el-form-item-label">所属运营商</label>
           <SelectWithService
             v-if="city"
@@ -22,11 +33,21 @@
           <label class="el-form-item-label">所属服务区</label>
           <el-input v-model="query.lbsServiceId" clearable placeholder="所属服务区ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         </span>
+
+        <label class="el-form-item-label">坐标类型</label>
+        <el-select v-model="query.pointType" filterable clearable placeholder="请选择">
+          <el-option
+            v-for="item in dict.point_type"
+            :key="item.id"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
         <span>
-          <label class="el-form-item-label">仓库类型</label>
-          <el-select v-model="query.storeType" filterable clearable placeholder="请选择">
+          <label class="el-form-item-label">是否禁用</label>
+          <el-select v-model="query.isDisable" filterable clearable placeholder="请选择">
             <el-option
-              v-for="item in dict.storehouse_type"
+              v-for="item in dict.is_disable"
               :key="item.id"
               :label="item.label"
               :value="item.value"
@@ -34,10 +55,10 @@
           </el-select>
         </span>
         <span>
-          <label class="el-form-item-label">是否禁用</label>
-          <el-select v-model="query.isDisable" filterable clearable placeholder="请选择">
+          <label class="el-form-item-label">整改中</label>
+          <el-select v-model="query.isImproving" filterable clearable placeholder="请选择">
             <el-option
-              v-for="item in dict.is_disable"
+              v-for="item in dict.is_improving"
               :key="item.id"
               :label="item.label"
               :value="item.value"
@@ -62,21 +83,21 @@
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-          <el-form-item label="所属运营商ID" prop="operatorId">
-            未设置字典，请手动设置 Select
-          </el-form-item>
-          <el-form-item label="所属服务区ID" prop="lbsServiceId">
-            未设置字典，请手动设置 Select
-          </el-form-item>
-          <el-form-item label="仓库类型">
-            <el-select v-model="form.storeType" filterable placeholder="请选择">
+          <el-form-item label="数据来源" prop="dataOrigin">
+            <el-select v-model="form.dataOrigin" filterable clearable placeholder="请选择">
               <el-option
-                v-for="item in dict.storehouse_type"
+                v-for="item in dict.data_origin"
                 :key="item.id"
                 :label="item.label"
                 :value="item.value"
               />
             </el-select>
+          </el-form-item>
+          <el-form-item label="所属运营商ID" prop="operatorId">
+            未设置字典，请手动设置 Select
+          </el-form-item>
+          <el-form-item label="所属服务区ID" prop="lbsServiceId">
+            未设置字典，请手动设置 Select
           </el-form-item>
           <el-form-item label="照片">
             <el-input v-model="form.picture" style="width: 370px;" />
@@ -87,20 +108,27 @@
           <el-form-item label="描述">
             <el-input v-model="form.remark" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="东经">
-            <el-input v-model="form.lng" style="width: 370px;" />
+          <el-form-item label="车站容量" prop="capacity">
+            <el-input v-model="form.capacity" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="南维">
-            <el-input v-model="form.lat" style="width: 370px;" />
+          <el-form-item label="坐标类型" prop="pointType">
+            <el-select v-model="form.pointType" filterable clearable placeholder="请选择">
+              <el-option
+                v-for="item in dict.point_type"
+                :key="item.id"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </el-form-item>
-          <el-form-item label="联系人姓名">
-            <el-input v-model="form.contactsName" style="width: 370px;" />
+          <el-form-item label="经纬度坐标组" prop="pointValue">
+            <el-input v-model="form.pointValue" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="联系人电话">
-            <el-input v-model="form.contactsPhoneNumber" style="width: 370px;" />
+          <el-form-item label="辐射半径">
+            <el-input v-model="form.pointRadius" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="是否禁用" prop="isDisable">
-            <el-select v-model="form.isDisable" filterable placeholder="请选择">
+            <el-select v-model="form.isDisable" filterable clearable placeholder="请选择">
               <el-option
                 v-for="item in dict.is_disable"
                 :key="item.id"
@@ -108,9 +136,6 @@
                 :value="item.value"
               />
             </el-select>
-          </el-form-item>
-          <el-form-item label="最后一次培训时间">
-            <el-input v-model="form.lastSafetyTrainingTime" style="width: 370px;" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -128,7 +153,7 @@
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
-<!--        <el-table-column prop="id" label="ID" />-->
+        <!--        <el-table-column prop="id" label="ID" />-->
         <el-table-column prop="picture" label="照片">
           <template slot-scope="scope">
             <div style="text-align: center">
@@ -142,34 +167,37 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column prop="name" label="名称" />
+        <el-table-column prop="remark" label="描述" />
+        <el-table-column prop="capacity" label="车站容量" />
+        <el-table-column prop="dataOrigin" label="数据来源">
+          <template slot-scope="scope">
+            {{ dict.label.data_origin[scope.row.dataOrigin] }}
+          </template>
+        </el-table-column>
         <el-table-column prop="operatorName" label="所属运营商" />
         <el-table-column prop="lbsServiceName" label="所属服务区" />
         <el-table-column prop="operatorApplyId" label="关联申请ID" />
-        <el-table-column prop="storeType" label="仓库类型">
+        <el-table-column prop="pointType" label="坐标类型">
           <template slot-scope="scope">
-            {{ dict.label.storehouse_type[scope.row.storeType] }}
+            {{ dict.label.point_type[scope.row.pointType] }}
           </template>
         </el-table-column>
-<!--        <el-table-column prop="picture" label="照片" />-->
-        <el-table-column prop="name" label="名称" />
-        <el-table-column prop="remark" label="描述" />
-        <el-table-column prop="lng" label="东经" />
-        <el-table-column prop="lat" label="南维" />
-        <el-table-column prop="contactsName" label="联系人姓名" />
-        <el-table-column prop="contactsPhoneNumber" label="联系人电话" />
+        <el-table-column prop="pointValue" label="经纬度坐标组" />
+        <el-table-column prop="pointRadius" label="辐射半径" />
+        <el-table-column prop="createTime" label="创建时间">
+          <template slot-scope="scope">
+            {{ formatDate(scope.row.createTime) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="isDisable" label="是否禁用">
           <template slot-scope="scope">
             {{ dict.label.is_disable[scope.row.isDisable] }}
           </template>
         </el-table-column>
-        <el-table-column prop="lastSafetyTrainingTime" label="最后一次培训时间">
+        <el-table-column prop="isImproving" label="整改中">
           <template slot-scope="scope">
-            {{ formatDate(scope.row.lastSafetyTrainingTime) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="createTime" label="创建时间">
-          <template slot-scope="scope">
-            {{ formatDate(scope.row.createTime) }}
+            {{ dict.label.is_improving[scope.row.isImproving] }}
           </template>
         </el-table-column>
         <el-table-column prop="status" label="审批状态">
@@ -177,14 +205,14 @@
             {{ dict.label.approval_status[scope.row.status] }}
           </template>
         </el-table-column>
-        <el-table-column v-if="checkPer(['admin','lbsStorehouse:edit','lbsStorehouse:del'])" label="操作" width="150px" align="center">
-          <template slot-scope="scope">
-            <udOperation
-              :data="scope.row"
-              :permission="permission"
-            />
-          </template>
-        </el-table-column>
+        <!--        <el-table-column v-if="checkPer(['admin','lbsStation:edit','lbsStation:del'])" label="操作" width="150px" align="center">-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <udOperation-->
+        <!--              :data="scope.row"-->
+        <!--              :permission="permission"-->
+        <!--            />-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
       </el-table>
       <!--分页组件-->
       <pagination />
@@ -193,7 +221,7 @@
 </template>
 
 <script>
-import crudLbsStorehouse from '@/api/lbs/lbsStorehouse'
+import crudLbsStation from '@/api/lbs/lbsStation'
 import CRUD, { crud, form, header, presenter } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
@@ -205,23 +233,26 @@ import { getPage } from '@/api/operators/operatorInfo'
 import { mapGetters } from 'vuex'
 import SelectWithService from '@/components/SelectWithService/index'
 
-const defaultForm = { id: null, operatorId: null, lbsServiceId: null, operatorApplyId: null, type: null, picture: null, name: null, remark: null, lng: null, lat: null, contactsName: null, contactsPhoneNumber: null, isDisable: null, lastSafetyTrainingTime: null, createTime: null, status: null, createUserId: null, approvalInfoId: null, approvalEndTime: null }
+const defaultForm = { id: null, dataOrigin: null, operatorId: null, lbsServiceId: null, operatorApplyId: null, picture: null, name: null, remark: null, capacity: null, pointType: null, pointValue: null, pointRadius: null, minlng: null, maxlng: null, minlat: null, maxlat: null, createTime: null, isDisable: null, isImproving: null, status: null, createUserId: null, approvalInfoId: null, approvalEndTime: null }
 export default {
-  name: 'LbsStorehouse',
-  components: { pagination, crudOperation, rrOperation, udOperation, ImageDetail, SelectWithService },
+  name: 'LbsStation',
+  components: { pagination, crudOperation, rrOperation, udOperation, SelectWithService, ImageDetail },
   mixins: [presenter(), header(), form(defaultForm), crud()],
-  dicts: ['storehouse_type', 'is_disable', 'approval_status'],
+  dicts: ['data_origin', 'point_type', 'is_disable', 'is_improving', 'approval_status'],
   cruds() {
-    return CRUD({ title: '仓库', url: 'lbs/page', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...crudLbsStorehouse }})
+    return CRUD({ title: 'lbs_station', url: 'lbs/page', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...crudLbsStation }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'lbsStorehouse:add'],
-        edit: ['admin', 'lbsStorehouse:edit'],
-        del: ['admin', 'lbsStorehouse:del']
+        add: ['admin', 'lbsStation:add'],
+        edit: ['admin', 'lbsStation:edit'],
+        del: ['admin', 'lbsStation:del']
       },
       rules: {
+        dataOrigin: [
+          { required: true, message: '数据来源不能为空', trigger: 'blur' }
+        ],
         operatorId: [
           { required: true, message: '所属运营商ID不能为空', trigger: 'blur' }
         ],
@@ -231,15 +262,26 @@ export default {
         name: [
           { required: true, message: '名称不能为空', trigger: 'blur' }
         ],
+        capacity: [
+          { required: true, message: '车站容量不能为空', trigger: 'blur' }
+        ],
+        pointType: [
+          { required: true, message: '坐标类型不能为空', trigger: 'blur' }
+        ],
+        pointValue: [
+          { required: true, message: '经纬度坐标组不能为空', trigger: 'blur' }
+        ],
         isDisable: [
           { required: true, message: '是否禁用不能为空', trigger: 'blur' }
         ]
       },
       queryTypeOptions: [
+        { key: 'dataOrigin', display_name: '数据来源' },
         { key: 'operatorId', display_name: '所属运营商' },
         { key: 'lbsServiceId', display_name: '所属服务区' },
-        { key: 'storeType', display_name: '仓库类型' },
+        { key: 'pointType', display_name: '坐标类型' },
         { key: 'isDisable', display_name: '是否禁用' },
+        { key: 'isImproving', display_name: '整改中' },
         { key: 'status', display_name: '审批状态' }
       ],
       pictures: null,
@@ -269,14 +311,14 @@ export default {
   },
   mounted() {
     this.crud.query.areaCode = this.city && this.city.areaCode
-    this.crud.query.type = 'storehouse'
+    this.crud.query.type = 'station'
     this.crud.refresh()
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       this.crud.query.areaCode = this.city && this.city.areaCode
-      this.crud.query.type = 'storehouse'
+      this.crud.query.type = 'station'
       // 框架本身page是从0开始传，由于新写的接口需要从1开始传，所以这里需要修改,0表示查询列表部分页
       this.crud.query.page = this.crud.page.page
       return true

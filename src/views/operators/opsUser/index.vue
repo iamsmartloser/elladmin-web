@@ -201,6 +201,9 @@ export default {
       this.crud.refresh()
     }
   },
+  beforeCreate() {
+    this.crud.optShow.download = false
+  },
   mounted() {
     this.crud.query.areaCode = this.city && this.city.areaCode
     this.crud.refresh()

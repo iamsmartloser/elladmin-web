@@ -182,7 +182,7 @@ export default {
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['data_origin', 'is_disable', 'is_improving', 'approval_status'],
   cruds() {
-    return CRUD({ title: 'lbs_service', url: 'lbs/page', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...crudLbsService }})
+    return CRUD({ title: '服务区', url: 'lbs/page', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...crudLbsService }})
   },
   data() {
     return {
@@ -193,7 +193,7 @@ export default {
       },
       rules: {
         dataOrigin: [
-          { required: true, message: '数据来源（0系统自建 1用户上传）不能为空', trigger: 'blur' }
+          { required: true, message: '数据来源不能为空', trigger: 'blur' }
         ],
         operatorId: [
           { required: true, message: '所属运营商ID不能为空', trigger: 'blur' }
@@ -202,19 +202,19 @@ export default {
           { required: true, message: '名称不能为空', trigger: 'blur' }
         ],
         pointValue: [
-          { required: true, message: '经纬度坐标组（格式：lng1,lat1;lng2,lat2;...）不能为空', trigger: 'blur' }
+          { required: true, message: '经纬度坐标组不能为空', trigger: 'blur' }
         ],
         isDisable: [
-          { required: true, message: '是否禁用（0未禁用 1已禁用）不能为空', trigger: 'blur' }
+          { required: true, message: '是否禁用不能为空', trigger: 'blur' }
         ]
       },
       queryTypeOptions: [
-        { key: 'dataOrigin', display_name: '数据来源（0系统自建 1用户上传）' },
+        { key: 'dataOrigin', display_name: '数据来源' },
         { key: 'operatorId', display_name: '所属运营商ID' },
         { key: 'name', display_name: '名称' },
-        { key: 'isDisable', display_name: '是否禁用（0未禁用 1已禁用）' },
-        { key: 'isImproving', display_name: '整改中（0否 1是）' },
-        { key: 'status', display_name: '审批状态（0待审核 1已通过 2审批中 3未通过）' }
+        { key: 'isDisable', display_name: '是否禁用' },
+        { key: 'isImproving', display_name: '整改中' },
+        { key: 'status', display_name: '审批状态' }
       ]
     }
   },
@@ -229,6 +229,7 @@ export default {
   watch: {
     city(val) {
       this.crud.query.areaCode = val && val.areaCode
+      this.crud.page.page = 1
       this.crud.refresh()
     }
   },
@@ -246,6 +247,8 @@ export default {
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
+      this.crud.query.areaCode = this.city && this.city.areaCode
+      this.crud.query.type = 'service'
       // 框架本身page是从0开始传，由于新写的接口需要从1开始传，所以这里需要修改,0表示查询列表部分页
       this.crud.query.page = this.crud.page.page
       return true
