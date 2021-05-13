@@ -6,7 +6,7 @@
         <!-- 搜索 -->
         <span>
           <label class="el-form-item-label">车辆编码:</label>
-          <el-input v-model="query.carNumber" clearable placeholder="车辆编码" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+          <el-input v-model="query.carNumber" maxlength="50" clearable placeholder="车辆编码" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         </span>
         <span>
           <label class="el-form-item-label">车辆品牌:</label>
@@ -38,7 +38,7 @@
         </span>
         <span>
           <label class="el-form-item-label">投车计划ID:</label>
-          <el-input v-model="query.vehicleLaunchesId" clearable placeholder="投车计划ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+          <el-input v-model="query.vehicleLaunchesId" maxlength="50" clearable placeholder="投车计划ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         </span>
         <span>
           <label class="el-form-item-label">车辆类型</label>
@@ -126,7 +126,7 @@
             <el-input v-model="form.picture" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="车辆编码" prop="carNumber">
-            <el-input v-model="form.carNumber" style="width: 370px;" />
+            <el-input v-model="form.carNumber" maxlength="50" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="车辆二维码信息" prop="rqCode">
             <el-input v-model="form.rqCode" style="width: 370px;" />
@@ -162,7 +162,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="其他状态说明">
-            <el-input v-model="form.statusExplain" style="width: 370px;" />
+            <el-input v-model="form.statusExplain" maxlength="200" style="width: 370px;" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">

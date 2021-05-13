@@ -4,43 +4,51 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle" class="search-wrap-has-label">
         <!-- 搜索 -->
-        <label v-if="(!isOperators(user&&user.roles))&&city" class="el-form-item-label">所属运营商:</label>
-        <SelectWithService
-          v-if="(!isOperators(user&&user.roles))&&city"
-          style="width: 185px;"
-          clearable
-          value-key="id"
-          label-key="name"
-          v-model="query.operatorId"
-          :init-value="query.operatorId"
-          :params="operatorParams"
-          :service="getPage"
-          @change="changeOperators"
-        />
-<!--        <label v-if="!isOperators(user&&user.roles)" class="el-form-item-label">运营商</label>-->
-<!--        <el-input v-if="!isOperators(user&&user.roles)" v-model="query.operatorId" clearable placeholder="运营商" style="width: 185px;" @keyup.enter.native="crud.toQuery" />-->
-        <label class="el-form-item-label">姓名:</label>
-        <el-input v-model="query.name" clearable placeholder="姓名" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">电话:</label>
-        <el-input v-model="query.phoneNumber" clearable placeholder="电话" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">状态:</label>
-        <el-select v-model="query.status" filterable placeholder="状态" clearable>
-          <el-option
-            v-for="item in dict.ops_user_status"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
+        <span>
+          <label v-if="(!isOperators(user&&user.roles))&&city" class="el-form-item-label">所属运营商:</label>
+          <SelectWithService
+            v-if="(!isOperators(user&&user.roles))&&city"
+            v-model="query.operatorId"
+            style="width: 185px;"
+            clearable
+            value-key="id"
+            label-key="name"
+            :init-value="query.operatorId"
+            :params="operatorParams"
+            :service="getPage"
+            @change="changeOperators"
           />
-        </el-select>
-        <label class="el-form-item-label">是否接收短信:</label>
-        <el-select v-model="query.receiveSms" filterable placeholder="是否接收短信" clearable>
-          <el-option
-            v-for="item in dict.ops_user_receive_sms"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">姓名:</label>
+          <el-input v-model="query.name" maxlength="50" clearable placeholder="姓名" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+        </span>
+        <span>
+          <label class="el-form-item-label">电话:</label>
+          <el-input v-model="query.phoneNumber" maxlength="11" clearable placeholder="电话" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+        </span>
+        <span>
+          <label class="el-form-item-label">状态:</label>
+          <el-select v-model="query.status" filterable placeholder="状态" clearable>
+            <el-option
+              v-for="item in dict.ops_user_status"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">是否接收短信:</label>
+          <el-select v-model="query.receiveSms" filterable placeholder="是否接收短信" clearable>
+            <el-option
+              v-for="item in dict.ops_user_receive_sms"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
         <rrOperation class="rr-op-has-label" :filter-item-class="false" :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -61,16 +69,16 @@
             />
           </el-form-item>
           <el-form-item label="姓名" prop="name">
-            <el-input v-model="form.name" style="width: 370px;" />
+            <el-input v-model="form.name" maxlength="50" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="电话" prop="phoneNumber">
-            <el-input v-model="form.phoneNumber" style="width: 370px;" />
+            <el-input v-model="form.phoneNumber" maxlength="11" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="邮箱">
-            <el-input v-model="form.contactsEmail" style="width: 370px;" />
+          <el-form-item label="邮箱" prop="contactsEmail">
+            <el-input v-model="form.contactsEmail" maxlength="50" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="职务">
-            <el-input v-model="form.duties" style="width: 370px;" />
+            <el-input v-model="form.duties" maxlength="50" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="状态" prop="status">
             <el-select v-model="form.status" filterable placeholder="状态" clearable style="width: 370px;">
@@ -81,7 +89,7 @@
                 :value="item.value"
               />
             </el-select>
-<!--            <el-radio v-model="form.status" v-for="item in dict.ops_user_status" :key="item.id" :label="item.value">{{ item.label }}</el-radio>-->
+            <!--            <el-radio v-model="form.status" v-for="item in dict.ops_user_status" :key="item.id" :label="item.value">{{ item.label }}</el-radio>-->
           </el-form-item>
           <el-form-item label="是否接收短信" prop="receiveSms">
             <el-select v-model="form.receiveSms" filterable placeholder="是否接收短信" clearable style="width: 370px;">
@@ -92,7 +100,7 @@
                 :value="item.value"
               />
             </el-select>
-<!--            <el-radio v-model="form.receiveSms" v-for="item in dict.ops_user_receive_sms" :key="item.id" :label="item.value">{{ item.label }}</el-radio>-->
+            <!--            <el-radio v-model="form.receiveSms" v-for="item in dict.ops_user_receive_sms" :key="item.id" :label="item.value">{{ item.label }}</el-radio>-->
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -141,11 +149,11 @@ import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
-import {isOperators} from '@/utils/utils'
+import { isOperators } from '@/utils/utils'
 import { mapGetters } from 'vuex'
 import { getPage } from '@/api/operators/operatorInfo'
-import { formatDate } from '@/utils/formatDay'
 import SelectWithService from '@/components/SelectWithService/index'
+import { isvalidPhone, validEmail } from '@/utils/validate'
 
 const defaultForm = { id: null, operatorId: null, name: null, phoneNumber: null, contactsEmail: null, duties: null, status: null, receiveSms: null }
 export default {
@@ -154,9 +162,28 @@ export default {
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['ops_user_status', 'ops_user_receive_sms'],
   cruds() {
-    return CRUD({ title: '运维人员', url: '/opsUser/',queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...crudOpsUser }})
+    return CRUD({ title: '运维人员', url: '/opsUser/', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...crudOpsUser }})
   },
   data() {
+    // 验证手机号
+    const validatorPhone = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请填写手机号'))
+      } else if (!isvalidPhone(value)) {
+        callback(new Error('请输入正确的手机号码'))
+      } else {
+        callback()
+      }
+    }
+    // const validatorEmail = (rule, value, callback) => {
+    //   if (!value) {
+    //     callback(new Error()
+    //   } else if (!isvalidPhone(value)) {
+    //     callback(new Error('请输入正确的手机号码'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
       permission: {
         add: ['admin', 'opsUser:add'],
@@ -168,7 +195,11 @@ export default {
           { required: true, message: '姓名不能为空', trigger: 'blur' }
         ],
         phoneNumber: [
-          { required: true, message: '电话不能为空', trigger: 'blur' }
+          { required: true, trigger: 'blur' , validator: validatorPhone}
+        ],
+        contactsEmail: [
+          {required: false, message: '邮箱格式不正确', trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
         ],
         status: [
           { required: true, message: '状态不能为空', trigger: 'blur' }
@@ -211,10 +242,11 @@ export default {
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
+      this.crud.query.areaCode = this.city && this.city.areaCode
       return true
     },
     [CRUD.HOOK.beforeSubmit]() {
-      this.crud.form.areaCode = this.city&&this.city.areaCode
+      this.crud.form.areaCode = this.city && this.city.areaCode
       return true
     },
     isOperators,
@@ -224,7 +256,7 @@ export default {
     },
     changeFormOperators(id) {
       this.crud.form.operatorId = id
-    },
+    }
   }
 }
 </script>

@@ -4,7 +4,8 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle" class="search-wrap-has-label">
         <!-- 搜索 -->
-        <span>        <label class="el-form-item-label">车辆品牌:</label>
+        <span>
+          <label class="el-form-item-label">车辆品牌:</label>
           <SelectWithService
             v-if="city"
             style="width: 185px;"
@@ -15,8 +16,10 @@
             :params="brandParams"
             :service="getBrandList"
             @change="changeBrand"
-          /></span>
-        <span>        <label class="el-form-item-label">所属运营商:</label>
+          />
+        </span>
+        <span>
+          <label class="el-form-item-label">所属运营商:</label>
           <SelectWithService
             v-if="city"
             style="width: 185px;"
@@ -28,31 +31,41 @@
             :service="getPage"
             @change="changeOperators"
           /></span>
-        <span>        <label class="el-form-item-label">车辆编码:</label>
+        <span>
+          <label class="el-form-item-label">车辆编码:</label>
           <el-input
             v-model="query.carNumber"
+            maxlength="50"
             clearable
             placeholder="车辆编码"
             style="width: 185px;"
             @keyup.enter.native="crud.toQuery"
-          /></span>
-        <span>        <label class="el-form-item-label">举报类型:</label>
-          <el-input
-            v-model="query.type"
-            clearable
-            placeholder="举报类型"
-            style="width: 185px;"
-            @keyup.enter.native="crud.toQuery"
-          /></span>
-        <span>        <label class="el-form-item-label">举报人姓名:</label>
+          />
+        </span>
+        <span>
+          <label class="el-form-item-label">举报类型:</label>
+          <el-select v-model="query.type" filterable placeholder="请选择">
+            <el-option
+              v-for="item in dict.supervise_type"
+              :key="item.id"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">举报人姓名:</label>
           <el-input
             v-model="query.userName"
+            maxlength="50"
             clearable
             placeholder="举报人姓名"
             style="width: 185px;"
             @keyup.enter.native="crud.toQuery"
-          /></span>
-        <span>        <label class="el-form-item-label">审批状态:</label>
+          />
+        </span>
+        <span>
+          <label class="el-form-item-label">审批状态:</label>
           <el-select v-model="query.status" filterable clearable placeholder="请选择">
             <el-option
               v-for="item in dict.approval_status"
@@ -60,8 +73,10 @@
               :label="item.label"
               :value="item.value"
             />
-          </el-select></span>
-        <span>        <label class="el-form-item-label">运营商处置状态:</label>
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">运营商处置状态:</label>
           <el-select v-model="query.handleStatus" filterable clearable placeholder="请选择">
             <el-option
               v-for="item in dict.supervise_handle_type"
@@ -69,8 +84,10 @@
               :label="item.label"
               :value="item.value"
             />
-          </el-select></span>
-        <span>        <label class="el-form-item-label">是否超时:</label>
+          </el-select>
+        </span>
+        <span>
+          <label class="el-form-item-label">是否超时:</label>
           <el-select v-model="query.overtime" filterable clearable placeholder="请选择">
             <el-option
               v-for="item in dict.overtime"
@@ -78,7 +95,8 @@
               :label="item.label"
               :value="item.value"
             />
-          </el-select></span>
+          </el-select>
+        </span>
         <rrOperation :crud="crud" class="rr-op-has-label" :filter-item-class="false" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -99,7 +117,7 @@
             未设置字典，请手动设置 Select
           </el-form-item>
           <el-form-item label="车辆编码">
-            <el-input v-model="form.carNumber" style="width: 370px;" />
+            <el-input v-model="form.carNumber" maxlength="50" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="举报类型" prop="type">
             <el-select v-model="form.type" filterable placeholder="请选择">
@@ -449,6 +467,7 @@ export default {
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
+      this.crud.query.areaCode = this.city && this.city.areaCode
       return true
     },
     changeOperators(id) {

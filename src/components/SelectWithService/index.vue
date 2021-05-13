@@ -1,7 +1,7 @@
 <template>
   <el-select
     v-model="value"
-    placeholder="请选择"
+    :placeholder="placeholder"
     :multiple="multiple"
     filterable
     :clearable="clearable"
@@ -54,6 +54,10 @@ export default {
   name: 'SelectWithService',
   components: {},
   props: {
+    placeholder:{
+      type: String,
+      default: '请选择'
+    },
     valueKey: { // 实际key取值字段
       type: String,
       default: 'value'

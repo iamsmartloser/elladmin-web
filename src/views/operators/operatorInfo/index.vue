@@ -19,11 +19,11 @@
         </span>
         <span>
           <label class="el-form-item-label">统一社会信用代码</label>
-          <el-input v-model="query.codeNumber" clearable placeholder="统一社会信用代码" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+          <el-input v-model="query.codeNumber" maxlength="50" clearable placeholder="统一社会信用代码" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         </span>
         <span>
           <label class="el-form-item-label">公司名称</label>
-          <el-input v-model="query.name" clearable placeholder="公司名称" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+          <el-input v-model="query.name" maxlength="50" clearable placeholder="公司名称" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         </span>
         <span>
           <label class="el-form-item-label">服务区类型</label>
@@ -116,22 +116,22 @@
           <!--            />-->
           <!--          </el-form-item>-->
           <!--          <el-form-item label="统一社会信用代码" prop="codeNumber">-->
-          <!--            <el-input v-model="form.codeNumber" style="width: 370px;" />-->
+          <!--            <el-input maxlength="50" v-model="form.codeNumber" style="width: 370px;" />-->
           <!--          </el-form-item>-->
           <!--          <el-form-item label="公司名称" prop="name">-->
-          <!--            <el-input v-model="form.name" style="width: 370px;" />-->
+          <!--            <el-input v-model="form.name" maxlength="50" style="width: 370px;" />-->
           <!--          </el-form-item>-->
           <el-form-item label="联系人邮箱" prop="contactsEmail">
-            <el-input v-model.number="form.contactsEmail" style="width: 370px;" />
+            <el-input v-model="form.contactsEmail" maxlength="50" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="联系人姓名" prop="contactsName">
-            <el-input v-model.number="form.contactsName" style="width: 370px;" />
+            <el-input v-model="form.contactsName" maxlength="50" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="联系人电话" prop="contactsPhoneNumber">
-            <el-input v-model.number="form.contactsPhoneNumber" style="width: 370px;" />
+            <el-input v-model="form.contactsPhoneNumber" maxlength="11" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="授权车辆数" prop="vehicleScale">
-            <el-input-number v-model="form.vehicleScale" :min="0" />
+            <el-input-number v-model="form.vehicleScale" :min="0" :max="9999999"/>
           </el-form-item>
 
           <!--          <el-form-item label="服务区类型" prop="lbsServiceType">-->
@@ -382,6 +382,7 @@ export default {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       // 框架本身page是从0开始传，由于新写的接口需要从1开始传，所以这里需要修改
+      this.crud.query.areaCode = this.city && this.city.areaCode
       this.crud.query.page = this.crud.page.page
       return true
     },

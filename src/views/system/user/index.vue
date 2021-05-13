@@ -7,6 +7,7 @@
           <el-input
             v-model="deptName"
             clearable
+            maxlength="50"
             size="small"
             placeholder="输入部门名称搜索"
             prefix-icon="el-icon-search"
@@ -29,8 +30,23 @@
         <div class="head-container">
           <div v-if="crud.props.searchToggle">
             <!-- 搜索 -->
+            <SelectWithService
+              v-if="(!isOperators(user&&user.roles))&&city"
+              v-model="query.operatorId"
+              style="width: 200px;"
+              clearable
+              value-key="id"
+              label-key="name"
+              placeholder="请选择所属运营商"
+              class="filter-item"
+              :init-value="query.operatorId"
+              :params="operatorParams"
+              :service="getPage"
+              @change="changeOperators"
+            />
             <el-input
               v-model="query.blurry"
+              maxlength="50"
               clearable
               size="small"
               placeholder="输入名称或者邮箱搜索"
@@ -60,19 +76,31 @@
           <crudOperation show="" :permission="permission" />
         </div>
         <!--表单渲染-->
-        <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="570px">
-          <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="66px">
+        <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="620px">
+          <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="100px">
+            <el-form-item v-if="(!isOperators(user&&user.roles))&&city" label="运营商" prop="operatorId">
+              <SelectWithService
+                style="width: 178px"
+                clearable
+                value-key="id"
+                label-key="name"
+                :init-value="form.operatorId"
+                :params="operatorParams"
+                :service="getPage"
+                @change="changeFormOperators"
+              />
+            </el-form-item>
             <el-form-item label="用户名" prop="username">
-              <el-input v-model="form.username" />
+              <el-input v-model="form.username" maxlength="50" style="width: 178px" />
             </el-form-item>
             <el-form-item label="电话" prop="phone">
-              <el-input v-model.number="form.phone" />
+              <el-input v-model.number="form.phone" maxlength="11" style="width: 178px" />
             </el-form-item>
             <el-form-item label="昵称" prop="nickName">
-              <el-input v-model="form.nickName" />
+              <el-input v-model="form.nickName" maxlength="50" style="width: 178px" />
             </el-form-item>
             <el-form-item label="邮箱" prop="email">
-              <el-input v-model="form.email" />
+              <el-input v-model="form.email" maxlength="50" style="width: 178px" />
             </el-form-item>
             <el-form-item label="部门" prop="dept.id">
               <treeselect
@@ -118,7 +146,7 @@
             <el-form-item style="margin-bottom: 0;" label="角色" prop="roles">
               <el-select
                 v-model="roleDatas"
-                style="width: 437px"
+                style="width: 470px"
                 multiple
                 placeholder="请选择"
                 @remove-tag="deleteTag"
@@ -142,6 +170,7 @@
         <!--表格渲染-->
         <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
           <el-table-column :selectable="checkboxT" type="selection" width="55" />
+          <el-table-column :show-overflow-tooltip="true" prop="operatorName" label="所属运营商" />
           <el-table-column :show-overflow-tooltip="true" prop="username" label="用户名" />
           <el-table-column :show-overflow-tooltip="true" prop="nickName" label="昵称" />
           <el-table-column prop="gender" label="性别" />
@@ -203,14 +232,18 @@ import Treeselect from '@riophae/vue-treeselect'
 import { mapGetters } from 'vuex'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
+import { isOperators } from '@/utils/utils'
+import { getPage } from '@/api/operators/operatorInfo'
+import SelectWithService from '@/components/SelectWithService/index'
+
 let userRoles = []
 let userJobs = []
 const defaultForm = { id: null, username: null, nickName: null, gender: '男', email: null, enabled: 'false', roles: [], jobs: [], dept: { id: null }, phone: null }
 export default {
   name: 'User',
-  components: { Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker },
+  components: { Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker, SelectWithService },
   cruds() {
-    return CRUD({ title: '用户', url: 'api/users', crudMethod: { ...crudUser }})
+    return CRUD({ title: '用户', url: 'api/users', queryOnPresenterCreated: false,crudMethod: { ...crudUser }})
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   // 数据字典
@@ -250,7 +283,7 @@ export default {
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
         ],
         email: [
-          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+          { required: false, message: '请输入邮箱地址', trigger: 'blur' },
           { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
         ],
         phone: [
@@ -261,8 +294,21 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'user'
-    ])
+      'user',
+      'city'
+    ]),
+    operatorParams() {
+      return { page: 0, areaCode: this.city && this.city.areaCode }
+    }
+  },
+  watch: {
+    city(val) {
+      this.crud.query.areaCode = val && val.areaCode
+      this.crud.refresh()
+    }
+  },
+  beforeCreate() {
+    this.crud.optShow.download = false
   },
   created() {
     this.crud.msg.add = '新增成功，默认密码：123456'
@@ -272,8 +318,14 @@ export default {
     window.onresize = function temp() {
       that.height = document.documentElement.clientHeight - 180 + 'px;'
     }
+    this.crud.query.areaCode = this.city && this.city.areaCode
+    this.crud.refresh()
   },
   methods: {
+    [CRUD.HOOK.beforeSubmit]() {
+      this.crud.form.areaCode = this.city && this.city.areaCode
+      return true
+    },
     changeRole(value) {
       userRoles = []
       value.forEach(function(data, index) {
@@ -465,6 +517,14 @@ export default {
     },
     checkboxT(row, rowIndex) {
       return row.id !== this.user.id
+    },
+    isOperators,
+    getPage,
+    changeOperators(id) {
+      this.crud.query.operatorId = id
+    },
+    changeFormOperators(id) {
+      this.crud.form.operatorId = id
     }
   }
 }

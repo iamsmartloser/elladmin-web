@@ -11,7 +11,7 @@
         v-show="active===0"
         prop="phone"
       >
-        <el-input v-model="form.phone" placeholder="请填写注册的手机号">
+        <el-input v-model="form.phone" maxlength="11" placeholder="请填写注册的手机号">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
@@ -25,7 +25,7 @@
         v-show="active===1"
         prop="smsCode"
       >
-        <el-input v-model.number="form.smsCode" placeholder="手机验证码">
+        <el-input v-model.number="form.smsCode" maxlength="20" placeholder="手机验证码">
           <svg-icon v-if="!sendingSMS" slot="prefix" icon-class="security" class="el-input__icon input-icon" />
           <template v-if="sendingSMS" slot="append">{{ time }}s</template>
         </el-input>
@@ -35,7 +35,7 @@
         v-show="active===2"
         prop="password"
       >
-        <el-input v-model="form.password" placeholder="请输入新密码">
+        <el-input v-model="form.password" maxlength="20" placeholder="请输入新密码">
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
@@ -43,7 +43,7 @@
         v-show="active===2"
         prop="password2"
       >
-        <el-input v-model="form.password2" placeholder="请重新输入新密码">
+        <el-input v-model="form.password2" maxlength="20" placeholder="请重新输入新密码">
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
@@ -75,7 +75,7 @@ export default {
     // 验证手机号
     const validPhone = (rule, value, callback) => {
       if (!value) {
-        callback(new Error('请填写注册的手机号'))
+        callback(new Error('请填写手机号'))
       } else if (!isvalidPhone(value)) {
         callback(new Error('请输入正确的手机号码'))
       } else {
@@ -89,7 +89,7 @@ export default {
       } else if (this.form.password2 && (this.form.password !== this.form.password2)) {
         callback(new Error('两次输入的密码不一致'))
       } else {
-        if(this.$refs.formRef.password2){
+        if (this.$refs.formRef.password2) {
           this.$refs.formRef.validateField('password2')
         }
         callback()
@@ -102,7 +102,7 @@ export default {
       } else if (this.form.password && (this.form.password !== this.form.password2)) {
         callback(new Error('两次输入的密码不一致'))
       } else {
-        if(this.$refs.formRef.password){
+        if (this.$refs.formRef.password) {
           this.$refs.formRef.validateField('password')
         }
         callback()

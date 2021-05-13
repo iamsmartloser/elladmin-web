@@ -148,14 +148,14 @@
             {{ dict.label.approval_status[scope.row.status] }}
           </template>
         </el-table-column>
-<!--        <el-table-column v-if="checkPer(['admin','lbsService:edit','lbsService:del'])" label="操作" width="150px" align="center">-->
-<!--          <template slot-scope="scope">-->
-<!--            <udOperation-->
-<!--              :data="scope.row"-->
-<!--              :permission="permission"-->
-<!--            />-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <!--        <el-table-column v-if="checkPer(['admin','lbsService:edit','lbsService:del'])" label="操作" width="150px" align="center">-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <udOperation-->
+        <!--              :data="scope.row"-->
+        <!--              :permission="permission"-->
+        <!--            />-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
       </el-table>
       <!--分页组件-->
       <pagination />

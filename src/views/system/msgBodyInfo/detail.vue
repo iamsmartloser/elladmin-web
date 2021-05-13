@@ -19,7 +19,7 @@
       <div style="max-height: 400px;min-height: 250px;overflow: auto">
         <el-col v-for="person in readList" :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
           <div style="margin: 8px">
-            {{person.operatorName}}
+            {{ person.operatorName }}
           </div>
         </el-col>
       </div>
@@ -27,10 +27,11 @@
     </el-dialog>
 
     <!--  评论区  -->
-    <div v-if="detail&&parseInt(detail.allowReceive)" class="comments-wrap" >
+    <div v-if="detail&&parseInt(detail.allowReceive)" class="comments-wrap">
       <div>评论区</div>
       <el-input
         v-model="myComment"
+        maxlength="500"
         type="textarea"
         :rows="3"
         placeholder="如您有好的建议可以点击发表评论"
@@ -51,6 +52,7 @@
         <div v-if="replyInputId===('reply'+comment.id)" :id="'reply'+comment.id">
           <el-input
             v-model="releaseParams.content"
+            maxlength="500"
             type="textarea"
             :rows="3"
             placeholder="请在此处输入你的回复"
@@ -93,7 +95,7 @@ export default {
       },
       replyInputId: null,
       viewFlag: null,
-      readList:[],// 已读人员列表 未读人员列表
+      readList: []// 已读人员列表 未读人员列表
     }
   },
   computed: {
@@ -110,16 +112,16 @@ export default {
   methods: {
     formatDate,
     // 获取消息详情
-    getMsgDetail(){
+    getMsgDetail() {
       const msgId = this.$route.params && this.$route.params.id
-      getMsgDetail({msgId}).then(res=>{
-        if(res&&res.status===200){
+      getMsgDetail({ msgId }).then(res => {
+        if (res && res.status === 200) {
           this.detail = res.content
-          if(parseInt(res.content.allowReceive)){
+          if (parseInt(res.content.allowReceive)) {
             this.getComments(true)
           }
-        }else {
-          this.$message.error(res&&res.message||'获取详情出错')
+        } else {
+          this.$message.error(res && res.message || '获取详情出错')
         }
       })
     },
@@ -207,7 +209,7 @@ export default {
     viewPerson(flag) {
       this.viewFlag = flag
       const msgId = this.$route.params && this.$route.params.id
-      const params = {msgId,page: 0}
+      const params = { msgId, page: 0 }
       switch (flag) {
         case 'read':
           params.type = 1
@@ -225,7 +227,6 @@ export default {
           this.$message.error(res && res.message || '获取人员失败')
         }
       })
-
     }
   }
 }

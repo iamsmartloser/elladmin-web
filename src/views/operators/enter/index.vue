@@ -24,7 +24,7 @@
       <el-step title="提交申请" />
     </el-steps>
     <!-- 基本信息 -->
-    <el-form  v-if="active===0"  ref="baseForm" :model="baseInfo" label-width="120px" class="form-wrap">
+    <el-form v-if="active===0" ref="baseForm" :model="baseInfo" label-width="120px" class="form-wrap">
       <el-form-item label="营业执照扫描件">
         <el-upload
           action="alert"
@@ -121,7 +121,7 @@ export default {
           const { path, newName, suffix } = res.content
           fileList[index].url = path + newName + '.' + suffix
           this.licenseList = fileList
-        }else {
+        } else {
           this.$message.error(`文件${file.name}上传出错`)
         }
       })
@@ -141,10 +141,10 @@ export default {
     //   }
     // }
     // 上传运营方案
-    handleOperationPlanExceed(files, fileList){
+    handleOperationPlanExceed(files, fileList) {
       this.$message.warning('文件数量超过最大限制10')
     },
-    handleOperationPlanChange(file, fileList){
+    handleOperationPlanChange(file, fileList) {
       console.log('handleLicenseChange file', file)
       console.log('handleLicenseChange fileList', fileList)
       uploadWithType(this.fileUploadUrl, file.raw, 'annex').then(res => {
@@ -153,14 +153,14 @@ export default {
           const { path, newName, suffix } = res.content
           fileList[index].url = path + newName + '.' + suffix
           this.operationPlanList = fileList
-        }else {
+        } else {
           this.$message.error(`文件${file.name}上传出错`)
         }
       })
     },
-    handleOperationPlanRemove(file, fileList){
+    handleOperationPlanRemove(file, fileList) {
       this.operationPlanList = fileList
-    },
+    }
   }
 }
 </script>

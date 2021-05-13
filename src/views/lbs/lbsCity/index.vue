@@ -7,7 +7,7 @@
         <label class="el-form-item-label">行政区划代码:</label>
         <el-input v-model="query.areaCode" clearable placeholder="行政区划代码" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">城市名称:</label>
-        <el-input v-model="query.name" clearable placeholder="城市名称" style="width: 185px;"  @keyup.enter.native="crud.toQuery" />
+        <el-input v-model="query.name" clearable placeholder="城市名称" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         <rrOperation :crud="crud" class="rr-op-has-label" :filter-item-class="false" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -36,6 +36,7 @@
         <el-table-column prop="id" label="ID" />
         <el-table-column prop="areaCode" label="行政区划代码" />
         <el-table-column prop="name" label="城市名称" />
+        <el-table-column prop="brandNames" label="品牌列表" />
         <el-table-column v-if="checkPer(['admin','lbsCity:edit','lbsCity:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
@@ -44,6 +45,7 @@
             />
           </template>
         </el-table-column>
+
       </el-table>
       <!--分页组件-->
       <pagination />
@@ -52,14 +54,14 @@
 </template>
 
 <script>
-    import CRUD, {crud, form, header, presenter} from '@crud/crud'
-    import rrOperation from '@crud/RR.operation'
-    import crudOperation from '@crud/CRUD.operation'
-    import udOperation from '@crud/UD.operation'
-    import pagination from '@crud/Pagination'
-    import lbsCity from '@/api/lbs/lbsCity'
+import CRUD, { crud, form, header, presenter } from '@crud/crud'
+import rrOperation from '@crud/RR.operation'
+import crudOperation from '@crud/CRUD.operation'
+import udOperation from '@crud/UD.operation'
+import pagination from '@crud/Pagination'
+import lbsCity from '@/api/lbs/lbsCity'
 
-    const defaultForm = { id: null, areaCode: null, name: null }
+const defaultForm = { id: null, areaCode: null, name: null }
 export default {
   name: 'LbsCity',
   components: { pagination, crudOperation, rrOperation, udOperation },

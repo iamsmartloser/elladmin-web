@@ -30,8 +30,8 @@
           />
         </span>
         <span>
-                 <label class="el-form-item-label">所属服务区ID</label>
-        <el-input v-model="query.lbsServiceId" clearable placeholder="所属服务区ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+          <label class="el-form-item-label">所属服务区ID</label>
+          <el-input v-model="query.lbsServiceId" clearable placeholder="所属服务区ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         </span>
         <span>
           <label class="el-form-item-label">是否禁用</label>

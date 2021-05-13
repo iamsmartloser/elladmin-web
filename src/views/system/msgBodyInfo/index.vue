@@ -40,11 +40,11 @@
         </span>
         <span>
           <label class="el-form-item-label">消息标题:</label>
-          <el-input v-model="query.title" clearable placeholder="请输入消息标题" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+          <el-input v-model="query.title" maxlength="50" clearable placeholder="请输入消息标题" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         </span>
         <span>
           <label class="el-form-item-label">发送者姓名:</label>
-          <el-input v-model="query.createUserName" clearable placeholder="发送者姓名" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
+          <el-input v-model="query.createUserName" maxlength="50" clearable placeholder="发送者姓名" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         </span>
         <span>
           <label class="el-form-item-label">发送时间:</label>
@@ -102,7 +102,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="消息标题" prop="title">
-            <el-input v-model="form.title" style="width: 370px;" />
+            <el-input v-model="form.title" maxlength="50" style="width: 370px;" />
           </el-form-item>
           <!--     消息体是富文本     -->
           <el-form-item label="消息体" prop="content">

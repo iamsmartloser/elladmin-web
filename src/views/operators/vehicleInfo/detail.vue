@@ -75,7 +75,7 @@
             {{ formatDate(rowData.lastReportTime) }}
           </el-form-item>
         </el-col>
-        <el-button @click="getDetail()">test</el-button>
+<!--        <el-button @click="getDetail()">test</el-button>-->
       </el-row>
     </el-form>
   </div>

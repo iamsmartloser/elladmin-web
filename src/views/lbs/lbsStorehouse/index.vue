@@ -128,7 +128,7 @@
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
-<!--        <el-table-column prop="id" label="ID" />-->
+        <!--        <el-table-column prop="id" label="ID" />-->
         <el-table-column prop="picture" label="照片">
           <template slot-scope="scope">
             <div style="text-align: center">
@@ -150,11 +150,11 @@
             {{ dict.label.storehouse_type[scope.row.storeType] }}
           </template>
         </el-table-column>
-<!--        <el-table-column prop="picture" label="照片" />-->
+        <!--        <el-table-column prop="picture" label="照片" />-->
         <el-table-column prop="name" label="名称" />
         <el-table-column prop="remark" label="描述" />
         <el-table-column prop="lng" label="东经" />
-        <el-table-column prop="lat" label="南维" />
+        <el-table-column prop="lat" label="南纬" />
         <el-table-column prop="contactsName" label="联系人姓名" />
         <el-table-column prop="contactsPhoneNumber" label="联系人电话" />
         <el-table-column prop="isDisable" label="是否禁用">
