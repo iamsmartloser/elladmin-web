@@ -292,8 +292,8 @@ import { getList } from '@/api/operators/vehicleBrandInfo'
 import { formatDate } from '@/utils/formatDay'
 import { mapGetters } from 'vuex'
 
-// const defaultForm = { id: null, areaCode: null, brandId: null, codeNumber: null, appId: null, appPrivate: null, appSecret: null, name: null, vehicleScale: null, vehicleRealityScale: null, lbsServiceType: null, lbsStationType: null, lbsNoParkingType: null, access: null, retreat: null, status: null, createTime: null, createUserId: null, approvalInfoId: null, approvalEndTime: null }
-const defaultForm = { }
+const defaultForm = { id: null, areaCode: null, brandId: null, codeNumber: null, appId: null, appPrivate: null, appSecret: null, name: null, vehicleScale: null, vehicleRealityScale: null, lbsServiceType: null, lbsStationType: null, lbsNoParkingType: null, access: null, retreat: null, status: null, createTime: null, createUserId: null, approvalInfoId: null, approvalEndTime: null }
+// const defaultForm = { }
 export default {
   name: 'OperatorInfo',
   components: { pagination, crudOperation, rrOperation, udOperation, SelectWithService },
@@ -388,7 +388,7 @@ export default {
     },
     [CRUD.HOOK.beforeSubmit]() {
       this.crud.form.areaCode = this.city && this.city.areaCode
-      this.crud.form.operatorId = this.crud.form.id// parseFloat(this.crud.form.id+"")
+      this.crud.form.operatorId = this.crud.form.id
       return true
     },
     formatDate,
