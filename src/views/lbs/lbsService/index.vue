@@ -44,17 +44,17 @@
             />
           </el-select>
         </span>
-        <span>
-          <label class="el-form-item-label">整改中</label>
-          <el-select v-model="query.isImproving" filterable clearable placeholder="请选择">
-            <el-option
-              v-for="item in dict.is_improving"
-              :key="item.id"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </span>
+        <!--        <span>-->
+        <!--          <label class="el-form-item-label">整改中</label>-->
+        <!--          <el-select v-model="query.isImproving" filterable clearable placeholder="请选择">-->
+        <!--            <el-option-->
+        <!--              v-for="item in dict.is_improving"-->
+        <!--              :key="item.id"-->
+        <!--              :label="item.label"-->
+        <!--              :value="item.value"-->
+        <!--            />-->
+        <!--          </el-select>-->
+        <!--        </span>-->
         <span>
           <label class="el-form-item-label">审批状态</label>
           <el-select v-model="query.status" filterable clearable placeholder="请选择">
@@ -95,9 +95,9 @@
           <el-form-item label="描述">
             <el-input v-model="form.remark" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="经纬度坐标组" prop="pointValue">
-            <el-input v-model="form.pointValue" style="width: 370px;" />
-          </el-form-item>
+          <!--          <el-form-item label="经纬度坐标组" prop="pointValue">-->
+          <!--            <el-input v-model="form.pointValue" style="width: 370px;" />-->
+          <!--          </el-form-item>-->
           <el-form-item label="是否禁用" prop="isDisable">
             <el-select v-model="form.isDisable" filterable clearable placeholder="请选择">
               <el-option
@@ -114,6 +114,18 @@
           <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
         </div>
       </el-dialog>
+      <!--   地图详情   -->
+      <el-dialog
+        title="地图详情"
+        :visible.sync="viewVisible"
+        class="dialog"
+        width="60%"
+        @opened="drawMap()"
+        @close="clearAll(); rowData = null"
+      >
+        <Map style="width: 100%;height: 400px;display: inline-block" @ready="ready" />
+      </el-dialog>
+
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
@@ -124,10 +136,10 @@
           </template>
         </el-table-column>
         <el-table-column prop="operatorName" label="所属运营商" />
-        <el-table-column prop="operatorApplyId" label="关联申请ID" />
+        <!--        <el-table-column prop="operatorApplyId" label="关联申请ID" />-->
         <el-table-column prop="name" label="名称" />
-        <el-table-column prop="remark" label="描述" />
-        <el-table-column prop="pointValue" label="经纬度坐标组" />
+        <!--        <el-table-column prop="remark" label="描述" />-->
+        <!--        <el-table-column prop="pointValue" label="经纬度坐标组" />-->
         <el-table-column prop="createTime" label="创建时间">
           <template slot-scope="scope">
             {{ formatDate(scope.row.createTime) }}
@@ -138,24 +150,25 @@
             {{ dict.label.is_disable[scope.row.isDisable] }}
           </template>
         </el-table-column>
-        <el-table-column prop="isImproving" label="整改中">
-          <template slot-scope="scope">
-            {{ dict.label.is_improving[scope.row.isImproving] }}
-          </template>
-        </el-table-column>
+        <!--        <el-table-column prop="isImproving" label="整改中">-->
+        <!--          <template slot-scope="scope">-->
+        <!--            {{ dict.label.is_improving[scope.row.isImproving] }}-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
         <el-table-column prop="status" label="审批状态">
           <template slot-scope="scope">
             {{ dict.label.approval_status[scope.row.status] }}
           </template>
         </el-table-column>
-        <!--        <el-table-column v-if="checkPer(['admin','lbsService:edit','lbsService:del'])" label="操作" width="150px" align="center">-->
-        <!--          <template slot-scope="scope">-->
-        <!--            <udOperation-->
-        <!--              :data="scope.row"-->
-        <!--              :permission="permission"-->
-        <!--            />-->
-        <!--          </template>-->
-        <!--        </el-table-column>-->
+        <el-table-column v-if="checkPer(['admin','lbsService:edit','lbsService:del'])" label="操作" width="150px" align="center">
+          <template slot-scope="scope">
+            <udOperation
+              :data="scope.row"
+              :permission="permission"
+            />
+            <el-button icon="el-icon-view" size="mini" @click="viewVisible = true;rowData = scope.row" />
+          </template>
+        </el-table-column>
       </el-table>
       <!--分页组件-->
       <pagination />
@@ -174,12 +187,14 @@ import { formatDate } from '@/utils/formatDay'
 import { getPage } from '@/api/operators/operatorInfo'
 import { mapGetters } from 'vuex'
 import SelectWithService from '@/components/SelectWithService/index'
+import Map from '@/components/Map/index'
+import map_mixins from '@/mixins/map'
 
 const defaultForm = { id: null, dataOrigin: null, operatorId: null, operatorApplyId: null, name: null, remark: null, pointValue: null, minlng: null, maxlng: null, minlat: null, maxlat: null, createTime: null, isDisable: null, isImproving: null, status: null, createUserId: null, approvalInfoId: null, approvalEndTime: null }
 export default {
   name: 'LbsService',
-  components: { pagination, crudOperation, rrOperation, udOperation, SelectWithService },
-  mixins: [presenter(), header(), form(defaultForm), crud()],
+  components: { pagination, crudOperation, rrOperation, udOperation, SelectWithService, Map },
+  mixins: [presenter(), header(), form(defaultForm), crud(), map_mixins],
   dicts: ['data_origin', 'is_disable', 'is_improving', 'approval_status'],
   cruds() {
     return CRUD({ title: '服务区', url: 'lbs/page', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...crudLbsService }})
@@ -215,7 +230,9 @@ export default {
         { key: 'isDisable', display_name: '是否禁用' },
         { key: 'isImproving', display_name: '整改中' },
         { key: 'status', display_name: '审批状态' }
-      ]
+      ],
+      rowData: null,
+      viewVisible: false
     }
   },
   computed: {
@@ -257,6 +274,19 @@ export default {
     formatDate,
     changeOperators(id) {
       this.crud.query.operatorId = id
+    },
+    ready(map) {
+      this.map = map
+      console.log('ready:', map)
+    },
+    drawMap() {
+      const { pintBD09, isDisable } = this.rowData
+      const points = pintBD09.split(';').map(item => {
+        const p = item.split(',')
+        return { lat: parseFloat(p[1]), lng: parseFloat(p[0]) }
+      })
+      console.log('points', points)
+      this.drawPolygon(points, parseInt(isDisable) ? { strokeColor: 'fenceColor', fillColor: 'disabledColor' } : { strokeColor: 'fenceColor' }, true)
     }
   }
 }

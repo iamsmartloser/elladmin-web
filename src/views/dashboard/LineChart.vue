@@ -62,6 +62,8 @@ export default {
       this.setOptions(this.chartData)
     },
     setOptions({ expectedData, actualData } = {}) {
+      console.log('this.chartData',this.chartData)
+      console.log('expectedData',expectedData,'\nactualData',actualData)
       this.chart.setOption({
         xAxis: {
           data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],

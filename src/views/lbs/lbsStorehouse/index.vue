@@ -18,10 +18,10 @@
             @change="changeOperators"
           />
         </span>
-        <span>
-          <label class="el-form-item-label">所属服务区</label>
-          <el-input v-model="query.lbsServiceId" clearable placeholder="所属服务区ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        </span>
+        <!--        <span>-->
+        <!--          <label class="el-form-item-label">所属服务区</label>-->
+        <!--          <el-input v-model="query.lbsServiceId" clearable placeholder="所属服务区ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />-->
+        <!--        </span>-->
         <span>
           <label class="el-form-item-label">仓库类型</label>
           <el-select v-model="query.storeType" filterable clearable placeholder="请选择">
@@ -125,6 +125,17 @@
         :visible="imageVisible"
         @close="imageVisible=false;pictures=null"
       />
+      <!--   地图详情   -->
+      <el-dialog
+        title="地图详情"
+        :visible.sync="viewVisible"
+        class="dialog"
+        width="60%"
+        @opened="drawMap()"
+        @close="clearAll(); rowData = null"
+      >
+        <Map style="width: 100%;height: 400px;display: inline-block" @ready="ready" />
+      </el-dialog>
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
@@ -143,8 +154,8 @@
           </template>
         </el-table-column>
         <el-table-column prop="operatorName" label="所属运营商" />
-        <el-table-column prop="lbsServiceName" label="所属服务区" />
-        <el-table-column prop="operatorApplyId" label="关联申请ID" />
+        <!--        <el-table-column prop="lbsServiceName" label="所属服务区" />-->
+        <!--        <el-table-column prop="operatorApplyId" label="关联申请ID" />-->
         <el-table-column prop="storeType" label="仓库类型">
           <template slot-scope="scope">
             {{ dict.label.storehouse_type[scope.row.storeType] }}
@@ -152,9 +163,9 @@
         </el-table-column>
         <!--        <el-table-column prop="picture" label="照片" />-->
         <el-table-column prop="name" label="名称" />
-        <el-table-column prop="remark" label="描述" />
-        <el-table-column prop="lng" label="东经" />
-        <el-table-column prop="lat" label="南纬" />
+        <!--        <el-table-column prop="remark" label="描述" />-->
+        <!--        <el-table-column prop="lng" label="东经" />-->
+        <!--        <el-table-column prop="lat" label="南纬" />-->
         <el-table-column prop="contactsName" label="联系人姓名" />
         <el-table-column prop="contactsPhoneNumber" label="联系人电话" />
         <el-table-column prop="isDisable" label="是否禁用">
@@ -183,6 +194,7 @@
               :data="scope.row"
               :permission="permission"
             />
+            <el-button icon="el-icon-view" size="mini" @click="viewVisible = true;rowData = scope.row" />
           </template>
         </el-table-column>
       </el-table>
@@ -204,12 +216,14 @@ import { formatDate } from '@/utils/formatDay'
 import { getPage } from '@/api/operators/operatorInfo'
 import { mapGetters } from 'vuex'
 import SelectWithService from '@/components/SelectWithService/index'
+import Map from '@/components/Map/index'
+import map_mixins from '@/mixins/map'
 
 const defaultForm = { id: null, operatorId: null, lbsServiceId: null, operatorApplyId: null, type: null, picture: null, name: null, remark: null, lng: null, lat: null, contactsName: null, contactsPhoneNumber: null, isDisable: null, lastSafetyTrainingTime: null, createTime: null, status: null, createUserId: null, approvalInfoId: null, approvalEndTime: null }
 export default {
   name: 'LbsStorehouse',
-  components: { pagination, crudOperation, rrOperation, udOperation, ImageDetail, SelectWithService },
-  mixins: [presenter(), header(), form(defaultForm), crud()],
+  components: { pagination, crudOperation, rrOperation, udOperation, ImageDetail, SelectWithService, Map },
+  mixins: [presenter(), header(), form(defaultForm), crud(), map_mixins],
   dicts: ['storehouse_type', 'is_disable', 'approval_status'],
   cruds() {
     return CRUD({ title: '仓库', url: 'lbs/page', queryOnPresenterCreated: false, idField: 'id', sort: 'id,desc', crudMethod: { ...crudLbsStorehouse }})
@@ -243,7 +257,9 @@ export default {
         { key: 'status', display_name: '审批状态' }
       ],
       pictures: null,
-      imageVisible: false
+      imageVisible: false,
+      rowData: null,
+      viewVisible: false
     }
   },
   computed: {
@@ -285,6 +301,23 @@ export default {
     formatDate,
     changeOperators(id) {
       this.crud.query.operatorId = id
+    },
+    ready(map) {
+      this.map = map
+      console.log('ready:', map)
+    },
+    drawMap() {
+      const { pintBD09, isDisable } = this.rowData
+      if (pintBD09) {
+        const p = pintBD09.split(',')
+        const point = { lng: parseFloat(p[0]), lat: parseFloat(p[1]) }
+        this.drawMarker(point, { setViewPort: true, icon: {
+          url: parseInt(isDisable) ? require('@/assets/images/warehouseMarkTwo.png') : require('@/assets/images/warehouseMarkOne.png'),
+          size: [36, 38],
+          imageSize: [36, 38],
+          anchor: [18, 38]
+        }})
+      }
     }
   }
 }

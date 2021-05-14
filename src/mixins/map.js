@@ -2,6 +2,7 @@ const BMap = window.BMap
 const BMapLib = window.BMapLib
 const COLOR_CONFIG = {
   'disabledColor': '#595959',
+  'stationColor': '#5770D3', // 车站颜色
   'noParkingColor': '#ff0000', // 禁停区颜色
   'noReturnColor': '#ff800f', // 禁还区颜色
   'blindAreaColor': '#808080', // 信号盲区颜色
@@ -38,9 +39,9 @@ export default {
       }
       const p = new BMap.Point(point.lng, point.lat)
       if (setViewPort) {
-        setTimeout(()=>{
+        setTimeout(() => {
           this.map.setViewport([p])
-        },500)
+        }, 500)
       }
       const marker = new BMap.Marker(p, { icon, draggingCursor: 'pointer', title: null, ...rest })
       this.map.addOverlay(marker)
@@ -70,10 +71,10 @@ export default {
       return polyline
     },
     // 画多边形
-    drawPolygon(points, polygonOptions) {
+    drawPolygon(points, polygonOptions, setViewPort = false) {
       const strokeColor = COLOR_CONFIG[polygonOptions.strokeColor]
       console.log('polygonOptions.fillColor', polygonOptions.fillColor)
-      const fillColor = COLOR_CONFIG[polygonOptions.fillColor]
+      const fillColor = COLOR_CONFIG[polygonOptions.fillColor||polygonOptions.strokeColor]
       console.log('fillColor', fillColor)
       // 设置默认的参数
       const option = {
@@ -86,17 +87,23 @@ export default {
         enableEditing: polygonOptions.enableEditing || false, // 是否启用编辑，默认不启用
         enableClicking: polygonOptions.enableClicking || true // 是否响应点击事件，默认为true
       }
-      const polygon = new BMap.Polygon(points.map(p => {
+      const ps = points.map(p => {
         return new BMap.Point(p.lng, p.lat)
-      }), option)
+      })
+      const polygon = new BMap.Polygon(ps, option)
       this.map.addOverlay(polygon)
+      if (setViewPort) {
+        setTimeout(() => {
+          this.map.setViewport(ps)
+        }, 0)
+      }
       return polygon
     },
     // 画圆
-    drawCircle(point, radius, circleOptions) {
+    drawCircle(point, radius, circleOptions, setViewPort = false) {
       const r = radius || 50
       const strokeColor = COLOR_CONFIG[circleOptions.strokeColor]
-      const fillColor = COLOR_CONFIG[circleOptions.fillColor]
+      const fillColor = COLOR_CONFIG[circleOptions.fillColor||circleOptions.strokeColor]
       // 设置默认的参数
       const option = {
         strokeWeight: circleOptions.strokeWeight || 2, // 边线的宽度，以像素为单位。
@@ -113,6 +120,16 @@ export default {
       const circle = new BMap.Circle(centerPoint, r, option)
       this.map.addOverlay(circle)
       console.log('circle2:', circle)
+      // 如果需要画中心点图标
+      if(circleOptions.icon){
+        const { url, size, imageSize, anchor } = circleOptions.icon
+        const icon = new BMap.Icon(url, new BMap.Size(size[0], size[1]), {
+          imageSize: new BMap.Size(imageSize[0], imageSize[1]),
+          anchor: new BMap.Size(anchor[0], anchor[1])
+        })
+        const marker = new BMap.Marker(centerPoint, { icon,  title: null,})
+        this.map.addOverlay(marker)
+      }
       let radiusLabel = null
       // 如果允许编辑
       if (circleOptions.enableEditing) {
@@ -141,6 +158,11 @@ export default {
           radiusLabel.setPosition(centerPoint)
           radiusInputEl.value = tempR
         })
+      }
+      if (setViewPort) {
+        setTimeout(() => {
+          this.map.setViewport([centerPoint])
+        }, 0)
       }
       return { circle, radiusLabel }
     },
@@ -196,6 +218,9 @@ export default {
       lng = z * Math.cos(theta) + 0.0065
       lat = z * Math.sin(theta) + 0.006
       return { 'lat': lat, 'lng': lng }
-    }
+    },
+    clearAll() {
+      this.map.clearOverlays()
+    },
   }
 }

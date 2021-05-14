@@ -45,7 +45,8 @@
             />
           </template>
         </el-table-column>
-
+        <el-table-column prop="vehicleRealityScale" label="已投车数量" />
+        <el-table-column prop="vehicleScale" label="授权投车数量" />
       </el-table>
       <!--分页组件-->
       <pagination />

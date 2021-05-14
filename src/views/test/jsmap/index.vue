@@ -280,6 +280,9 @@ export default {
           break
       }
     },
+    clearAll() {
+        this.map.clearOverlays()
+    },
     getInfo() {
       console.log('circle', this.circle)
       console.log('polyline', this.polyline)
