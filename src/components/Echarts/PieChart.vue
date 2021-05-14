@@ -20,6 +20,18 @@ export default {
     height: {
       type: String,
       default: '300px'
+    },
+    title: {
+      type: Object,
+      default: () => null
+    },
+    data: {
+      type: Array,
+      default: () => []
+    },
+    option: {
+      type: Object,
+      default: () => null
     }
   },
   data() {
@@ -48,7 +60,15 @@ export default {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
 
-      this.chart.setOption({
+      this.chart.setOption(this.option?this.option:this.getDefaultOption())
+    },
+    getDefaultOption() {
+      // 如果传了option就按option来，没传就按默认的来
+      const legendData = this.data&&this.data.map(item => {
+        return item.name
+      })
+      const option = {
+        title: this.title,
         tooltip: {
           trigger: 'item',
           formatter: '{a} <br/>{b} : {c} ({d}%)'
@@ -56,28 +76,23 @@ export default {
         legend: {
           left: 'center',
           bottom: '10',
-          data: ['Industries', 'Technology', 'Forex', 'Gold', 'Forecasts']
+          data: legendData
         },
         calculable: true,
         series: [
           {
-            name: 'WEEKLY WRITE ARTICLES',
+            name: '占比详情:',
             type: 'pie',
             roseType: 'radius',
             radius: [15, 95],
             center: ['50%', '38%'],
-            data: [
-              { value: 320, name: 'Industries' },
-              { value: 240, name: 'Technology' },
-              { value: 149, name: 'Forex' },
-              { value: 100, name: 'Gold' },
-              { value: 59, name: 'Forecasts' }
-            ],
+            data: this.data,
             animationEasing: 'cubicInOut',
             animationDuration: 2600
           }
         ]
-      })
+      }
+      return option
     }
   }
 }

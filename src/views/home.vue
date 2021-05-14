@@ -1,8 +1,8 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-editor-container">
-<!--      <github-corner class="github-corner" />-->
-      <panel-group @handleSetLineChartData="handleSetLineChartData" />
+      <!--      <github-corner class="github-corner" />-->
+      <panel-group :data="totalData"/>
 
       <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
         <line-chart :chart-data="lineChartData" />
@@ -10,12 +10,12 @@
       <el-row :gutter="32">
         <el-col :xs="24" :sm="24" :lg="8">
           <div class="chart-wrapper">
-            <radar-chart />
+            <pie-chart v-if="inspectionData" :data="inspectionData" :title="{text:'今日巡检记录',left: 'center'}"/>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="8">
           <div class="chart-wrapper">
-            <pie-chart />
+            <pie-chart v-if="inspectionData" :data="inspectionData" :title="{text:'本周举报类型',left: 'center'}"/>
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="8">
@@ -35,6 +35,8 @@ import LineChart from './dashboard/LineChart'
 import RadarChart from '@/components/Echarts/RadarChart'
 import PieChart from '@/components/Echarts/PieChart'
 import BarChart from '@/components/Echarts/BarChart'
+import { getTotal, getInspection } from '@/api/statistics/statistics'
+import { mapGetters } from 'vuex'
 
 const lineChartData = {
   newVisitis: {
@@ -67,12 +69,44 @@ export default {
   },
   data() {
     return {
-      lineChartData: lineChartData.newVisitis
+      lineChartData: lineChartData.newVisitis,
+      totalData: {},
+      inspectionData:null
     }
   },
+  computed: {
+    ...mapGetters([
+      'city',
+      'user'
+    ])
+  },
+  watch: {
+    city(val) {
+      // 刷新
+    }
+  },
+  mounted() {
+    this.initData()
+  },
   methods: {
-    handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type]
+    initData() {
+      const areaCode = this.city && this.city.areaCode
+      if (!areaCode) {
+        return
+      }
+      // 获取数量统计
+      getTotal({ areaCode }).then(res => {
+        if (res && res.status === 200) {
+          this.totalData = res.content || {}
+        }
+      })
+      // 获取今日巡检占比统计
+      getInspection({ areaCode, cycle:1 }).then(res => {
+        if (res && res.status === 200) {
+          this.inspectionData = res.content || {}
+        }
+      })
+      // 获取本周举报类型占比统计
     }
   }
 }
