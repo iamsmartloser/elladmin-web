@@ -20,10 +20,11 @@ export function resetOperatorAppSecrete(data) {
   })
 }
 export function add(data) {
+  console.log('data',data)
   return request({
-    url: 'api/operatorInfo',
+    url: 'operators/add',
     method: 'post',
-    data: convertToFormData(data)
+    data: data
   })
 }
 

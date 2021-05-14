@@ -44,7 +44,7 @@ export function convertToFormData(data) {
       for (const key of Object.keys(data[item])) {
         formData.append(item + '.' + key, data[item][key])
       }
-    } else if (data[item]) {
+    } else if ((data[item]!==undefined)&&(data[item]!==null)) {
       formData.append(item, data[item])
     }
   })

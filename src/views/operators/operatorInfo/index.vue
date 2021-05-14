@@ -96,8 +96,8 @@
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
       <crudOperation :permission="permission" />
       <!--表单组件-->
-      <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="540px">
-        <el-form ref="form" :model="form" :rules="rules" size="small" label-width="120px">
+      <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="550px">
+        <el-form ref="form" :model="form" :rules="rules" size="small" label-width="140px">
           <el-form-item v-if="crud.status.edit" v-show="false" label="ID" prop="operatorId">
             <el-input v-model="form.id" style="width: 370px;" />
           </el-form-item>
@@ -115,23 +115,23 @@
           <!--              @change="changeFormBrand"-->
           <!--            />-->
           <!--          </el-form-item>-->
-          <!--          <el-form-item label="统一社会信用代码" prop="codeNumber">-->
-          <!--            <el-input maxlength="50" v-model="form.codeNumber" style="width: 370px;" />-->
-          <!--          </el-form-item>-->
-          <!--          <el-form-item label="公司名称" prop="name">-->
-          <!--            <el-input v-model="form.name" maxlength="50" style="width: 370px;" />-->
-          <!--          </el-form-item>-->
-          <el-form-item label="联系人邮箱" prop="contactsEmail">
+                    <el-form-item v-if="crud.status.add" label="统一社会信用代码" prop="codeNumber">
+                      <el-input maxlength="50" v-model="form.codeNumber" style="width: 370px;" />
+                    </el-form-item>
+                    <el-form-item v-if="crud.status.add" label="公司名称" prop="name">
+                      <el-input v-model="form.name" maxlength="50" style="width: 370px;" />
+                    </el-form-item>
+          <el-form-item v-if="crud.status.edit" label="联系人邮箱" prop="contactsEmail">
             <el-input v-model="form.contactsEmail" maxlength="50" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="联系人姓名" prop="contactsName">
+          <el-form-item v-if="crud.status.edit" label="联系人姓名" prop="contactsName">
             <el-input v-model="form.contactsName" maxlength="50" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="联系人电话" prop="contactsPhoneNumber">
+          <el-form-item v-if="crud.status.edit" label="联系人电话" prop="contactsPhoneNumber">
             <el-input v-model="form.contactsPhoneNumber" maxlength="11" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="授权车辆数" prop="vehicleScale">
-            <el-input-number v-model="form.vehicleScale" :min="0" :max="9999999"/>
+            <el-input-number v-model="form.vehicleScale" :min="0" :max="9999999" />
           </el-form-item>
 
           <!--          <el-form-item label="服务区类型" prop="lbsServiceType">-->
@@ -292,7 +292,7 @@ import { getList } from '@/api/operators/vehicleBrandInfo'
 import { formatDate } from '@/utils/formatDay'
 import { mapGetters } from 'vuex'
 
-const defaultForm = { id: null, areaCode: null, brandId: null, codeNumber: null, appId: null, appPrivate: null, appSecret: null, name: null, vehicleScale: null, vehicleRealityScale: null, lbsServiceType: null, lbsStationType: null, lbsNoParkingType: null, access: null, retreat: null, status: null, createTime: null, createUserId: null, approvalInfoId: null, approvalEndTime: null }
+const defaultForm = { id: null, contactsEmail: null, contactsName: null, contactsPhoneNumber: null, vehicleScale: null, areaCode: null, brandId: null, codeNumber: null, appId: null, appPrivate: null, appSecret: null, name: null, vehicleScale: null, vehicleRealityScale: null, lbsServiceType: null, lbsStationType: null, lbsNoParkingType: null, access: null, retreat: null, status: null, createTime: null, createUserId: null, approvalInfoId: null, approvalEndTime: null }
 // const defaultForm = { }
 export default {
   name: 'OperatorInfo',
@@ -389,6 +389,9 @@ export default {
     [CRUD.HOOK.beforeSubmit]() {
       this.crud.form.areaCode = this.city && this.city.areaCode
       this.crud.form.operatorId = this.crud.form.id
+      if(this.crud.status.add){
+        this.crud.form.planVehicleScale = this.crud.form.vehicleScale
+      }
       return true
     },
     formatDate,
