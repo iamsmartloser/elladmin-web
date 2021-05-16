@@ -1,5 +1,5 @@
 <template>
-  <div :class="className" :style="{height:height,width:width}" />
+  <div v-loading="loading" :class="className" :style="{height:height,width:width}" />
 </template>
 
 <script>
@@ -11,6 +11,10 @@ const animationDuration = 6000
 
 export default {
   props: {
+    loading: {
+      type: Boolean,
+      default: false
+    },
     className: {
       type: String,
       default: 'chart'
@@ -136,7 +140,7 @@ export default {
               name: rows[key][0].groupName,
               type: 'bar',
               stack: 'vistors',
-              barWidth: '60%',
+              barWidth: '100',
               data: rows[key].map(v=>v.value),
               animationDuration
             }

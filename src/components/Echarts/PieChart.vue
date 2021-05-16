@@ -1,5 +1,5 @@
 <template>
-  <div :class="className" :style="{height:height,width:width}" />
+  <div v-loading="loading" :class="className" :style="{height:height,width:width}" />
 </template>
 
 <script>
@@ -9,6 +9,10 @@ import { debounce } from '@/utils'
 
 export default {
   props: {
+    loading: {
+      type: Boolean,
+      default: false
+    },
     className: {
       type: String,
       default: 'chart'

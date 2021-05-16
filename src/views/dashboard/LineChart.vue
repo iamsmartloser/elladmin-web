@@ -1,5 +1,5 @@
 <template>
-  <div :class="className" :style="{height:height,width:width}" />
+  <div v-loading="loading" :class="className" :style="{height:height,width:width}" />
 </template>
 
 <script>
@@ -12,6 +12,10 @@ const colors = ['#FF005A', '#3888fa']
 export default {
   mixins: [resize],
   props: {
+    loading: {
+      type: Boolean,
+      default: false
+    },
     className: {
       type: String,
       default: 'chart'
@@ -119,7 +123,7 @@ export default {
             }
           },
           legend: {
-            left: 'left',
+            left: 'right',
             data: legendData
           },
           series: Object.keys(data).map((key, index) => {

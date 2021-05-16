@@ -4,93 +4,93 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle" class="search-wrap-has-label">
         <!-- 搜索 -->
-        <span>
-          <label class="el-form-item-label">车辆品牌:</label>
-          <SelectWithService
-            v-if="city"
-            style="width: 185px;"
-            clearable
-            value-key="id"
-            label-key="name"
-            :params="brandParams"
-            :service="getBrandList"
-            @change="changeBrand"
-          />
-        </span>
-        <span>
-          <label class="el-form-item-label">统一社会信用代码</label>
-          <el-input v-model="query.codeNumber" maxlength="50" clearable placeholder="统一社会信用代码" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        </span>
+        <!--        <span>-->
+        <!--          <label class="el-form-item-label">车辆品牌:</label>-->
+        <!--          <SelectWithService-->
+        <!--            v-if="city"-->
+        <!--            style="width: 185px;"-->
+        <!--            clearable-->
+        <!--            value-key="id"-->
+        <!--            label-key="name"-->
+        <!--            :params="brandParams"-->
+        <!--            :service="getBrandList"-->
+        <!--            @change="changeBrand"-->
+        <!--          />-->
+        <!--        </span>-->
+        <!--        <span>-->
+        <!--          <label class="el-form-item-label">统一社会信用代码</label>-->
+        <!--          <el-input v-model="query.codeNumber" maxlength="50" clearable placeholder="统一社会信用代码" style="width: 185px;" @keyup.enter.native="crud.toQuery" />-->
+        <!--        </span>-->
         <span>
           <label class="el-form-item-label">公司名称</label>
           <el-input v-model="query.name" maxlength="50" clearable placeholder="公司名称" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
         </span>
-        <span>
-          <label class="el-form-item-label">服务区类型</label>
-          <el-select v-model="query.lbsServiceType" filterable clearable placeholder="请选择">
-            <el-option
-              v-for="item in dict.lbs_created_type"
-              :key="item.id"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </span>
-        <span>
-          <label class="el-form-item-label">车站类型</label>
-          <el-select v-model="query.lbsStationType" filterable clearable placeholder="请选择">
-            <el-option
-              v-for="item in dict.lbs_created_type"
-              :key="item.id"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </span>
-        <span>
-          <label class="el-form-item-label">禁停区类型</label>
-          <el-select v-model="query.lbsNoParkingType" filterable clearable placeholder="请选择">
-            <el-option
-              v-for="item in dict.lbs_created_type"
-              :key="item.id"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </span>
-        <span>
-          <label class="el-form-item-label">审批状态</label>
-          <el-select v-model="query.status" filterable clearable placeholder="请选择">
-            <el-option
-              v-for="item in dict.approval_status"
-              :key="item.id"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </span>
-        <span>
-          <label class="el-form-item-label">接入状态</label>
-          <el-select v-model="query.access" filterable clearable placeholder="请选择">
-            <el-option
-              v-for="item in dict.access_status"
-              :key="item.id"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </span>
-        <span>
-          <label class="el-form-item-label">清退状态</label>
-          <el-select v-model="query.retreat" filterable clearable placeholder="请选择">
-            <el-option
-              v-for="item in dict.retreat_status"
-              :key="item.id"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </span>
+        <!--        <span>-->
+        <!--          <label class="el-form-item-label">服务区类型</label>-->
+        <!--          <el-select v-model="query.lbsServiceType" filterable clearable placeholder="请选择">-->
+        <!--            <el-option-->
+        <!--              v-for="item in dict.lbs_created_type"-->
+        <!--              :key="item.id"-->
+        <!--              :label="item.label"-->
+        <!--              :value="item.value"-->
+        <!--            />-->
+        <!--          </el-select>-->
+        <!--        </span>-->
+        <!--        <span>-->
+        <!--          <label class="el-form-item-label">车站类型</label>-->
+        <!--          <el-select v-model="query.lbsStationType" filterable clearable placeholder="请选择">-->
+        <!--            <el-option-->
+        <!--              v-for="item in dict.lbs_created_type"-->
+        <!--              :key="item.id"-->
+        <!--              :label="item.label"-->
+        <!--              :value="item.value"-->
+        <!--            />-->
+        <!--          </el-select>-->
+        <!--        </span>-->
+        <!--        <span>-->
+        <!--          <label class="el-form-item-label">禁停区类型</label>-->
+        <!--          <el-select v-model="query.lbsNoParkingType" filterable clearable placeholder="请选择">-->
+        <!--            <el-option-->
+        <!--              v-for="item in dict.lbs_created_type"-->
+        <!--              :key="item.id"-->
+        <!--              :label="item.label"-->
+        <!--              :value="item.value"-->
+        <!--            />-->
+        <!--          </el-select>-->
+        <!--        </span>-->
+        <!--        <span>-->
+        <!--          <label class="el-form-item-label">审批状态</label>-->
+        <!--          <el-select v-model="query.status" filterable clearable placeholder="请选择">-->
+        <!--            <el-option-->
+        <!--              v-for="item in dict.approval_status"-->
+        <!--              :key="item.id"-->
+        <!--              :label="item.label"-->
+        <!--              :value="item.value"-->
+        <!--            />-->
+        <!--          </el-select>-->
+        <!--        </span>-->
+        <!--        <span>-->
+        <!--          <label class="el-form-item-label">接入状态</label>-->
+        <!--          <el-select v-model="query.access" filterable clearable placeholder="请选择">-->
+        <!--            <el-option-->
+        <!--              v-for="item in dict.access_status"-->
+        <!--              :key="item.id"-->
+        <!--              :label="item.label"-->
+        <!--              :value="item.value"-->
+        <!--            />-->
+        <!--          </el-select>-->
+        <!--        </span>-->
+        <!--        <span>-->
+        <!--          <label class="el-form-item-label">清退状态</label>-->
+        <!--          <el-select v-model="query.retreat" filterable clearable placeholder="请选择">-->
+        <!--            <el-option-->
+        <!--              v-for="item in dict.retreat_status"-->
+        <!--              :key="item.id"-->
+        <!--              :label="item.label"-->
+        <!--              :value="item.value"-->
+        <!--            />-->
+        <!--          </el-select>-->
+        <!--        </span>-->
         <rrOperation :crud="crud" class="rr-op-has-label" :filter-item-class="false" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -115,12 +115,12 @@
           <!--              @change="changeFormBrand"-->
           <!--            />-->
           <!--          </el-form-item>-->
-                    <el-form-item v-if="crud.status.add" label="统一社会信用代码" prop="codeNumber">
-                      <el-input maxlength="50" v-model="form.codeNumber" style="width: 370px;" />
-                    </el-form-item>
-                    <el-form-item v-if="crud.status.add" label="公司名称" prop="name">
-                      <el-input v-model="form.name" maxlength="50" style="width: 370px;" />
-                    </el-form-item>
+          <el-form-item v-if="crud.status.add" label="统一社会信用代码" prop="codeNumber">
+            <el-input v-model="form.codeNumber" maxlength="50" style="width: 370px;" />
+          </el-form-item>
+          <el-form-item v-if="crud.status.add" label="公司名称" prop="name">
+            <el-input v-model="form.name" maxlength="50" style="width: 370px;" />
+          </el-form-item>
           <el-form-item v-if="crud.status.edit" label="联系人邮箱" prop="contactsEmail">
             <el-input v-model="form.contactsEmail" maxlength="50" style="width: 370px;" />
           </el-form-item>
@@ -204,52 +204,52 @@
         <el-table-column type="selection" width="55" />
         <!--        <el-table-column prop="id" label="ID" />-->
         <el-table-column prop="brandName" label="车辆品牌" />
-        <el-table-column prop="codeNumber" label="统一社会信用代码" />
-        <el-table-column prop="appId" label="运营商应用ID" />
-        <el-table-column prop="appSecret" label="运营商公钥" align="center">
-          <template slot-scope="scope">
-            <div style="text-align: center">
-              <i class="el-icon-view" :size="40" style="margin-right: 16px;cursor: pointer;" title="获取密钥" @click.prevent="getPublicKey(scope.row, scope.$index)" />
-              <el-popover v-model="resetSecretPopover[scope.row.id]" title="温馨提示" placement="top" width="180" trigger="manual">
-                <p>{{ '重置后不可恢复，确定要重置吗' }}</p>
-                <div style="text-align: right; margin: 0">
-                  <el-button size="mini" type="text" @click="resetSecretPopover[scope.row.id] = false">取消</el-button>
-                  <el-button type="primary" size="mini" @click="resetPublicKey(scope.row, scope.$index);resetSecretPopover[scope.row.id] = false">确定</el-button>
-                </div>
-                <i slot="reference" class="el-icon-refresh" title="重置密钥" style="cursor: pointer;" @click.prevent="resetSecretPopover[scope.row.id] = true" />
-              </el-popover>
-            </div>
+<!--        <el-table-column prop="codeNumber" label="统一社会信用代码" />-->
+<!--        <el-table-column prop="appId" label="运营商应用ID" />-->
+<!--        <el-table-column prop="appSecret" label="运营商公钥" align="center">-->
+<!--          <template slot-scope="scope">-->
+<!--            <div style="text-align: center">-->
+<!--              <i class="el-icon-view" :size="40" style="margin-right: 16px;cursor: pointer;" title="获取密钥" @click.prevent="getPublicKey(scope.row, scope.$index)" />-->
+<!--              <el-popover v-model="resetSecretPopover[scope.row.id]" title="温馨提示" placement="top" width="180" trigger="manual">-->
+<!--                <p>{{ '重置后不可恢复，确定要重置吗' }}</p>-->
+<!--                <div style="text-align: right; margin: 0">-->
+<!--                  <el-button size="mini" type="text" @click="resetSecretPopover[scope.row.id] = false">取消</el-button>-->
+<!--                  <el-button type="primary" size="mini" @click="resetPublicKey(scope.row, scope.$index);resetSecretPopover[scope.row.id] = false">确定</el-button>-->
+<!--                </div>-->
+<!--                <i slot="reference" class="el-icon-refresh" title="重置密钥" style="cursor: pointer;" @click.prevent="resetSecretPopover[scope.row.id] = true" />-->
+<!--              </el-popover>-->
+<!--            </div>-->
 
-          </template>
-        </el-table-column>
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column prop="name" label="公司名称" />
         <el-table-column prop="vehicleScale" label="授权车辆数" />
         <el-table-column prop="vehicleRealityScale" label="实际投放车辆数" />
-        <el-table-column prop="lbsServiceType" label="服务区类型">
-          <template slot-scope="scope">
-            {{ dict.label.lbs_created_type[scope.row.lbsServiceType] }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="lbsStationType" label="车站类型">
-          <template slot-scope="scope">
-            {{ dict.label.lbs_created_type[scope.row.lbsStationType] }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="lbsNoParkingType" label="禁停区类型">
-          <template slot-scope="scope">
-            {{ dict.label.lbs_created_type[scope.row.lbsNoParkingType] }}
-          </template>
-        </el-table-column>
+<!--        <el-table-column prop="lbsServiceType" label="服务区类型">-->
+<!--          <template slot-scope="scope">-->
+<!--            {{ dict.label.lbs_created_type[scope.row.lbsServiceType] }}-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column prop="lbsStationType" label="车站类型">-->
+<!--          <template slot-scope="scope">-->
+<!--            {{ dict.label.lbs_created_type[scope.row.lbsStationType] }}-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column prop="lbsNoParkingType" label="禁停区类型">-->
+<!--          <template slot-scope="scope">-->
+<!--            {{ dict.label.lbs_created_type[scope.row.lbsNoParkingType] }}-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column prop="access" label="接入状态">
           <template slot-scope="scope">
             {{ dict.label.access_status[scope.row.access] }}
           </template>
         </el-table-column>
-        <el-table-column prop="retreat" label="清退状态">
-          <template slot-scope="scope">
-            {{ dict.label.retreat_status[scope.row.retreat] }}
-          </template>
-        </el-table-column>
+<!--        <el-table-column prop="retreat" label="清退状态">-->
+<!--          <template slot-scope="scope">-->
+<!--            {{ dict.label.retreat_status[scope.row.retreat] }}-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column prop="status" label="审批状态">
           <template slot-scope="scope">
             {{ dict.label.approval_status[scope.row.status] }}
@@ -271,6 +271,7 @@
               :data="scope.row"
               :permission="permission"
             />
+            <el-button v-permission="permission.view" icon="el-icon-view" size="mini" @click="$message.info('开发中，敬请期待')" />
           </template>
         </el-table-column>
       </el-table>
@@ -389,7 +390,7 @@ export default {
     [CRUD.HOOK.beforeSubmit]() {
       this.crud.form.areaCode = this.city && this.city.areaCode
       this.crud.form.operatorId = this.crud.form.id
-      if(this.crud.status.add){
+      if (this.crud.status.add) {
         this.crud.form.planVehicleScale = this.crud.form.vehicleScale
       }
       return true

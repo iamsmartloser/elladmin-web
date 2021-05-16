@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="40" class="panel-group">
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel">
+      <div class="card-panel" @click="toPage('VehicleInfo')">
         <div class="card-panel-icon-wrapper icon-people">
           <svg-icon icon-class="vehicle" class-name="card-panel-icon" />
         </div>
@@ -14,7 +14,7 @@
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel">
+      <div class="card-panel" @click="toPage('LbsStation')">
         <div class="card-panel-icon-wrapper icon-message">
           <svg-icon icon-class="station" class-name="card-panel-icon" />
         </div>
@@ -22,7 +22,7 @@
           <div class="card-panel-text">
             车站总数
           </div>
-          <count-to :start-val="0" :end-val="data.station" :duration="1500" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="data.station||0" :duration="1500" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -35,12 +35,12 @@
           <div class="card-panel-text">
             今日巡检
           </div>
-          <count-to :start-val="0" :end-val="data.todayInspection" :duration="1800" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="data.todayInspection||0" :duration="1800" class="card-panel-num" />
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel">
+      <div class="card-panel" @click="toPage('SuperviseVehicleReport')">
         <div class="card-panel-icon-wrapper icon-shopping">
           <svg-icon icon-class="supervise" class-name="card-panel-icon" />
         </div>
@@ -48,7 +48,7 @@
           <div class="card-panel-text">
             举报待处理
           </div>
-          <count-to :start-val="0" :end-val="data.superviseNotHandle" :duration="1900" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="data.superviseNotHandle||0" :duration="1900" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -69,7 +69,9 @@ export default {
     }
   },
   methods: {
-
+    toPage(page,params){
+      this.$router.push({name: page})
+    }
   }
 }
 </script>

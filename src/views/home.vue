@@ -2,25 +2,33 @@
   <div class="dashboard-container">
     <div class="dashboard-editor-container">
       <!--      <github-corner class="github-corner" />-->
-      <panel-group :data="totalData"/>
+      <panel-group :data="totalData" />
 
       <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-        <line-chart :data="superviseInspectionData" :title="{text:'巡检举报日统计'}"/>
+        <el-dropdown @command="selectSICommand">
+          <span class="el-dropdown-link">
+            {{ superviseInspectionDWS }}<i class="el-icon-arrow-down el-icon--right" />
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item v-for="(item,index) in superviseInspectionDW" :command="item.cycle">{{ item.name }}</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <line-chart :loading="loading.superviseInspection" :data="superviseInspectionData" :title="{text:'巡检举报日统计'}" />
       </el-row>
       <el-row :gutter="32">
         <el-col :xs="24" :sm="24" :lg="12">
           <div class="chart-wrapper">
-            <pie-chart :data="inspectionData" :title="{text:'今日巡检记录'}"/>
+            <pie-chart :loading="loading.inspection" :data="inspectionData" :title="{text:'今日巡检记录'}" />
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="12">
           <div class="chart-wrapper">
-            <pie-chart :data="superviseData" :title="{text:'本周举报类型'}"/>
+            <pie-chart :loading="loading.supervise" :data="superviseData" :title="{text:'本周举报类型'}" />
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :lg="24">
           <div class="chart-wrapper">
-            <bar-chart :data="superviseGroupData" :title="{text:'本周举报类型'}"/>
+            <bar-chart :loading="loading.superviseGroup" :data="superviseGroupData" :title="{text:'今日举报'}" />
           </div>
         </el-col>
       </el-row>
@@ -70,11 +78,19 @@ export default {
   data() {
     return {
       lineChartData: lineChartData.newVisitis,
-      totalData: {},// 数量统计
-      inspectionData: null,// 今日巡检
-      superviseData: null,// 本周举报
-      superviseGroupData: null,// 举报分组统计
-      superviseInspectionData: null// 举报已处理、巡检记录列表
+      totalData: {}, // 数量统计
+      superviseInspectionData: null, // 举报已处理、巡检记录列表
+      superviseInspectionDW: [{ cycle: 2, name: '近一周' }, { cycle: 3, name: '近一月' }],
+      superviseInspectionDWS: '近一周',
+      inspectionData: null, // 今日巡检
+      superviseData: null, // 本周举报
+      superviseGroupData: null, // 举报分组统计
+      loading: {
+        superviseInspection: false, // 举报已处理、巡检记录列表
+        inspection: false, // 今日巡检
+        supervise: false, // 本周举报
+        superviseGroup: false// 举报分组统计
+      }
     }
   },
   computed: {
@@ -103,36 +119,62 @@ export default {
           this.totalData = res.content || {}
         }
       })
-      // 获取巡检占比统计
-      getInspection({ areaCode, cycle: 1 }).then(res => {
+      this.inspection({ areaCode, cycle: 1 })
+      this.supervise({ areaCode, cycle: 2 })
+      this.superviseGroup({ areaCode, cycle: 2 })
+      this.superviseInspection({ areaCode, cycle: 2 })
+    },
+    // 获取巡检占比统计
+    inspection(params){
+      this.loading.inspection = true
+      getInspection(params).then(res => {
+        this.loading.inspection = false
         if (res && res.status === 200) {
           this.inspectionData = res.content || {}
         }
       })
-      // 获取举报类型占比统计
-      getSupervise({ areaCode, cycle: 1}).then(res => {
+    },
+    // 获取举报类型占比统计
+    supervise(params){
+      this.loading.supervise = true
+      getSupervise(params).then(res => {
+        this.loading.supervise = false
         if (res && res.status === 200) {
           this.superviseData = res.content || {}
         }
       })
-      // 举报分组统计
-      getSuperviseGroup({ areaCode, cycle: 2 }).then(res => {
+    },
+    // 举报分组统计
+    superviseGroup(params){
+      this.loading.superviseGroup = true
+      getSuperviseGroup(params).then(res => {
+        this.loading.superviseGroup = false
         if (res && res.status === 200) {
           this.superviseGroupData = res.content || {}
         }
       })
-      // 举报已处理、巡检记录列表
-      getSuperviseInspection({ areaCode, cycle: 2 }).then(res => {
-        if (res && res.status === 200&&res.content) {
-          // const result=[{name:'举报已处理',value:[]},{name:'巡检记录数',value:[]}]
-          // this.superviseInspectionData = res.content.map((item)=>{
-          //   result[0].value.push(item.superviseHandle)
-          //   result[1].value.push(item.inspection)
-          // })
-          // this.superviseInspectionData = result
+    },
+    // 举报已处理、巡检记录列表
+    superviseInspection(params) {
+      this.loading.superviseInspection = true
+      getSuperviseInspection(params).then(res => {
+        this.loading.superviseInspection = false
+        if (res && res.status === 200 && res.content) {
           this.superviseInspectionData = res.content || null
+          this.superviseInspectionDW.map(obj => {
+            if (obj.cycle === params.cycle) {
+              this.superviseInspectionDWS = obj.name
+            }
+          })
         }
       })
+    },
+    selectSICommand(cycle) {
+      const areaCode = this.city && this.city.areaCode
+      if (!areaCode) {
+        return
+      }
+      this.superviseInspection({ areaCode, cycle })
     }
   }
 }
