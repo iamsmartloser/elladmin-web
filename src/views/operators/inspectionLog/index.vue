@@ -20,7 +20,7 @@
 <!--          <el-input v-model="query.userName" clearable placeholder="巡检人员" style="width: 185px;" @keyup.enter.native="crud.toQuery" />-->
 <!--        </span>-->
 
-        <span>
+        <span v-permission="permission.other">
           <label class="el-form-item-label">查询其他运营商</label>
           <el-checkbox v-model="query.other"></el-checkbox>
           <SelectWithService
@@ -176,7 +176,8 @@ export default {
       permission: {
         add: ['admin', 'inspectionLog:add'],
         edit: ['admin', 'inspectionLog:edit'],
-        del: ['admin', 'inspectionLog:del']
+        del: ['admin', 'inspectionLog:del'],
+        other: ['admin', 'inspectionLog:other']
       },
       rules: {
         type: [
