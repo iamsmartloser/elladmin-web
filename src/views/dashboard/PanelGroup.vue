@@ -27,7 +27,7 @@
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel">
+      <div class="card-panel" @click="toPage('InspectionLog')">
         <div class="card-panel-icon-wrapper icon-money">
           <svg-icon icon-class="location" class-name="card-panel-icon" />
         </div>
