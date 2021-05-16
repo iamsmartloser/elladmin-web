@@ -194,7 +194,7 @@
               :data="scope.row"
               :permission="permission"
             />
-            <el-button icon="el-icon-view" size="mini" @click="viewVisible = true;rowData = scope.row" />
+            <el-button v-permission="permission.view" icon="el-icon-view" size="mini" @click="viewVisible = true;rowData = scope.row" />
           </template>
         </el-table-column>
       </el-table>
@@ -233,7 +233,8 @@ export default {
       permission: {
         add: ['admin', 'lbsStorehouse:add'],
         edit: ['admin', 'lbsStorehouse:edit'],
-        del: ['admin', 'lbsStorehouse:del']
+        del: ['admin', 'lbsStorehouse:del'],
+        view: ['admin', 'lbsStorehouse:view']
       },
       rules: {
         operatorId: [

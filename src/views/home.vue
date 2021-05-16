@@ -5,22 +5,22 @@
       <panel-group :data="totalData"/>
 
       <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-        <line-chart :chart-data="lineChartData" />
+        <line-chart :data="superviseInspectionData" :title="{text:'巡检举报日统计'}"/>
       </el-row>
       <el-row :gutter="32">
-        <el-col :xs="24" :sm="24" :lg="8">
+        <el-col :xs="24" :sm="24" :lg="12">
           <div class="chart-wrapper">
-            <pie-chart v-if="inspectionData" :data="inspectionData" :title="{text:'今日巡检记录',left: 'center'}"/>
+            <pie-chart :data="inspectionData" :title="{text:'今日巡检记录'}"/>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :lg="8">
+        <el-col :xs="24" :sm="24" :lg="12">
           <div class="chart-wrapper">
-            <pie-chart v-if="inspectionData" :data="inspectionData" :title="{text:'本周举报类型',left: 'center'}"/>
+            <pie-chart :data="superviseData" :title="{text:'本周举报类型'}"/>
           </div>
         </el-col>
-        <el-col :xs="24" :sm="24" :lg="8">
+        <el-col :xs="24" :sm="24" :lg="24">
           <div class="chart-wrapper">
-            <bar-chart />
+            <bar-chart :data="superviseGroupData" :title="{text:'本周举报类型'}"/>
           </div>
         </el-col>
       </el-row>
@@ -35,7 +35,7 @@ import LineChart from './dashboard/LineChart'
 import RadarChart from '@/components/Echarts/RadarChart'
 import PieChart from '@/components/Echarts/PieChart'
 import BarChart from '@/components/Echarts/BarChart'
-import { getTotal, getInspection } from '@/api/statistics/statistics'
+import { getTotal, getInspection, getSupervise, getSuperviseGroup, getSuperviseInspection } from '@/api/statistics/statistics'
 import { mapGetters } from 'vuex'
 
 const lineChartData = {
@@ -70,8 +70,11 @@ export default {
   data() {
     return {
       lineChartData: lineChartData.newVisitis,
-      totalData: {},
-      inspectionData:null
+      totalData: {},// 数量统计
+      inspectionData: null,// 今日巡检
+      superviseData: null,// 本周举报
+      superviseGroupData: null,// 举报分组统计
+      superviseInspectionData: null// 举报已处理、巡检记录列表
     }
   },
   computed: {
@@ -100,13 +103,36 @@ export default {
           this.totalData = res.content || {}
         }
       })
-      // 获取今日巡检占比统计
-      getInspection({ areaCode, cycle:1 }).then(res => {
+      // 获取巡检占比统计
+      getInspection({ areaCode, cycle: 1 }).then(res => {
         if (res && res.status === 200) {
           this.inspectionData = res.content || {}
         }
       })
-      // 获取本周举报类型占比统计
+      // 获取举报类型占比统计
+      getSupervise({ areaCode, cycle: 1}).then(res => {
+        if (res && res.status === 200) {
+          this.superviseData = res.content || {}
+        }
+      })
+      // 举报分组统计
+      getSuperviseGroup({ areaCode, cycle: 2 }).then(res => {
+        if (res && res.status === 200) {
+          this.superviseGroupData = res.content || {}
+        }
+      })
+      // 举报已处理、巡检记录列表
+      getSuperviseInspection({ areaCode, cycle: 2 }).then(res => {
+        if (res && res.status === 200&&res.content) {
+          // const result=[{name:'举报已处理',value:[]},{name:'巡检记录数',value:[]}]
+          // this.superviseInspectionData = res.content.map((item)=>{
+          //   result[0].value.push(item.superviseHandle)
+          //   result[1].value.push(item.inspection)
+          // })
+          // this.superviseInspectionData = result
+          this.superviseInspectionData = res.content || null
+        }
+      })
     }
   }
 }

@@ -19,7 +19,7 @@ export default {
     },
     height: {
       type: String,
-      default: '300px'
+      default: '350px'
     },
     title: {
       type: Object,
@@ -37,6 +37,14 @@ export default {
   data() {
     return {
       chart: null
+    }
+  },
+  watch: {
+    data(val) {
+      this.setDefaultOption()
+    },
+    option(val) {
+      this.setDefaultOption()
     }
   },
   mounted() {
@@ -60,39 +68,57 @@ export default {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
 
-      this.chart.setOption(this.option?this.option:this.getDefaultOption())
+      this.setDefaultOption()
     },
-    getDefaultOption() {
+    setDefaultOption() {
       // 如果传了option就按option来，没传就按默认的来
-      const legendData = this.data&&this.data.map(item => {
-        return item.name
-      })
-      const option = {
-        title: this.title,
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
-        },
-        legend: {
-          left: 'center',
-          bottom: '10',
-          data: legendData
-        },
-        calculable: true,
-        series: [
-          {
-            name: '占比详情:',
-            type: 'pie',
-            roseType: 'radius',
-            radius: [15, 95],
-            center: ['50%', '38%'],
-            data: this.data,
-            animationEasing: 'cubicInOut',
-            animationDuration: 2600
-          }
-        ]
+      let option = null
+      if ((this.option && JSON.stringify(this.option) !== '{}')) {
+        option = this.option
+      } else {
+        if (!this.data) {
+          return
+        }
+        const legendData = this.data && this.data.map(item => {
+          return item.name
+        })
+        option = {
+          title: {
+            left: 'center',
+            ...this.title
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+          },
+          legend: {
+            left: 'center',
+            bottom: '10',
+            data: legendData
+          },
+          grid: {
+            top: 40,
+            left: '2%',
+            right: '2%',
+            bottom: '3%',
+            containLabel: true
+          },
+          calculable: true,
+          series: [
+            {
+              name: '占比详情:',
+              type: 'pie',
+              roseType: 'radius',
+              radius: [15, 95],
+              center: ['50%', '38%'],
+              data: this.data,
+              animationEasing: 'cubicInOut',
+              animationDuration: 2600
+            }
+          ]
+        }
       }
-      return option
+      this.chart.setOption(option)
     }
   }
 }

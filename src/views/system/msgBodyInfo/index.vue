@@ -219,7 +219,8 @@ export default {
       permission: {
         add: ['admin', 'msgBodyInfo:add'],
         edit: ['admin', 'msgBodyInfo:edit'],
-        del: ['admin', 'msgBodyInfo:del']
+        del: ['admin', 'msgBodyInfo:del'],
+        view: ['admin', 'msgBodyInfo:view']
       },
       rules: {
         type: [

@@ -36,10 +36,10 @@
             @change="changeOperators"
           />
         </span>
-        <span>
-          <label class="el-form-item-label">投车计划ID:</label>
-          <el-input v-model="query.vehicleLaunchesId" maxlength="50" clearable placeholder="投车计划ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />
-        </span>
+<!--        <span>-->
+<!--          <label class="el-form-item-label">投车计划ID:</label>-->
+<!--          <el-input v-model="query.vehicleLaunchesId" maxlength="50" clearable placeholder="投车计划ID" style="width: 185px;" @keyup.enter.native="crud.toQuery" />-->
+<!--        </span>-->
         <span>
           <label class="el-form-item-label">车辆类型</label>
           <el-select v-model="query.type" filterable placeholder="请选择">
@@ -51,17 +51,17 @@
             />
           </el-select>
         </span>
-        <span>
-          <label class="el-form-item-label">车辆状态:</label>
-          <el-select v-model="query.status" filterable placeholder="请选择">
-            <el-option
-              v-for="item in dict.vehicle_status"
-              :key="item.id"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </span>
+<!--        <span>-->
+<!--          <label class="el-form-item-label">车辆状态:</label>-->
+<!--          <el-select v-model="query.status" filterable placeholder="请选择">-->
+<!--            <el-option-->
+<!--              v-for="item in dict.vehicle_status"-->
+<!--              :key="item.id"-->
+<!--              :label="item.label"-->
+<!--              :value="item.value"-->
+<!--            />-->
+<!--          </el-select>-->
+<!--        </span>-->
         <span>
           <label class="el-form-item-label">车辆举报状态:</label>
           <el-select v-model="query.reportStatus" filterable placeholder="请选择">
@@ -151,16 +151,16 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="车辆状态" prop="status">
-            <el-select v-model="form.status" filterable placeholder="请选择" style="width: 370px;">
-              <el-option
-                v-for="item in dict.vehicle_status"
-                :key="item.id"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
+<!--          <el-form-item label="车辆状态" prop="status">-->
+<!--            <el-select v-model="form.status" filterable placeholder="请选择" style="width: 370px;">-->
+<!--              <el-option-->
+<!--                v-for="item in dict.vehicle_status"-->
+<!--                :key="item.id"-->
+<!--                :label="item.label"-->
+<!--                :value="item.value"-->
+<!--              />-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
           <el-form-item label="其他状态说明">
             <el-input v-model="form.statusExplain" maxlength="200" style="width: 370px;" />
           </el-form-item>
@@ -214,19 +214,19 @@
         <el-table-column prop="carNumber" label="车辆编码" />
         <el-table-column prop="brandName" label="车辆品牌" />
         <el-table-column prop="operatorName" label="所属运营商" />
-        <el-table-column prop="vehicleLaunchesId" label="投车计划ID" />
+<!--        <el-table-column prop="vehicleLaunchesId" label="投车计划ID" />-->
         <el-table-column prop="type" label="车辆类型">
           <template slot-scope="scope">
             {{ dict.label.vehicle_type[scope.row.type] }}
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="车辆状态">
-          <template slot-scope="scope">
-            <div style="cursor: pointer">
-              {{ `${dict.label.vehicle_status[scope.row.status]} ${scope.row.statusExplain?'-'+scope.row.statusExplain:''}` }}
-            </div>
-          </template>
-        </el-table-column>
+<!--        <el-table-column prop="status" label="车辆状态">-->
+<!--          <template slot-scope="scope">-->
+<!--            <div style="cursor: pointer">-->
+<!--              {{ `${dict.label.vehicle_status[scope.row.status]} ${scope.row.statusExplain?'-'+scope.row.statusExplain:''}` }}-->
+<!--            </div>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column prop="reportStatus" label="车辆举报状态">
           <template slot-scope="scope">
             {{ dict.label.vehicle_supervise_status[scope.row.reportStatus] }}
@@ -238,7 +238,7 @@
           </template>
         </el-table-column>
         <!--        <el-table-column prop="statusExplain" label="其他状态说明" />-->
-        <el-table-column prop="pintGCJ02" label="车辆经纬度" />
+<!--        <el-table-column prop="pintGCJ02" label="车辆经纬度" />-->
         <!--        <el-table-column prop="lat" label="纬度" />-->
         <el-table-column prop="lastReportTime" label="最后上报时间">
           <template slot-scope="scope">
@@ -256,7 +256,7 @@
               :data="scope.row"
               :permission="permission"
             />
-            <el-button icon="el-icon-view" size="mini" @click="toView(scope.row)" />
+            <el-button v-permission="permission.view" icon="el-icon-view" size="mini" @click="toView(scope.row)"  />
           </template>
         </el-table-column>
       </el-table>

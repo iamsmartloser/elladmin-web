@@ -4,9 +4,11 @@
 
 <script>
 import echarts from 'echarts'
+
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
 
+const colors = ['#FF005A', '#3888fa']
 export default {
   mixins: [resize],
   props: {
@@ -26,9 +28,17 @@ export default {
       type: Boolean,
       default: true
     },
-    chartData: {
+    title: {
       type: Object,
-      required: true
+      default: () => null
+    },
+    data: {
+      type: Object,
+      default: () => []
+    },
+    option: {
+      type: Object,
+      default: () => null
     }
   },
   data() {
@@ -37,17 +47,15 @@ export default {
     }
   },
   watch: {
-    chartData: {
-      deep: true,
-      handler(val) {
-        this.setOptions(val)
-      }
+    data(val) {
+      this.setDefaultOption(this.option, val)
+    },
+    option(val) {
+      this.setDefaultOption(val, this, data)
     }
   },
   mounted() {
-    this.$nextTick(() => {
-      this.initChart()
-    })
+    this.initChart()
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -59,78 +67,88 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
-      this.setOptions(this.chartData)
+      this.setDefaultOption(this.option, this.data)
+    },
+    setDefaultOption(op, data) {
+      // 如果传了option就按option来，没传就按默认的来
+      let option = null
+      if ((op && JSON.stringify(op) !== '{}')) {
+        option = op
+      } else {
+        if (!data || JSON.stringify(data) === '{}') {
+          return
+        }
+        const legendData = []
+        let xAxisData = null
+        Object.keys(data).map((key, index) => {
+          legendData.push(data[key].name)
+          if (index === 0) {
+            xAxisData = data[key].values.map(val => val.x)
+          }
+        })
+
+        option = {
+          title: {
+            left: 'center',
+            ...this.title
+          },
+          xAxis: {
+            data: xAxisData,
+            boundaryGap: false,
+            axisTick: {
+              show: false
+            }
+          },
+          grid: {
+            top: 40,
+            left: '2%',
+            right: '2%',
+            bottom: '3%',
+            containLabel: true
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'cross'
+            },
+            padding: [5, 10]
+          },
+          yAxis: {
+            axisTick: {
+              show: false
+            }
+          },
+          legend: {
+            left: 'left',
+            data: legendData
+          },
+          series: Object.keys(data).map((key, index) => {
+            return {
+              name: data[key].name,
+              itemStyle: {
+                normal: {
+                  color: colors[index] || null,
+                  lineStyle: {
+                    color: colors[index] || null,
+                    width: 2
+                  }
+                }
+              },
+              smooth: true,
+              type: 'line',
+              data: data[key].values.map(obj => obj.y),
+              animationDuration: 2000 + index * 100,
+              animationEasing: (index / 2) ? 'cubicInOut' : 'quadraticOut'
+            }
+          })
+
+        }
+      }
+      this.chart.setOption(option)
     },
     setOptions({ expectedData, actualData } = {}) {
-      console.log('this.chartData',this.chartData)
-      console.log('expectedData',expectedData,'\nactualData',actualData)
-      this.chart.setOption({
-        xAxis: {
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-          boundaryGap: false,
-          axisTick: {
-            show: false
-          }
-        },
-        grid: {
-          left: 10,
-          right: 10,
-          bottom: 20,
-          top: 30,
-          containLabel: true
-        },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross'
-          },
-          padding: [5, 10]
-        },
-        yAxis: {
-          axisTick: {
-            show: false
-          }
-        },
-        legend: {
-          data: ['expected', 'actual']
-        },
-        series: [{
-          name: 'expected', itemStyle: {
-            normal: {
-              color: '#FF005A',
-              lineStyle: {
-                color: '#FF005A',
-                width: 2
-              }
-            }
-          },
-          smooth: true,
-          type: 'line',
-          data: expectedData,
-          animationDuration: 2800,
-          animationEasing: 'cubicInOut'
-        },
-        {
-          name: 'actual',
-          smooth: true,
-          type: 'line',
-          itemStyle: {
-            normal: {
-              color: '#3888fa',
-              lineStyle: {
-                color: '#3888fa',
-                width: 2
-              },
-              areaStyle: {
-                color: '#f3f8ff'
-              }
-            }
-          },
-          data: actualData,
-          animationDuration: 2800,
-          animationEasing: 'quadraticOut'
-        }]
-      })
+
+      // this.chart.setOption()
     }
   }
 }
