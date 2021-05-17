@@ -116,6 +116,8 @@ export default {
       const msgId = this.$route.params && this.$route.params.id
       getMsgDetail({ msgId }).then(res => {
         if (res && res.status === 200) {
+          // 读取成功之后刷新消息数量
+          this.$store.dispatch('setMsgNumber')
           this.detail = res.content
           if (parseInt(res.content.allowReceive)) {
             this.getComments(true)

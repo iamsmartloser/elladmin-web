@@ -22,6 +22,7 @@ const getters = {
   sqlApi: state => state.api.sqlApi,
   swaggerApi: state => state.api.swaggerApi,
   sidebarRouters: state => state.permission.sidebarRouters,
-  city: state => state.user.city
+  city: state => state.user.city,
+  msgNum: state => state.user.msgNum
 }
 export default getters

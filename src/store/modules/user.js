@@ -1,5 +1,6 @@
 import { login, getInfo, logout } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { msgNumber } from '@/api/system/msgBodyInfo'
 
 const user = {
   state: {
@@ -8,7 +9,8 @@ const user = {
     roles: [],
     // 第一次加载菜单时用到
     loadMenus: false,
-    city: null
+    city: null,
+    msgNum: 0
   },
 
   mutations: {
@@ -26,6 +28,9 @@ const user = {
     },
     SET_CITY: (state, payload) => {
       state.city = payload
+    },
+    SET_MSG_NUMBER: (state, payload) => {
+      state.msgNum = payload
     }
   },
 
@@ -81,6 +86,18 @@ const user = {
     setCity({ commit }, payload) {
       // console.log('payload', payload)
       commit('SET_CITY', payload)
+    },
+    setMsgNumber({commit}){
+      return new Promise((resolve, reject) => {
+        msgNumber().then(res => {
+          resolve(res)
+          if (res && res.status === 200) {
+            commit('SET_MSG_NUMBER', res.content || 0)
+          }
+        }).catch(error => {
+          reject(error)
+        })
+      })
     }
   }
 }

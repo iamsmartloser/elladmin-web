@@ -31,7 +31,7 @@
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
         <span class="right-menu-item">
-          <el-badge :value="messageNumber" style="margin-top: 10px;">
+          <el-badge :value="msgNum" style="margin-top: 10px;">
             <i class="el-icon-bell bell" @click.prevent="toMsgPage"/>
           </el-badge>
         </span>
@@ -101,7 +101,8 @@ export default {
       'device',
       'user',
       'baseApi',
-      'city'
+      'city',
+      'msgNum'
     ]),
     show: {
       get() {
@@ -148,11 +149,7 @@ export default {
       this.interval = setInterval(this.getNum,1000*60)
     },
     getNum(){
-      msgNumber().then(res => {
-        if (res && res.status === 200) {
-          this.messageNumber = res.content || 0
-        }
-      })
+      this.$store.dispatch('setMsgNumber')
     },
     toMsgPage(){
       this.$router.push({name:'MsgBodyInfo',params:{}})
